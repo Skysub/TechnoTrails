@@ -3,7 +3,7 @@ package dk.dtu;
 import javax.swing.*;
 import java.awt.*;
 
-public class GameView extends JFrame {
+public class GameView extends JFrame /*implements View*/{
     public GameView() {
         setTitle("Three Boxes Frame");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -31,6 +31,7 @@ public class GameView extends JFrame {
         gbc.fill = GridBagConstraints.BOTH;
         rightPanel.add(topRightPanel, gbc);
 
+        //Do the griddy
         gbc.gridy = 1;
         rightPanel.add(bottomRightPanel, gbc);
 
@@ -53,9 +54,5 @@ public class GameView extends JFrame {
 
         // Display the frame
         setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new GameView());
     }
 }
