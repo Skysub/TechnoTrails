@@ -4,6 +4,8 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.Border;
 
+import dk.dtu.ServerInfo;
+
 import java.awt.event.*;
 
 public class Menu extends JFrame {
@@ -15,8 +17,6 @@ public class Menu extends JFrame {
     BoardPanel board = new BoardPanel();
     public String currentscreen = "startscreen";
     Lobby lobby = new Lobby();
-    private JTextField textField;
-
 
     public Menu() {
         initGUI();
@@ -59,23 +59,45 @@ public class Menu extends JFrame {
         }
 
         public void startScreen(Graphics g) {
+
             g.setColor(new Color(0, 76, 153));
             g.setFont(new Font("Serif", Font.BOLD, 40));
             FontMetrics metric = getFontMetrics(g.getFont());
             g.drawString("Techno Trails", (SCREEN_WIDTH - metric.stringWidth("Techno Trails")) / 2, 200);
 
-                // Add a JLabel for instruction
-                JLabel instructionLabel = new JLabel("Name:");
-                instructionLabel.setBounds(235, 505, 120, 20);
-                instructionLabel.setForeground(Color.white);
-                add(instructionLabel);
-    
-                // Add a JTextField for input
-                textField = new JTextField();
-                textField.setBounds(SCREEN_WIDTH / 2 - 60, 500, 120, 40);
-                Border border = BorderFactory.createLineBorder(Color.GRAY);
-                textField.setBorder(border);
-                add(textField);
+            // Add a JLabel for instruction
+            g.setColor(new Color(0, 76, 153));
+            g.setFont(new Font("Serif", Font.BOLD, 40));
+            g.drawString("Name", 250, 505);
+
+            // Add a JTextField for input
+            JTextField textField;
+            textField = new JTextField();
+            textField.setBounds(SCREEN_WIDTH / 2 - 60, 500, 120, 40);
+            add(textField);
+            setVisible(true);
+
+            new ServerInfo();
+
+            // Add a "Save" JButton
+            JButton saveButton = new JButton("Save");
+            saveButton.setBounds(SCREEN_WIDTH / 2 - 30, 550, 60, 30);
+
+            // Add an ActionListener to the "Save" button
+            saveButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+
+                    System.out.println("Save button clicked");
+
+                    // Get the text from the JTextField
+                    String name = textField.getText();
+                    System.out.println(name);
+
+                    // Add the name to the list
+                    // ServerInfo.addName(name);
+                }
+            });
 
             hostButton.setBounds(SCREEN_WIDTH / 2 - 60, 250, 120, 50);
             hostButton.setForeground(Color.white);
@@ -85,10 +107,12 @@ public class Menu extends JFrame {
             hostButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    System.out.println("test");
+                    // System.out.println("test");
                     currentscreen = "playscreen";
                     board.remove(hostButton);
                     board.remove(joinButton);
+                    board.remove(textField);
+
                     repaint();
                 }
             });
@@ -107,6 +131,7 @@ public class Menu extends JFrame {
 
             board.add(hostButton);
             board.add(joinButton);
+            board.add(saveButton);
 
         }
 
