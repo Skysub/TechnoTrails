@@ -8,8 +8,8 @@ import java.awt.event.*;
 
 public class Menu extends JFrame {
 
-    static final int SCREEN_HEIGHT = 700;
-    static final int SCREEN_WIDTH = 700;
+    static final int SCREEN_HEIGHT = 720;
+    static final int SCREEN_WIDTH = 1280;
     JButton joinButton = new JButton("JOIN GAME");
     JButton hostButton = new JButton("HOST GAME");
     BoardPanel board = new BoardPanel();
@@ -26,7 +26,7 @@ public class Menu extends JFrame {
         setTitle("Tehcno Trails");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
-        setSize(SCREEN_HEIGHT, SCREEN_WIDTH);
+        setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
         setFocusable(true);
         setLayout(null);
 
@@ -54,6 +54,7 @@ public class Menu extends JFrame {
             } else if (currentscreen == "playscreen") {
                 lobby.lobbyScreen(g);
                 add(lobby.playerPanel);
+                add(lobby.backButton);
             }
         }
 

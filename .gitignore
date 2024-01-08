@@ -13,3 +13,5 @@ settings.json
 .project
 .classpath
 .settings/
+.classpath
+.settings/org.eclipse.jdt.core.prefs
