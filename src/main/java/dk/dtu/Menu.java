@@ -2,6 +2,7 @@ package dk.dtu;
 
 import java.awt.*;
 import javax.swing.*;
+import javax.swing.border.Border;
 
 import java.awt.event.*;
 
@@ -14,6 +15,8 @@ public class Menu extends JFrame {
     BoardPanel board = new BoardPanel();
     public String currentscreen = "startscreen";
     Lobby lobby = new Lobby();
+    private JTextField textField;
+
 
     public Menu() {
         initGUI();
@@ -60,6 +63,19 @@ public class Menu extends JFrame {
             g.setFont(new Font("Serif", Font.BOLD, 40));
             FontMetrics metric = getFontMetrics(g.getFont());
             g.drawString("Techno Trails", (SCREEN_WIDTH - metric.stringWidth("Techno Trails")) / 2, 200);
+
+                // Add a JLabel for instruction
+                JLabel instructionLabel = new JLabel("Name:");
+                instructionLabel.setBounds(235, 505, 120, 20);
+                instructionLabel.setForeground(Color.white);
+                add(instructionLabel);
+    
+                // Add a JTextField for input
+                textField = new JTextField();
+                textField.setBounds(SCREEN_WIDTH / 2 - 60, 500, 120, 40);
+                Border border = BorderFactory.createLineBorder(Color.GRAY);
+                textField.setBorder(border);
+                add(textField);
 
             hostButton.setBounds(SCREEN_WIDTH / 2 - 60, 250, 120, 50);
             hostButton.setForeground(Color.white);
