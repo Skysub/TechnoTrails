@@ -40,6 +40,7 @@ public class Menu extends JFrame {
     private class BoardPanel extends JPanel {
 
         @Override
+
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             drawBoard(g);
@@ -53,8 +54,8 @@ public class Menu extends JFrame {
                 startScreen(g);
             } else if (currentscreen == "playscreen") {
                 lobby.lobbyScreen(g);
-                add(lobby.playerPanel);
                 add(lobby.backButton);
+                setVisible(true);
             }
         }
 
@@ -92,14 +93,12 @@ public class Menu extends JFrame {
 
                     // Get the text from the JTextField
                     String name = textField.getText();
-                    //System.out.println(name);
 
                     // Add the name to the list
                     ServerInfo.addName(name);
 
                     // Clear the JTextField
                     textField.setText("");
-                    
                 }
             });
 
@@ -111,11 +110,13 @@ public class Menu extends JFrame {
             hostButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+
                     // System.out.println("test");
                     currentscreen = "playscreen";
                     board.remove(hostButton);
                     board.remove(joinButton);
                     board.remove(textField);
+                    board.remove(saveButton);
 
                     repaint();
                 }
