@@ -5,7 +5,7 @@ import javax.swing.*;
 
 import java.awt.event.*;
 
-public class GUI extends JFrame {
+public class Menu extends JFrame {
 
     static final int SCREEN_HEIGHT = 700;
     static final int SCREEN_WIDTH = 700;
@@ -15,7 +15,7 @@ public class GUI extends JFrame {
     private JPanel playerPanel;
     public String currentscreen = "startscreen";
 
-    public GUI() {
+    public Menu() {
         initGUI();
     }
 
@@ -108,10 +108,6 @@ public class GUI extends JFrame {
 
         }
 
-    }
-
-    public static void main(String[] args) {
-        new GUI();
     }
 
 }
