@@ -2,7 +2,6 @@ package dk.dtu;
 
 import java.awt.*;
 import javax.swing.*;
-
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.SequentialSpace;
@@ -12,6 +11,7 @@ import java.awt.event.*;
 public class Lobby extends JPanel {
     private boolean playerReady;
     public int numberOfPlayers;
+
     SequentialSpace lobbySpace = new SequentialSpace();
     public JPanel playerPanel;
     static final int SCREEN_HEIGHT = 720;
@@ -42,7 +42,7 @@ public class Lobby extends JPanel {
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               
+                new Menu();
             }
         });
 
