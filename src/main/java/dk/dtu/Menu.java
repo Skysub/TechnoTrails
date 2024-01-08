@@ -92,10 +92,14 @@ public class Menu extends JFrame {
 
                     // Get the text from the JTextField
                     String name = textField.getText();
-                    System.out.println(name);
+                    //System.out.println(name);
 
                     // Add the name to the list
-                    // ServerInfo.addName(name);
+                    ServerInfo.addName(name);
+
+                    // Clear the JTextField
+                    textField.setText("");
+                    
                 }
             });
 
