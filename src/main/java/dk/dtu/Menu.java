@@ -49,7 +49,8 @@ public class Menu extends JFrame {
             if (currentscreen == "startscreen") {
                 startScreen(g);
             } else if (currentscreen == "playscreen") {
-                hostScreen(g);
+                lobby.lobbyScreen(g);
+                add(lobby.playerPanel);
             }
         }
 
@@ -89,12 +90,6 @@ public class Menu extends JFrame {
 
             board.add(hostButton);
             board.add(joinButton);
-
-        }
-
-        public void hostScreen(Graphics g) {
-            lobby.lobbyScreen(g);
-            add(lobby.playerPanel);
 
         }
 
