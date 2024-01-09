@@ -4,6 +4,7 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.SequentialSpace;
@@ -145,5 +146,4 @@ public class Lobby extends JPanel {
 
 		return true;
 	}
-
 }
