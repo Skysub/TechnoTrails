@@ -2,13 +2,11 @@ package dk.dtu;
 
 import javax.swing.*;
 import java.awt.*;
-import dk.dtu.PlayerInfo;
-import java.awt.geom.Rectangle2D;
 
 public class GameView extends JFrame {
-    private LeftPanel leftPanel;
-    private JPanel topRightPanel;
-    private JTable bottomRightPanel;
+    private BattlePanel battlePanel;
+    private GameLeaderboardPanel gameLeaderboardPanel;
+    private GameChatPanel chatPanel;
 
     public GameView() {
         setTitle("Three Boxes Frame");
@@ -18,49 +16,29 @@ public class GameView extends JFrame {
     }
 
     public void gamePanels() {
-        leftPanel = new LeftPanel();
-
-        topRightPanel = new JPanel();
-        topRightPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        topRightPanel.setPreferredSize(new Dimension(200, 200));
-
-        bottomRightPanel = new CustomChatTable();
-        bottomRightPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        bottomRightPanel.setPreferredSize(new Dimension(200, 200));
+        battlePanel = new BattlePanel();
+        gameLeaderboardPanel = new GameLeaderboardPanel();
+        chatPanel = new GameChatPanel();
 
         setLayout(new BorderLayout());
-
+        add(battlePanel, BorderLayout.CENTER);
         JPanel rightPanel = new JPanel(new GridBagLayout());
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
+        gbc.weightx = 1;
         gbc.weighty = 0.5;
         gbc.fill = GridBagConstraints.BOTH;
-        rightPanel.add(topRightPanel, gbc);
-
+        rightPanel.add(gameLeaderboardPanel,gbc);
         gbc.gridy = 1;
-        rightPanel.add(bottomRightPanel, gbc);
+        gbc.weighty = 0.5;
+        rightPanel.add(chatPanel,gbc);
 
-        add(leftPanel, BorderLayout.CENTER);
+      
         add(rightPanel, BorderLayout.EAST);
 
         setVisible(true);
-    }
-
-    public JPanel getTopRightPanel() {
-        return topRightPanel;
-    }
-
-    public JTable getBottomRightPanel() {
-        return bottomRightPanel;
-    }
-
-    private class CustomChatTable extends JTable {
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            // Custom painting code for the table
-        }
     }
 
     public static void main(String[] args) {

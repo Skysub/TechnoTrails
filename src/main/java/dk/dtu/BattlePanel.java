@@ -12,10 +12,10 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 
-public class LeftPanel extends JPanel {
+public class BattlePanel extends JPanel {
     private CustomDrawingPanel drawingPanel;
 
-    public LeftPanel() {
+    public BattlePanel() {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.weightx = 1.0;
@@ -58,42 +58,3 @@ public class LeftPanel extends JPanel {
     }
 }
 
-
-
-
-
-/*public class LeftPanel extends JPanel {
-    private CustomDrawingPanel drawingPanel;
-
-    private class CustomDrawingPanel extends JPanel {
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            Graphics2D g2d = (Graphics2D) g;
-            g2d.setColor(Color.RED);
-            Rectangle2D.Float rect = new Rectangle2D.Float(50, 50, 50.5f, 50.5f);
-            g2d.fill(rect);
-        }
-
-
-    }
-
-    public void drawPlayer(JPanel panel, PlayerInfo p) {
-        Graphics g = panel.getGraphics();
-        if (g != null) {
-            Graphics2D g2d = (Graphics2D) g;
-            g2d.setColor(Color.RED);
-
-            // Draw a filled rectangle (x, y, width, height)
-            // Rectangle2D.Float rect = new Rectangle2D.Float(p.x, p.y, 50.5f, 50.5f);
-            Rectangle2D.Float rect = new Rectangle2D.Float(50, 50, 50.5f, 50.5f);
-            g2d.fill(rect);
-
-        }
-    }
-
-    public void drawGame(JPanel panel, PlayerInfo p) {
-        drawPlayer(panel, p);
-
-    }
-}*/
