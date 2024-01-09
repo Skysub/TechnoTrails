@@ -16,7 +16,6 @@ import java.awt.event.*;
 import dk.dtu.ServerInfo;
 
 public class Lobby extends JPanel {
-	static final int defaultTickRate = 60;
 
 	private boolean playerReady;
 	public int numberOfPlayers;
@@ -26,8 +25,6 @@ public class Lobby extends JPanel {
 	public JFrame playerLabel;
 	ArrayList<String> players2;
 	JTable table;
-	Boolean host = false;
-	Server server = null;
 
 	JButton backButton = new JButton("<-");
 	ViewManager viewManager;
