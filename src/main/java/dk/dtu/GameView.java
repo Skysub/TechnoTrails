@@ -37,7 +37,7 @@ public class GameView extends JFrame {
         gbc.weighty = 0.5;
         rightPanel.add(chatPanel,gbc);
 
-      
+      add(battlePanel, BorderLayout.CENTER);
         add(rightPanel, BorderLayout.EAST);
         setVisible(true);
     }

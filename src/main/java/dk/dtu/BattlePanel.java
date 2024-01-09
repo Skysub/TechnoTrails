@@ -21,7 +21,6 @@ public class BattlePanel extends JPanel {
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
-
         drawingPanel = new CustomDrawingPanel();
         drawingPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         drawingPanel.setPreferredSize(new Dimension(400, 400));
@@ -37,6 +36,8 @@ public class BattlePanel extends JPanel {
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             Graphics2D g2d = (Graphics2D) g;
+            g2d.setColor(Color.WHITE);
+            g2d.fillRect(0, 0, getWidth(), getHeight());
             g2d.setColor(Color.RED);
             Rectangle2D.Float rect = new Rectangle2D.Float(50, 50, 50.5f, 50.5f);
             g2d.fill(rect);
