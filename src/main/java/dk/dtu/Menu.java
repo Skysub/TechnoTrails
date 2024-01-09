@@ -23,20 +23,32 @@ public class Menu extends JPanel{
     
     void initMenu(){
     	
+    	setLayout(new GridBagLayout());
+    	GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.ipady = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        		
+        		
             // Add a JLabel for instruction
             JLabel instructionLabel = new JLabel("Name:");
-            instructionLabel.setBounds(235, 505, 120, 20);
+            //instructionLabel.setBounds(235, 505, 120, 20);
+            instructionLabel.setPreferredSize(new Dimension(150, 20));
             instructionLabel.setForeground(Color.white);
-            add(instructionLabel);
-
+            add(instructionLabel, gbc);
+            
+            gbc.insets = new Insets(0,0,20,0);
+            
             // Add a JTextField for input
             textField = new JTextField();
-            textField.setBounds(viewManager.getWidth() / 2 - 60, 500, 120, 40);
+            //textField.setBounds(viewManager.getWidth() / 2 - 60, 500, 120, 40);
+            textField.setPreferredSize(new Dimension(150, 20));
             Border border = BorderFactory.createLineBorder(Color.GRAY);
             textField.setBorder(border);
-            add(textField);
+            add(textField, gbc);
 
-        hostButton.setBounds(viewManager.getWidth() / 2 - 60, 250, 120, 50);
+        //hostButton.setBounds(viewManager.getWidth() / 2 - 60, 250, 120, 50);
+        hostButton.setPreferredSize(new Dimension(150, 50));
         hostButton.setForeground(Color.white);
         hostButton.setBackground(new Color(0, 76, 153));
         hostButton.setOpaque(true);
@@ -48,7 +60,8 @@ public class Menu extends JPanel{
             }
         });
 
-        joinButton.setBounds(viewManager.getWidth() / 2 - 60, 330, 120, 50);
+        //joinButton.setBounds(viewManager.getWidth() / 2 - 60, 330, 120, 50);
+        joinButton.setPreferredSize(new Dimension(150, 50));
         joinButton.setForeground(Color.white);
         joinButton.setBackground(new Color(0, 76, 153));
         joinButton.setOpaque(true);
@@ -59,8 +72,8 @@ public class Menu extends JPanel{
                 System.out.println("Join Game Button");
             }
         });
-        add(hostButton);
-        add(joinButton);
+        add(hostButton, gbc);
+        add(joinButton, gbc);
     }
     
     @Override
