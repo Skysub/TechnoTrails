@@ -16,8 +16,6 @@ public class Menu extends JPanel{
 
     public Menu(ViewManager viewManager)  {
     	this.viewManager = viewManager;
-    	setBounds(viewManager.getBounds());
-    	setPreferredSize(new Dimension(viewManager.getWidth(), viewManager.getHeight()));
     	initMenu();
     }
     
@@ -85,13 +83,7 @@ public class Menu extends JPanel{
         g.setColor(new Color(0, 76, 153));
         g.setFont(new Font("Serif", Font.BOLD, 40));
         FontMetrics metric = getFontMetrics(g.getFont());
-        g.drawString("Techno Trails", (viewManager.getWidth() - metric.stringWidth("Techno Trails")) / 2, 200);
+        g.drawString("Techno Trails", (viewManager.getWidth() - metric.stringWidth("Techno Trails")) / 2,
+        			(int) g.getClipBounds().getHeight() / 5);
     }
-
-    
-    /*public void exitView(BoardPanel board) {
-        board.remove(hostButton);
-        board.remove(joinButton);
-    }*/
-
 }

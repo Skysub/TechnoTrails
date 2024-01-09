@@ -26,13 +26,27 @@ public class Lobby extends JPanel{
     
 
     public void initLobby() {
+    	
+    	
+    	setLayout(new GridBagLayout());
+    	GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.ipady = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weighty = 1;
+        
+        JLabel title = new JLabel("Port: " + 12345);
+        title.setFont(new Font("Serif", Font.BOLD, 40));
+        title.setForeground(new Color(0, 76, 153));
+        title.setHorizontalAlignment(0);
+        
         playerPanel = new JPanel();
         playerPanel.setLayout(new BoxLayout(playerPanel, BoxLayout.Y_AXIS));
-        playerPanel.setBounds(viewManager.getWidth() / 2 - 200, viewManager.getHeight() / 2 - 200, 400, 200);
+        playerPanel.setPreferredSize(new Dimension(400,200));
         playerPanel.setBackground(new Color(0, 76, 153));
         playerPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
 
-        backButton.setBounds(25, 25, 50, 50);
+        backButton.setPreferredSize(new Dimension(50,50));
         backButton.setForeground(Color.blue);
         backButton.addActionListener(new ActionListener() {
             @Override
@@ -41,8 +55,21 @@ public class Lobby extends JPanel{
             }
         });
         
-        add(playerPanel);
-        add(backButton);
+    	GridBagConstraints backgbc = new GridBagConstraints();
+    	backgbc.gridwidth = GridBagConstraints.REMAINDER;
+    	backgbc.fill = GridBagConstraints.NONE;
+    	backgbc.anchor = GridBagConstraints.FIRST_LINE_START;
+    	backgbc.weightx = 1;
+    	backgbc.weighty = 1;
+    	backgbc.insets = new Insets(20,20,20,20);
+        
+        add(backButton, backgbc);
+        add(Box.createVerticalGlue(), gbc);
+        add(title, gbc);
+        add(Box.createVerticalStrut(50), gbc);
+        add(playerPanel, gbc);
+        add(Box.createVerticalStrut(200), gbc);
+        
 
     }
     
@@ -52,11 +79,6 @@ public class Lobby extends JPanel{
         
         g.setColor(new Color(102, 178, 255));
         g.fillRect(0, 0, viewManager.getWidth(), viewManager.getHeight());
-
-        g.setColor(new Color(0, 76, 153));
-        g.setFont(new Font("Serif", Font.BOLD, 40));
-        FontMetrics metric = getFontMetrics(g.getFont());
-        g.drawString("Port: " + 12345, (viewManager.getWidth() - metric.stringWidth("Port: " + 12345)) / 2, 100);
     }
 
 
