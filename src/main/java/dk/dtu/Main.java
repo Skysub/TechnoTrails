@@ -2,7 +2,6 @@ package dk.dtu;
 
 public class Main {
 
-       
     public static void main(String[] args) {
     	new ViewManager();
     }
@@ -10,8 +9,3 @@ public class Main {
     
 
 }
- 
-
-
-
-
