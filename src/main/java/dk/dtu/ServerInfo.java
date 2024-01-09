@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ServerInfo {
 
-    public static List<String> nameList = new ArrayList<>();
+    public static ArrayList<String> nameList = new ArrayList<>();
 
     // create list of names
     public static void addName(String name) {

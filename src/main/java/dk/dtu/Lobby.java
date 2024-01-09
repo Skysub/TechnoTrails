@@ -2,107 +2,148 @@ package dk.dtu;
 
 import java.awt.*;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.SequentialSpace;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.awt.event.*;
-
 import dk.dtu.ServerInfo;
 
 public class Lobby extends JPanel {
-    private boolean playerReady;
-    public int numberOfPlayers;
 
-    SequentialSpace lobbySpace = new SequentialSpace();
-    public JPanel playerPanel;
-    public JFrame playerLabel;
+	private boolean playerReady;
+	public int numberOfPlayers;
 
-    static final int SCREEN_HEIGHT = 720;
-    static final int SCREEN_WIDTH = 1280;
-    JButton backButton = new JButton("<-");
+	SequentialSpace lobbySpace = new SequentialSpace();
+	public JScrollPane playerPanel;
+	public JFrame playerLabel;
+	ArrayList<String> players2 = ServerInfo.nameList;
+	JTable table;
 
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        lobbyScreen(g);
+	JButton backButton = new JButton("<-");
+	ViewManager viewManager;
 
-    }
+	public Lobby(ViewManager viewManager) {
+		this.viewManager = viewManager;
+		setBounds(viewManager.getBounds());
+		initLobby();
+	}
 
-    public void lobbyScreen(Graphics g) {
+	public void initLobby() {
+		setLayout(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridwidth = GridBagConstraints.REMAINDER;
+		gbc.ipady = 0;
+		gbc.fill = GridBagConstraints.VERTICAL;
+		gbc.weighty = 1;
 
-        g.setColor(new Color(0, 76, 153));
-        g.setFont(new Font("Serif", Font.BOLD, 40));
-        FontMetrics metric = getFontMetrics(g.getFont());
-        g.drawString("Port: " + 12345, (SCREEN_WIDTH - metric.stringWidth("Port: " + 12345)) / 2, 100);
+		JLabel title = new JLabel("Port: " + 12345);
+		title.setFont(new Font("Serif", Font.BOLD, 40));
+		title.setForeground(new Color(0, 76, 153));
+		title.setHorizontalAlignment(0);
 
-        List<String> players2 = ServerInfo.nameList;
+		// Players added to list for testing
 
-        // Players added to list for testing
-        players2.add("Player1");
-        players2.add("Player2");
-        players2.add("Player3");
-        players2.add("Player4");
+		for (int i = 1; i < 26; i++) {
+			players2.add("Player " + i);
+		}
 
-        // create a box
-        g.setColor(new Color(222, 240, 255));
-        g.fillRect(SCREEN_WIDTH / 2 - 200, SCREEN_HEIGHT / 2 - 200, 400, 200);
+		// The table showing the players
+		String[] TABLE_COLUMNS = { "Players" };
+		DefaultTableModel tableModel = new DefaultTableModel(TABLE_COLUMNS, 0) {
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				// all cells false
+				return false;
+			}
+		};
+		for (int i = 0; i < players2.size(); i++) {
 
-        // creat an outline for the box
-        Graphics2D g2 = (Graphics2D) g;
-        g2.setStroke(new BasicStroke(10));
-        g2.setColor(new Color(0, 76, 153));
-        g2.drawRect(SCREEN_WIDTH / 2 - 200, SCREEN_HEIGHT / 2 - 200, 400, 200);
+			tableModel.addRow(new String[] { players2.get(i) });
+		}
+		table = new JTable(tableModel);
+		table.setRowHeight(20);
 
-        // Prints out the players in the lobby
-        g.setColor(new Color(0, 76, 153));
-        g.setFont(new Font("Serif", Font.BOLD, 20));
-        FontMetrics metric2 = getFontMetrics(g.getFont());
-        g.drawString("Players in lobby: ", (SCREEN_WIDTH - metric2.stringWidth("Players in lobby: ")) / 2, 200);
+		playerPanel = new JScrollPane(table);
+		playerPanel.setPreferredSize(new Dimension(400, 200));
+		playerPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
+		playerPanel.getViewport().setBackground(new Color(0, 76, 153));
+		// playerPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-        // Print list of players
-        int y = 230;
-        g.setFont(new Font("Serif", Font.PLAIN, 17));
-        for (String i : players2) {
-            g.drawString(i, (SCREEN_WIDTH - metric2.stringWidth(i)) / 2, y);
-            y += 25;
-        }
+		backButton.setPreferredSize(new Dimension(50, 50));
+		backButton.setForeground(Color.blue);
+		backButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				viewManager.changeView("menu");
+			}
+		});
 
-        backButton.setBounds(25, 25, 50, 50);
-        backButton.setForeground(Color.blue);
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new Menu();
-            }
-        });
+		GridBagConstraints backgbc = new GridBagConstraints();
+		backgbc.gridwidth = GridBagConstraints.REMAINDER;
+		backgbc.fill = GridBagConstraints.NONE;
+		backgbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		backgbc.weightx = 1;
+		backgbc.weighty = 1;
+		backgbc.insets = new Insets(20, 20, 20, 20);
 
-    }
+		GridBagConstraints paddgbc = new GridBagConstraints();
+		paddgbc.gridheight = GridBagConstraints.REMAINDER;
+		paddgbc.fill = GridBagConstraints.HORIZONTAL;
+		paddgbc.weighty = 2;
 
-    public void playerJoin(String playerName) throws InterruptedException {
-        playerReady = false;
-        lobbySpace.put(playerName, playerReady);
-    }
+		add(backButton, backgbc);
+		add(title, gbc);
+		add(Box.createVerticalStrut(10), paddgbc);
+		add(playerPanel, gbc);
+		add(Box.createVerticalStrut(20), paddgbc);
+	}
 
-    public void playerReady(String playerName) throws InterruptedException {
-        lobbySpace.get(new ActualField(playerName), new ActualField(playerReady));
-        playerReady = true;
-        lobbySpace.put(playerName, playerReady);
-    }
+	void remakePlayerTable() {
+		initLobby();
+		repaint();
+	}
 
-    public boolean allPlayersReady() throws InterruptedException {
-        List<Object[]> players = lobbySpace.queryAll(new FormalField(String.class), new ActualField(Boolean.class));
-        if (players.size() != numberOfPlayers) {
-            return false;
-        }
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
 
-        // Check if all players are ready
-        for (Object[] player : players) {
-            if (!(Boolean) player[1]) {
-                return false;
-            }
-        }
+		g.setColor(new Color(102, 178, 255));
+		g.fillRect(0, 0, viewManager.getWidth(), viewManager.getHeight());
 
-        return true;
-    }
+		// drawPlayerPanel(g);
+	}
+
+	public void playerJoin(String playerName) throws InterruptedException {
+		playerReady = false;
+		lobbySpace.put(playerName, playerReady);
+	}
+
+	public void playerReady(String playerName) throws InterruptedException {
+		lobbySpace.get(new ActualField(playerName), new ActualField(playerReady));
+		playerReady = true;
+		lobbySpace.put(playerName, playerReady);
+	}
+
+	public boolean allPlayersReady() throws InterruptedException {
+		List<Object[]> players = lobbySpace.queryAll(new FormalField(String.class), new ActualField(Boolean.class));
+		if (players.size() != numberOfPlayers) {
+			return false;
+		}
+
+		// Check if all players are ready
+		for (Object[] player : players) {
+			if (!(Boolean) player[1]) {
+				return false;
+			}
+		}
+
+		return true;
+	}
 
 }
