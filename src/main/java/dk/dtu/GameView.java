@@ -76,7 +76,7 @@ public class GameView extends JFrame {
         return topRightPanel;
     }
 
-    public JPanel getbrPanel() {
+    public JTable getbrPanel() {
         return bottomRightPanel;
     }
 
