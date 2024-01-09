@@ -81,6 +81,7 @@ public class Menu extends JPanel {
 				String name = textField.getText();
 
 				client.setName(name);
+				instructionLabel.setText("Name: " + client.getName());
 
 				// Clear the JTextField
 				textField.setText("");
