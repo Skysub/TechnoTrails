@@ -50,7 +50,7 @@ public class Lobby extends JPanel {
 		// Players added to list for testing
 		players2 = new ArrayList<String>();
 		for (int i = 1; i < 26; i++) {
-			players2.add("Player " + i);
+			players2.add(client.getName() + i);
 		}
 
 		// The table showing the players

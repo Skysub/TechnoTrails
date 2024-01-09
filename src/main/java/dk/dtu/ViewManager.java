@@ -52,7 +52,6 @@ public class ViewManager extends JFrame {
     	viewLayout.show(viewPanel, s);
     	currentView = s;
     }
-    
     String getCurrentView() {
     	return currentView;
     }

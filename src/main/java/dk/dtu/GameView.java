@@ -1,22 +1,12 @@
 package dk.dtu;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-
-import javax.swing.BorderFactory;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
+import java.awt.*;
 
 public class GameView extends JFrame {
     private LeftPanel leftPanel;
-    private JPanel topRightPanel;
-    private JTable bottomRightPanel;
+    private TopRightPanel topRightPanel;
+    private BottomRightPanel bottomRightPanel;
 
     public GameView() {
         setTitle("Three Boxes Frame");
@@ -27,51 +17,33 @@ public class GameView extends JFrame {
 
     public void gamePanels() {
         leftPanel = new LeftPanel();
-
-        topRightPanel = new JPanel();
-        topRightPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        topRightPanel.setPreferredSize(new Dimension(200, 200));
-
-        bottomRightPanel = new CustomChatTable();
-        bottomRightPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        bottomRightPanel.setPreferredSize(new Dimension(200, 200));
+        topRightPanel = new TopRightPanel();
+        bottomRightPanel = new BottomRightPanel();
 
         setLayout(new BorderLayout());
+        add(leftPanel, BorderLayout.CENTER);
 
         JPanel rightPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
+        
+        // TopRightPanel
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.weighty = 0.5;
+        gbc.weightx = 1;
+        gbc.weighty = 0.5; // Weight determines how much space it takes relative to other components
         gbc.fill = GridBagConstraints.BOTH;
         rightPanel.add(topRightPanel, gbc);
 
-        gbc.gridy = 1;
+        // BottomRightPanel
+        gbc.gridy = 1; // Placing it below the TopRightPanel
+        gbc.weighty = 0.5;
         rightPanel.add(bottomRightPanel, gbc);
 
-        add(leftPanel, BorderLayout.CENTER);
         add(rightPanel, BorderLayout.EAST);
-
         setVisible(true);
     }
 
-    public JPanel getTopRightPanel() {
-        return topRightPanel;
-    }
-
-    public JTable getBottomRightPanel() {
-        return bottomRightPanel;
-    }
-
-    private class CustomChatTable extends JTable {
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            // Custom painting code for the table
-        }
-    }
-
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(()->new GameView());
+        SwingUtilities.invokeLater(() -> new GameView());
     }
 }
