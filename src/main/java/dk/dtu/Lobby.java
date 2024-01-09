@@ -4,16 +4,13 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.SequentialSpace;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.awt.event.*;
-import dk.dtu.ServerInfo;
 
 public class Lobby extends JPanel {
 
@@ -28,9 +25,11 @@ public class Lobby extends JPanel {
 
 	JButton backButton = new JButton("<-");
 	ViewManager viewManager;
+	Client client;
 
-	public Lobby(ViewManager viewManager) {
+	public Lobby(ViewManager viewManager, Client client) {
 		this.viewManager = viewManager;
+		this.client = client;
 		setBounds(viewManager.getBounds());
 		initLobby();
 	}
@@ -51,7 +50,7 @@ public class Lobby extends JPanel {
 		// Players added to list for testing
 		players2 = new ArrayList<String>();
 		for (int i = 1; i < 26; i++) {
-			players2.add("Player " + i);
+			players2.add(client.getName() + i);
 		}
 
 		// The table showing the players

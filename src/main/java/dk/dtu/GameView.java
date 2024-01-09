@@ -21,10 +21,12 @@ public class GameView extends JFrame {
         chatPanel = new GameChatPanel();
 
         setLayout(new BorderLayout());
-        add(battlePanel, BorderLayout.CENTER);
+
         JPanel rightPanel = new JPanel(new GridBagLayout());
 
         GridBagConstraints gbc = new GridBagConstraints();
+        
+        // TopRightPanel
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 1;
@@ -37,11 +39,10 @@ public class GameView extends JFrame {
 
       
         add(rightPanel, BorderLayout.EAST);
-
         setVisible(true);
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(()->new GameView());
+        SwingUtilities.invokeLater(() -> new GameView());
     }
 }

@@ -1,7 +1,5 @@
 package dk.dtu;
 
-import java.util.ArrayList;
-
 public class GameUpdate {
 	int tick = -1;
 	PlayerInfo playerUpdate[];
