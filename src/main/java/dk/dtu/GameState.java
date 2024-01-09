@@ -15,8 +15,8 @@ public class GameState {
 class PlayerInfo {
 	int id = -1;
 	String name = "noName";
-	float x = 0;
-	float y = 0;
+	float x = 50;
+	float y = 50;
 	float rotation = 0;
 	ArrayList<Pair<Float, Float>> trail;
 }
