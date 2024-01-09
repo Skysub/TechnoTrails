@@ -4,6 +4,7 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.SequentialSpace;
@@ -15,6 +16,7 @@ import java.awt.event.*;
 import dk.dtu.ServerInfo;
 
 public class Lobby extends JPanel {
+	static final int defaultTickRate = 60;
 
 	private boolean playerReady;
 	public int numberOfPlayers;
@@ -24,6 +26,8 @@ public class Lobby extends JPanel {
 	public JFrame playerLabel;
 	ArrayList<String> players2;
 	JTable table;
+	Boolean host = false;
+	Server server = null;
 
 	JButton backButton = new JButton("<-");
 	ViewManager viewManager;
@@ -145,5 +149,4 @@ public class Lobby extends JPanel {
 
 		return true;
 	}
-
 }
