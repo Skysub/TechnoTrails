@@ -26,8 +26,6 @@ public class Lobby extends JPanel{
     
 
     public void initLobby() {
-    	
-    	
     	setLayout(new GridBagLayout());
     	GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER;
