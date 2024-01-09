@@ -28,9 +28,11 @@ public class Lobby extends JPanel {
 
 	JButton backButton = new JButton("<-");
 	ViewManager viewManager;
+	Client client;
 
-	public Lobby(ViewManager viewManager) {
+	public Lobby(ViewManager viewManager, Client client) {
 		this.viewManager = viewManager;
+		this.client = client;
 		setBounds(viewManager.getBounds());
 		initLobby();
 	}

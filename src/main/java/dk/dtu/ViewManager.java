@@ -27,6 +27,8 @@ public class ViewManager extends JFrame {
 	Menu menu;
 	Lobby lobby;
 	CardLayout viewLayout = new CardLayout();;
+	
+	Client client;
     
     public ViewManager() {
         setTitle("Tehcno Trails");
@@ -38,10 +40,13 @@ public class ViewManager extends JFrame {
         viewPanel = new JPanel();
         viewPanel.setLayout(viewLayout);
         viewPanel.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
+        
+        //Creating the client model
+        client = new Client();
               
         //Creating the views and adding them to the viewPanel
-        menu = new Menu(this);
-        lobby = new Lobby(this);
+        menu = new Menu(this, client);
+        lobby = new Lobby(this, client);
         viewPanel.add(menu, "menu");
         viewPanel.add(lobby, "lobby");
 

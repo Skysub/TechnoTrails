@@ -18,7 +18,7 @@ public class Client{
 	}
 	
 	//Used when you're the host
-	void CreateLobby() {
+	public void CreateLobby() {
 		host = true;
 		ServerInfo si = new ServerInfo();
 		si.tps = defaultTickRate;
@@ -28,7 +28,7 @@ public class Client{
 	}
 	
 	//Closing the lobby as well as closing the game when you're the host
-	void CloseLobby() {
+	public void CloseLobby() {
 		host = false;
 		server.kill();
 		server = null;
