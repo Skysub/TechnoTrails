@@ -2,7 +2,7 @@ package dk.dtu;
 
 import java.util.ArrayList;
 
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 public class GameState {
 	int tick = -1;
@@ -18,5 +18,5 @@ class PlayerInfo {
 	float x = 0;
 	float y = 0;
 	float rotation = 0;
-	ArrayList<Pair<Float, Float>> trail;
+	ArrayList<ImmutablePair<Float, Float>> trail;
 }

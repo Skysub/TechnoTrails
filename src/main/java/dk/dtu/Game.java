@@ -2,14 +2,16 @@ package dk.dtu;
 
 import java.util.ArrayList;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+
 public class Game {
 	
 	private int tps; //ticks per second
 	private GameState gameState;
 	
-	Game(int tps, ArrayList<PlayerInfo> players){
-		this.tps = tps;
-		gameState = CreateGameState(players);
+	Game(ServerInfo info){
+		this.tps = info.tps;
+		gameState = CreateGameState(info.playerList);
 	}
 	
 	//The game simulates a tick and handles all the game mechanics
@@ -21,7 +23,6 @@ public class Game {
 		if(gameState.paused) {
 			return update;
 		}
-		
 		GameState newState = new GameState();
 		
 		//Handle all aspects of the game here
@@ -36,10 +37,18 @@ public class Game {
 	}
 	
 	//Creates a fresh game
-	GameState CreateGameState(ArrayList<PlayerInfo> players) {
+	GameState CreateGameState(ArrayList<ImmutablePair<Integer, String>> playerList) {
 		GameState freshState = new GameState();
-		freshState.players = players;
-		freshState.numberOfPlayers = players.size();
+		freshState.players = new ArrayList<PlayerInfo>();
+		PlayerInfo temp;
+		ImmutablePair<Integer, String> player;
+		for (int i = 0; i < playerList.size(); i++) {
+			temp = new PlayerInfo();
+			player = playerList.get(i);
+			temp.id = player.getKey();
+			temp.trail = new ArrayList<ImmutablePair<Float, Float>>();
+		}
+		freshState.numberOfPlayers = playerList.size();
 		return freshState;
 	}
 	
