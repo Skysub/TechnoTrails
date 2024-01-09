@@ -42,6 +42,7 @@ public class GameView extends JFrame {
         gbc.fill = GridBagConstraints.BOTH;
         rightPanel.add(topRightPanel, gbc);
 
+        //Do the griddy
         gbc.gridy = 1;
         rightPanel.add(bottomRightPanel, gbc);
 
