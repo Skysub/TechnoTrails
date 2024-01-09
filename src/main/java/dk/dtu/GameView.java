@@ -44,7 +44,7 @@ public class GameView extends JFrame {
 
         gbc.gridy = 1;
         rightPanel.add(bottomRightPanel, gbc);
-git 
+
         // Set layout for the left panel
         JPanel panelLeft = new JPanel(new GridBagLayout());
         GridBagConstraints gbcLeft = new GridBagConstraints();
