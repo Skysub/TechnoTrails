@@ -81,7 +81,10 @@ public class Menu extends JPanel{
                 String name = textField.getText();
 
                 // Add the name to the list
-                ServerInfo.addName(name);
+                //ServerInfo.addName(name);
+                
+                //ServerInfo klassen burde ikke tilgås som en static klasse,
+                //  og burde ikke ændres andre steder end i server klassen.
 
                 // Clear the JTextField
                 textField.setText("");

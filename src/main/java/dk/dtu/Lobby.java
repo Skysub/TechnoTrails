@@ -22,7 +22,7 @@ public class Lobby extends JPanel {
 	SequentialSpace lobbySpace = new SequentialSpace();
 	public JScrollPane playerPanel;
 	public JFrame playerLabel;
-	ArrayList<String> players2 = ServerInfo.nameList;
+	ArrayList<String> players2;
 	JTable table;
 
 	JButton backButton = new JButton("<-");
@@ -48,7 +48,7 @@ public class Lobby extends JPanel {
 		title.setHorizontalAlignment(0);
 
 		// Players added to list for testing
-
+		players2 = new ArrayList<String>();
 		for (int i = 1; i < 26; i++) {
 			players2.add("Player " + i);
 		}
