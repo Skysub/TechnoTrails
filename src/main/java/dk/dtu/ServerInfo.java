@@ -19,7 +19,7 @@ public class ServerInfo {
     
     public void printPlayers() {
     	// print list of names and id's
-        for (ImmutablePair i : playerList) {
+        for (ImmutablePair<Integer, String> i : playerList) {
             System.out.println("ID "+i.getLeft()+" : "+i.getRight());
         }
     }

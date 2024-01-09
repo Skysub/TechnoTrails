@@ -1,9 +1,17 @@
 package dk.dtu;
 
-import javax.swing.*;
-import java.awt.*;
-import dk.dtu.PlayerInfo;
-import java.awt.geom.Rectangle2D;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 
 public class GameView extends JFrame {
     private LeftPanel leftPanel;

@@ -4,16 +4,13 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.SequentialSpace;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.awt.event.*;
-import dk.dtu.ServerInfo;
 
 public class Lobby extends JPanel {
 

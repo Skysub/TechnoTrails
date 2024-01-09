@@ -40,13 +40,15 @@ public class Game {
 	GameState CreateGameState(ArrayList<ImmutablePair<Integer, String>> playerList) {
 		GameState freshState = new GameState();
 		freshState.players = new ArrayList<PlayerInfo>();
-		PlayerInfo temp;
+
+		//Adds players to the game in the form of playerInfo objects
+		PlayerInfo pInfo;
 		ImmutablePair<Integer, String> player;
 		for (int i = 0; i < playerList.size(); i++) {
-			temp = new PlayerInfo();
+			pInfo = new PlayerInfo();
 			player = playerList.get(i);
-			temp.id = player.getKey();
-			temp.trail = new ArrayList<ImmutablePair<Float, Float>>();
+			pInfo.id = player.getKey();
+			pInfo.trail = new ArrayList<ImmutablePair<Float, Float>>();
 		}
 		freshState.numberOfPlayers = playerList.size();
 		return freshState;

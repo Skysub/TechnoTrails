@@ -1,12 +1,22 @@
 package dk.dtu;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.Border;
-
-import dk.dtu.ServerInfo;
-
-import java.awt.event.*;
 
 public class Menu extends JPanel {
 
@@ -74,16 +84,13 @@ public class Menu extends JPanel {
 		saveButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
-				System.out.println("Save button clicked");
-
 				// Get the text from the JTextField
 				String name = textField.getText();
 
 				client.setName(name);
 				instructionLabel.setText("Name: " + client.getName());
 
-				// Clear the JTextField
+				// Clear the JTextField, ready for the next one
 				textField.setText("");
 				
 				repaint();
