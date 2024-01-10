@@ -44,15 +44,14 @@ public class Lobby extends JPanel {
         this.viewManager = viewManager;
         this.client = client;
         setBounds(viewManager.getBounds());
-
         this.repository = new SpaceRepository();
         this.lobbySpace = new SequentialSpace();
         this.repository.add("lobby", this.lobbySpace);
-
         initLobby();
     }
 
     public void initLobby() {
+        
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER;
@@ -62,12 +61,11 @@ public class Lobby extends JPanel {
         gbc.weightx = 1;
         gbc.insets = new Insets(0, 10, 0, 10);
 
-		JLabel title = new JLabel("Port: " + client.getHostAddress());
-		title.setFont(new Font("Serif", Font.BOLD, 40));
-		title.setForeground(new Color(0, 76, 153));
-		title.setHorizontalAlignment(0);
-		players2 = new ArrayList<String>();
-		
+        JLabel title = new JLabel("Port: " + client.getHostAddress());
+        title.setFont(new Font("Serif", Font.BOLD, 40));
+        title.setForeground(new Color(0, 76, 153));
+        title.setHorizontalAlignment(0);
+        players2 = new ArrayList<String>();
 
         // The table showing the players
         String[] TABLE_COLUMNS = { "Players" };
@@ -115,6 +113,8 @@ public class Lobby extends JPanel {
         chatField.setPreferredSize(new Dimension(150, 1));
         Border border = BorderFactory.createLineBorder(Color.WHITE, 2);
         chatField.setBorder(border);
+        chatField.setFocusable(true);
+        chatField.addKeyListener(new MyKeyAdapter());
 
         backButton.setPreferredSize(new Dimension(50, 50));
         backButton.setForeground(Color.blue);
@@ -166,27 +166,27 @@ public class Lobby extends JPanel {
         paddgbc.weighty = 2;
 
         add(backButton, backgbc);
-        gbc.gridx = 0; // First column
-        gbc.gridy = 0; // First row
-        gbc.gridwidth = 2; // Span across two columns
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
         add(title, gbc);
         add(title, gbc);
         add(Box.createVerticalStrut(10), paddgbc);
-        gbc.gridx = 0; // First column
-        gbc.gridy = 1; // Second row
-        gbc.gridheight = 1; // Takes up one row
-        gbc.gridwidth = 1; // Takes up one column
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
         add(chatPanel, gbc);
-        gbc.gridx = 0; // First column
-        gbc.gridy = 2; // Second row
-        gbc.gridheight = 1; // Takes up one row
-        gbc.gridwidth = 1; // Takes up one column
-        gbc.weighty=0.1;
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        gbc.weighty = 0.1;
         add(chatField, gbc);
-        gbc.gridx = 1; // Second column, to the right of chatPanel
-        gbc.gridy = 1; // Same row as chatPanel
-        gbc.gridheight = 2; // Takes up one row
-        gbc.gridwidth = 1; // Takes up one column
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.gridheight = 2;
+        gbc.gridwidth = 1;
         add(playerPanel, gbc);
         add(Box.createVerticalStrut(20), paddgbc);
         add(startButton, readyGbc);
@@ -212,50 +212,50 @@ public class Lobby extends JPanel {
         // drawPlayerPanel(g);
     }
 
-	public void playerJoin() throws InterruptedException {
-		// Add player to the JSpace lobby
-		lobbySpace.put(client.getName(), false); // False indicates the player is not ready
-		updatePlayerList();
-	}
+    public void playerJoin() throws InterruptedException {
+        // Add player to the JSpace lobby
+        lobbySpace.put(client.getName(), false); // False indicates the player is not ready
+        updatePlayerList();
+    }
 
+    private void updatePlayerList() throws InterruptedException {
+        // Query all players from the lobby space
+        List<Object[]> allPlayers = lobbySpace.queryAll(new FormalField(String.class), new FormalField(Boolean.class));
 
-	private void updatePlayerList() throws InterruptedException {
-		// Query all players from the lobby space
-		List<Object[]> allPlayers = lobbySpace.queryAll(new FormalField(String.class), new FormalField(Boolean.class));
-		
-		// Clear the existing player list
-		players2.clear();
-	
-		// Add each player to the list
-		for (Object[] playerInfo : allPlayers) {
-			String playerName = (String) playerInfo[0];
-			client.setName(playerName);
-			players2.add(playerName);
-		}
-	
-		// Update the UI with the new list
-		updatePlayerTable();
-	}
-	
-	private void updatePlayerTable() {
-		DefaultTableModel tableModel = (DefaultTableModel) playerTable.getModel();
-		tableModel.setRowCount(0); // Clear existing table rows
-	
-		// Add new rows for each player
-		for (String playerName : players2) {
-			tableModel.addRow(new Object[]{ playerName });
-		}
-	}
-		
-	
+        // Clear the existing player list
+        players2.clear();
 
-	/*public void playerReady(String playerName) throws InterruptedException {
-		RemoteSpace lobbySpace = new RemoteSpace("tcp://" + getHostAddress() + ":9001/lobby?keep");
+        // Add each player to the list
+        for (Object[] playerInfo : allPlayers) {
+            String playerName = (String) playerInfo[0];
+            client.setName(playerName);
+            players2.add(playerName);
+        }
 
-		lobbySpace.get(new ActualField(playerName), new ActualField(playerReady));
-		playerReady = true;
-		lobbySpace.put(playerName, playerReady);
-	}*/
+        // Update the UI with the new list
+        updatePlayerTable();
+    }
+
+    private void updatePlayerTable() {
+        DefaultTableModel tableModel = (DefaultTableModel) playerTable.getModel();
+        tableModel.setRowCount(0); // Clear existing table rows
+
+        // Add new rows for each player
+        for (String playerName : players2) {
+            tableModel.addRow(new Object[] { playerName });
+        }
+    }
+
+    /*
+     * public void playerReady(String playerName) throws InterruptedException {
+     * RemoteSpace lobbySpace = new RemoteSpace("tcp://" + getHostAddress() +
+     * ":9001/lobby?keep");
+     * 
+     * lobbySpace.get(new ActualField(playerName), new ActualField(playerReady));
+     * playerReady = true;
+     * lobbySpace.put(playerName, playerReady);
+     * }
+     */
 
     public boolean allPlayersReady() throws InterruptedException {
         List<Object[]> players = lobbySpace.queryAll(new FormalField(String.class), new ActualField(Boolean.class));
@@ -271,5 +271,19 @@ public class Lobby extends JPanel {
         }
 
         return true;
+    }
+
+    String message;
+
+    public class MyKeyAdapter extends KeyAdapter {
+        public void keyPressed(KeyEvent e) {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_ENTER:
+                    message = chatField.getText();
+                    chatField.setText("");
+                    System.out.println("Test4");
+                    break;
+            }
+        }
     }
 }
