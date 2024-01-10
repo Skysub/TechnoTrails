@@ -49,7 +49,7 @@ public class Client {
 
 		
 		Space chatSpace = new SequentialSpace();
-		repository.add("lobby", chatSpace);
+		repository.add("chat", chatSpace);
 
 		try {
 			lobbySpace.put(getName()); // Add the host to the lobby space
