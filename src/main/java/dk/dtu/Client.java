@@ -12,7 +12,7 @@ public class Client {
 
 	GameState gameState;
 	static final int defaultTickRate = 60;
-	private String hostAddress;
+	public String hostAddress = "localhost";
 	Boolean host = false; //Is this player also a host?
 	Server server = null; //The server object we're hosting
 	private String myName = "unset";
@@ -37,8 +37,7 @@ public class Client {
 	//Used when you're the host
 	public void CreateLobby() {
 		host = true;
-		hostAddress = "localhost";
-
+		setHostAddress(hostAddress);
 		ServerInfo si = new ServerInfo();
 		si.tps = defaultTickRate;
 		si.playerList = new ArrayList<ImmutablePair<Integer, String>>();
@@ -49,7 +48,7 @@ public class Client {
 		repository.add("lobby", lobbySpace);
 
 		try {
-			lobbySpace.put(getName(), false); // Add the host to the lobby space
+			lobbySpace.put(getName()); // Add the host to the lobby space
 			System.out.println("You have created and joined the lobby");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -88,6 +87,9 @@ public class Client {
 	public String getHostAddress() {
     return this.hostAddress;
     }
+	public void setHostAddress(String hostAddress) {
+		this.hostAddress = hostAddress;
+	}
 	
 	public String getName() {
 		return myName;
