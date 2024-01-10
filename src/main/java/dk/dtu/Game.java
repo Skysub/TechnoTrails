@@ -15,7 +15,7 @@ public class Game {
 	}
 	
 	//The game simulates a tick and handles all the game mechanics
-	GameUpdate Tick(ServerInfo serverInfo) {
+	GameUpdate Tick(ServerInfo serverInfo, PlayerInput playerInput) {
 		GameUpdate update = new GameUpdate();
 		update.tick = gameState.tick++;
 		
@@ -37,6 +37,7 @@ public class Game {
 		}
 		
 		//Handle all aspects of the game here
+		
 		
 		return update;
 	}
