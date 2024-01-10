@@ -3,6 +3,10 @@ package dk.dtu;
 import java.util.ArrayList;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.jspace.RemoteSpace;
+import org.jspace.SequentialSpace;
+import org.jspace.Space;
+import org.jspace.SpaceRepository;
 
 public class Client{
 	
@@ -16,6 +20,18 @@ public class Client{
 	Client(){
 		setName(RandomWords.getRandomWord());
 	}
+
+
+	 public void joinLobby(String hostAddress) {
+        try {
+            // Connect to the remote lobby space hosted by the server
+            Space lobbySpace = new RemoteSpace("tcp://" + hostAddress + ":9001/lobby?keep");
+            lobbySpace.put(getName(), false);  
+			System.out.println("You have joined the lobby");
+        } catch (Exception e) {
+            e.printStackTrace();  
+        }
+    }
 	
 	//Used when you're the host
 	public void CreateLobby() {
@@ -24,7 +40,14 @@ public class Client{
 		si.tps = defaultTickRate;
 		si.playerList = new ArrayList<ImmutablePair<Integer, String>>();
 		si.addPlayer(getName());
+
+		SpaceRepository repository = new SpaceRepository();
+   		repository.addGate("tcp://localhost:9001/?keep"); // Host's IP address and port
+    	Space lobbySpace = new SequentialSpace();
+    	repository.add("lobby", lobbySpace);
+
 		server = new Server();
+		System.out.println("You have created a lobby");
 	}
 	
 	//Closing the lobby as well as closing the game when you're the host

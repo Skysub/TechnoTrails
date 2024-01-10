@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
@@ -25,12 +26,20 @@ public class Menu extends JPanel {
 	private JTextField textField;
 	ViewManager viewManager;
 	Client client;
+	Lobby lobby;
 
-	public Menu(ViewManager viewManager, Client client) {
+	public Menu(ViewManager viewManager, Client client, Lobby lobby) {
 		this.viewManager = viewManager;
 		this.client = client;
+		this.lobby = lobby;
 		initMenu();
 	}
+
+    public String getHostAddress() {
+        // Prompt the user to enter the host's IP address
+        String hostAddress = JOptionPane.showInputDialog(this, "Enter Host's IP Address:", "Connect to Host", JOptionPane.QUESTION_MESSAGE);
+        return hostAddress;
+    }
 
 	void initMenu() {
 
@@ -56,9 +65,15 @@ public class Menu extends JPanel {
 		hostButton.setBackground(new Color(0, 76, 153));
 		hostButton.setOpaque(true);
 		hostButton.setBorderPainted(false);
+		
+		
 		hostButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				viewManager.changeView("lobby");
+				if (client.server == null) {
+					client.CreateLobby(); // This should start the server and initialize the lobby
+				}
 				viewManager.changeView("lobby");
 			}
 		});
@@ -69,12 +84,22 @@ public class Menu extends JPanel {
 		joinButton.setBackground(new Color(0, 76, 153));
 		joinButton.setOpaque(true);
 		joinButton.setBorderPainted(false);
+		
+		
 		joinButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("Join Game Button");
+				// Get the host's IP address
+				String hostAddress = getHostAddress();
+				if (hostAddress != null && !hostAddress.isEmpty()) {
+					client.joinLobby(hostAddress);  
+					viewManager.changeView("lobby");
+				} else {
+					System.out.println("No host address provided");
+				}
 			}
 		});
+		
 
 		// Add a "Save" JButton
 		JButton saveButton = new JButton("Save");
