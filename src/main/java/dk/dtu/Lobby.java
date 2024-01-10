@@ -17,146 +17,223 @@ import java.awt.event.*;
 
 public class Lobby extends JPanel {
 
-	private boolean playerReady;
-	public int numberOfPlayers;
+    private boolean playerReady;
+    public int numberOfPlayers;
 
     public SpaceRepository repository;
-	public Space lobbySpace;
+    public Space lobbySpace;
 
-	public JScrollPane playerPanel;
-	public JFrame playerLabel;
-	ArrayList<String> players2;
-	JTable table;
+    public JScrollPane playerPanel;
+    public JScrollPane chatPanel;
+    public JFrame playerLabel;
+    ArrayList<String> players2;
+    ArrayList<String> chat;
+    JTable playerTable;
+    JTable chatTable;
 
-	JButton backButton = new JButton("<-");
-	ViewManager viewManager;
-	Client client;
-	Menu menu;
+    JButton backButton = new JButton("<-");
+    JButton readyButton = new JButton("Ready");
+    JButton startButton = new JButton("Start Game");
+    ViewManager viewManager;
+    Client client;
+    Menu menu;
 
-	public Lobby(ViewManager viewManager, Client client, Menu menu) {
-		this.viewManager = viewManager;
-		this.client = client;
-		setBounds(viewManager.getBounds());
+    public Lobby(ViewManager viewManager, Client client, Menu menu) {
+        this.viewManager = viewManager;
+        this.client = client;
+        setBounds(viewManager.getBounds());
 
-
-		this.repository = new SpaceRepository();
+        this.repository = new SpaceRepository();
         this.lobbySpace = new SequentialSpace();
         this.repository.add("lobby", this.lobbySpace);
 
-		initLobby();
-	}
+        initLobby();
+    }
 
-	public void initLobby() {
-		setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.gridwidth = GridBagConstraints.REMAINDER;
-		gbc.ipady = 0;
-		gbc.fill = GridBagConstraints.VERTICAL;
-		gbc.weighty = 1;
+    public void initLobby() {
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.ipady = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weighty = 1;
+        gbc.weightx = 1;
+        gbc.insets = new Insets(10, 10, 10, 10);
 
-		JLabel title = new JLabel("Port: " + 12345);
-		title.setFont(new Font("Serif", Font.BOLD, 40));
-		title.setForeground(new Color(0, 76, 153));
-		title.setHorizontalAlignment(0);
-		players2 = new ArrayList<String>();
-		// Players added to list for testing
-		/*players2 = new ArrayList<String>();
-		for (int i = 1; i < 26; i++) {
-			players2.add(client.getName() + i);
-		}*/
+        JLabel title = new JLabel("Port: " + 12345);
+        title.setFont(new Font("Serif", Font.BOLD, 40));
+        title.setForeground(new Color(0, 76, 153));
+        title.setHorizontalAlignment(0);
+        players2 = new ArrayList<String>();
+        // Players added to list for testing
+        /*
+         * players2 = new ArrayList<String>();
+         * for (int i = 1; i < 26; i++) {
+         * players2.add(client.getName() + i);
+         * }
+         */
 
-		// The table showing the players
-		String[] TABLE_COLUMNS = { "Players" };
-		DefaultTableModel tableModel = new DefaultTableModel(TABLE_COLUMNS, 0) {
-			@Override
-			public boolean isCellEditable(int row, int column) {
-				// all cells false
-				return false;
-			}
-		};
-		for (int i = 0; i < players2.size(); i++) {
+        // The table showing the players
+        String[] TABLE_COLUMNS = { "Players" };
+        DefaultTableModel tableModel = new DefaultTableModel(TABLE_COLUMNS, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                // all cells false
+                return false;
+            }
+        };
+        for (int i = 0; i < players2.size(); i++) {
 
-			tableModel.addRow(new String[] { players2.get(i) });
-		}
-		table = new JTable(tableModel);
-		table.setRowHeight(20);
+            tableModel.addRow(new String[] { players2.get(i) });
+        }
+        playerTable = new JTable(tableModel);
+        playerTable.setRowHeight(20);
 
-		playerPanel = new JScrollPane(table);
-		playerPanel.setPreferredSize(new Dimension(400, 200));
-		playerPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
-		playerPanel.getViewport().setBackground(new Color(0, 76, 153));
-		// playerPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        String[] CHAT_COLUMNS = { "Chat" };
+        DefaultTableModel chatModel = new DefaultTableModel(CHAT_COLUMNS, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                // all cells false
+                return false;
+            }
+        };
+        // for (int i = 0; i < chat.size(); i++) {
 
-		backButton.setPreferredSize(new Dimension(50, 50));
-		backButton.setForeground(Color.blue);
-		backButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				viewManager.changeView("menu");
-			}
-		});
+        // chatModel.addRow(new String[] { chat.get(i) });
+        // }
+        chatTable = new JTable(chatModel);
+        chatTable.setRowHeight(20);
 
-		GridBagConstraints backgbc = new GridBagConstraints();
-		backgbc.gridwidth = GridBagConstraints.REMAINDER;
-		backgbc.fill = GridBagConstraints.NONE;
-		backgbc.anchor = GridBagConstraints.FIRST_LINE_START;
-		backgbc.weightx = 1;
-		backgbc.weighty = 1;
-		backgbc.insets = new Insets(20, 20, 20, 20);
+        playerPanel = new JScrollPane(playerTable);
+        playerPanel.setPreferredSize(new Dimension(400, 200));
+        playerPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
+        playerPanel.getViewport().setBackground(new Color(0, 76, 153));
+        // playerPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-		GridBagConstraints paddgbc = new GridBagConstraints();
-		paddgbc.gridheight = GridBagConstraints.REMAINDER;
-		paddgbc.fill = GridBagConstraints.HORIZONTAL;
-		paddgbc.weighty = 2;
+        chatPanel = new JScrollPane(chatTable);
+        chatPanel.setPreferredSize(new Dimension(400, 200));
+        chatPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
+        chatPanel.getViewport().setBackground(new Color(0, 76, 153));
 
-		add(backButton, backgbc);
-		add(title, gbc);
-		add(Box.createVerticalStrut(10), paddgbc);
-		add(playerPanel, gbc);
-		add(Box.createVerticalStrut(20), paddgbc);
-	}
+        backButton.setPreferredSize(new Dimension(50, 50));
+        backButton.setForeground(Color.blue);
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                viewManager.changeView("menu");
+            }
+        });
 
-	void remakePlayerTable() {
-		initLobby();
-		repaint();
-	}
+        GridBagConstraints backgbc = new GridBagConstraints();
+        backgbc.gridwidth = GridBagConstraints.REMAINDER;
+        backgbc.fill = GridBagConstraints.NONE;
+        backgbc.anchor = GridBagConstraints.FIRST_LINE_START;
+        backgbc.weightx = 1;
+        backgbc.weighty = 1;
+        backgbc.insets = new Insets(20, 20, 20, 20);
 
-	@Override
-	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
+        readyButton.setPreferredSize(new Dimension(50, 50));
+        readyButton.setForeground(Color.blue);
+        readyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                playerReady = true;
+            }
+        });
 
-		g.setColor(new Color(102, 178, 255));
-		g.fillRect(0, 0, viewManager.getWidth(), viewManager.getHeight());
+        startButton.setPreferredSize(new Dimension(50, 50));
+        startButton.setForeground(Color.blue);
+        startButton.setToolTipText("Only host can start game when all players are ready");
+        startButton.setEnabled(playerReady);
+        startButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
 
-		// drawPlayerPanel(g);
-	}
+            }
+        });
 
-	/*public void playerJoin(String playerName) throws InterruptedException {
-		playerReady = false;
-		lobbySpace.put(playerName, false);	
-	}
+        GridBagConstraints readyGbc = new GridBagConstraints();
+        readyGbc.gridx = 0; // Adjust the grid position as needed
+        readyGbc.gridy = 2; // Adjust the grid position as needed
+        readyGbc.fill = GridBagConstraints.HORIZONTAL; // Prevents expansion
+        readyGbc.anchor = GridBagConstraints.CENTER; // Center the button
+        readyGbc.insets = new Insets(10, 200, 10, 200); // Add some padding
 
-	public void playerReady(String playerName) throws InterruptedException {
-		RemoteSpace lobbySpace = new RemoteSpace("tcp://" + getHostAddress() + ":9001/lobby?keep");
+        GridBagConstraints paddgbc = new GridBagConstraints();
+        paddgbc.gridheight = GridBagConstraints.REMAINDER;
+        paddgbc.fill = GridBagConstraints.HORIZONTAL;
+        paddgbc.weighty = 2;
 
-		lobbySpace.get(new ActualField(playerName), new ActualField(playerReady));
-		playerReady = true;
-		lobbySpace.put(playerName, playerReady);
-	}*/
+        add(backButton, backgbc);
+        gbc.gridx = 0; // First column
+        gbc.gridy = 0; // First row
+        gbc.gridwidth = 2; // Span across two columns
+        add(title, gbc);
+        add(title, gbc);
+        add(Box.createVerticalStrut(10), paddgbc);
+        gbc.gridx = 0; // First column
+        gbc.gridy = 1; // Second row
+        gbc.gridheight = 1; // Takes up one row
+        gbc.gridwidth = 1; // Takes up one column
+        add(chatPanel, gbc);
+        gbc.gridx = 1; // Second column, to the right of chatPanel
+        gbc.gridy = 1; // Same row as chatPanel
+        gbc.gridheight = 1; // Takes up one row
+        gbc.gridwidth = 1; // Takes up one column
+        add(playerPanel, gbc);
+        add(Box.createVerticalStrut(20), paddgbc);
+        add(startButton, readyGbc);
+        readyGbc.gridx =1;
+        readyGbc.gridy=2;
+        add(readyButton, readyGbc);
+        add(Box.createVerticalStrut(30), paddgbc);
 
-	public boolean allPlayersReady() throws InterruptedException {
-		List<Object[]> players = lobbySpace.queryAll(new FormalField(String.class), new ActualField(Boolean.class));
-		if (players.size() != numberOfPlayers) {
-			return false;
-		}
+    }
 
-		// Check if all players are ready
-		for (Object[] player : players) {
-			if (!(Boolean) player[1]) {
-				return false;
-			}
-		}
+    void remakePlayerTable() {
+        initLobby();
+        repaint();
+    }
 
-		return true;
-	}
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        g.setColor(new Color(102, 178, 255));
+        g.fillRect(0, 0, viewManager.getWidth(), viewManager.getHeight());
+
+        // drawPlayerPanel(g);
+    }
+
+    /*
+     * public void playerJoin(String playerName) throws InterruptedException {
+     * playerReady = false;
+     * lobbySpace.put(playerName, false);
+     * }
+     * 
+     * public void playerReady(String playerName) throws InterruptedException {
+     * RemoteSpace lobbySpace = new RemoteSpace("tcp://" + getHostAddress() +
+     * ":9001/lobby?keep");
+     * 
+     * lobbySpace.get(new ActualField(playerName), new ActualField(playerReady));
+     * playerReady = true;
+     * lobbySpace.put(playerName, playerReady);
+     * }
+     */
+
+    public boolean allPlayersReady() throws InterruptedException {
+        List<Object[]> players = lobbySpace.queryAll(new FormalField(String.class), new ActualField(Boolean.class));
+        if (players.size() != numberOfPlayers) {
+            return false;
+        }
+
+        // Check if all players are ready
+        for (Object[] player : players) {
+            if (!(Boolean) player[1]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
