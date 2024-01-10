@@ -98,6 +98,8 @@ public class Lobby extends JPanel {
                 return false;
             }
         };
+        
+        if(chat == null) chat = new ArrayList<String>();
         for (int i = 0; i < chat.size(); i++) {
 
         chatModel.addRow(new String[] { chat.get(i) });

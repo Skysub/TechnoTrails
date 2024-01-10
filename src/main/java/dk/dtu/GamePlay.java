@@ -8,8 +8,16 @@ public class GamePlay {
 
 	static void HandleInput(GameState gameState, GameState newState, GameUpdate update, PlayerInput playerInput[]) {
 		for (int i = 0; i < playerInput.length; i++) {
-			//Right now, rotation is the only real thing someone can do in the game
-			
+			for (int j = 0; j < playerInput[i].playerActions.length; j++) {
+				switch (playerInput[i].playerActions[j]) {
+				case TURN:
+					//Turn and such
+					break;
+
+				default:
+					break;
+				}
+			}
 		}
 	}
 }

@@ -39,9 +39,10 @@ public class Game {
 			deltaTime = (1d/tps);
 		}
 		
-		update.playerUpdate = new PlayerInfo[gameState.numberOfPlayers];
-		for (int i = 0; i < gameState.numberOfPlayers; i++) {
-			update.playerUpdate[i].id = gameState.players.get(i).id;
+		update.playerUpdate = new HashMap<Integer, PlayerInfo>();
+		for (int k : gameState.players.keySet()) {
+			update.playerUpdate.put(k, new PlayerInfo());
+			update.playerUpdate.get(k).id = k;
 		}
 		
 		//Handle all aspects of the game here
