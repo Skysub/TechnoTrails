@@ -11,6 +11,7 @@ import org.jspace.SpaceRepository;
 public class Client {
 
 	GameState gameState;
+	Space chatSpace;
 	static final int defaultTickRate = 60;
 	public String hostAddress = "localhost";
 	Boolean host = false; //Is this player also a host?
@@ -26,6 +27,7 @@ public class Client {
 		try {
 			// Connect to the remote lobby space hosted by the server
 			Space lobbySpace = new RemoteSpace("tcp://" + hostAddress + ":9001/lobby?keep");
+			chatSpace = new RemoteSpace("tcp://" + hostAddress + ":9001/chat?keep");
 			lobbySpace.put(getName(), false); // Add the client to the lobby space
 			System.out.println("You have joined the lobby");
 		} catch (Exception e) {
@@ -48,7 +50,7 @@ public class Client {
 		Space lobbySpace = new SequentialSpace();
 		repository.add("lobby", lobbySpace);
 		
-		Space chatSpace = new SequentialSpace();
+		chatSpace = new SequentialSpace();
 		repository.add("chat", chatSpace);
 
 		try {
@@ -105,6 +107,11 @@ public class Client {
 
 	public GameState getGameState() {
 		return gameState;
+
+	}
+
+	public Space getChatSpace() {
+		return chatSpace;
 
 	}
 }
