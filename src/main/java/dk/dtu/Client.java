@@ -37,7 +37,8 @@ public class Client {
 	//Used when you're the host
 	public void CreateLobby() {
 		host = true;
-		setHostAddress(hostAddress);
+		hostAddress = "localhost";
+
 		ServerInfo si = new ServerInfo();
 		si.tps = defaultTickRate;
 		si.playerList = new ArrayList<ImmutablePair<Integer, String>>();
@@ -46,10 +47,9 @@ public class Client {
 		repository.addGate("tcp://"+hostAddress+":9001/?keep"); // Host's IP address and port
 		Space lobbySpace = new SequentialSpace();
 		repository.add("lobby", lobbySpace);
-
 		
 		Space chatSpace = new SequentialSpace();
-		repository.add("lobby", chatSpace);
+		repository.add("chat", chatSpace);
 
 		try {
 			lobbySpace.put(getName()); // Add the host to the lobby space
@@ -89,7 +89,7 @@ public class Client {
 
 
 	public String getHostAddress() {
-    return this.hostAddress;
+    return hostAddress;
     }
 	public void setHostAddress(String hostAddress) {
 		this.hostAddress = hostAddress;

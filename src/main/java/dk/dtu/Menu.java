@@ -62,7 +62,7 @@ public class Menu extends JPanel {
 		hostButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				viewManager.changeView("lobby");
+				//viewManager.changeView("lobby");
 				if (client.server == null) {
 					client.CreateLobby(); // This should start the server and initialize the lobby
 				}
@@ -83,10 +83,12 @@ public class Menu extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				// Prompt the user to enter the host's IP address
 				String inputHostAddress = JOptionPane.showInputDialog(Menu.this, "Enter Host's IP Address:", "Connect to Host", JOptionPane.QUESTION_MESSAGE);
-				
+				System.out.println(inputHostAddress);
+				System.out.println(client.getHostAddress());
 				if (inputHostAddress != null && !inputHostAddress.isEmpty()) {
 					// Get the actual host address from the client
 					String actualHostAddress = client.getHostAddress();
+					
 		
 					// Check if the input address matches the actual host address
 					if (inputHostAddress.equals(actualHostAddress)) {
