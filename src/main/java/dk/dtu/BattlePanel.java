@@ -7,15 +7,17 @@ import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.geom.Rectangle2D;
-
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 public class BattlePanel extends JPanel {
     private CustomDrawingPanel drawingPanel;
+    private Client client;
 
-    public BattlePanel() {
+    public BattlePanel(Client client) {
+        this.client = client;
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.weightx = 1.0;
@@ -27,36 +29,35 @@ public class BattlePanel extends JPanel {
         add(drawingPanel, gbc);
     }
 
-    public void drawGame(PlayerInfo p) {
-        drawingPanel.drawPlayer(drawingPanel, p);
-    }
-
     private class CustomDrawingPanel extends JPanel {
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             Graphics2D g2d = (Graphics2D) g;
-            //Background white
-            g2d.setColor(Color.WHITE);
-            g2d.fillRect(0, 0, getWidth(), getHeight());
-            //
-            //drawGame();
-            
+            for (PlayerInfo p : client.getGameState().players)
+                drawGame(g2d, p);
         }
 
- public void drawPlayer(JPanel panel, PlayerInfo p) {
-        Graphics g = panel.getGraphics();
-        if (g != null) {
-            Graphics2D g2d = (Graphics2D) g;
-            g2d.setColor(Color.RED);
+        public void drawGame(Graphics2D g2d, PlayerInfo p) {
+            drawingPanel.drawPlayer(g2d, p);
+            drawingPanel.drawTrail(g2d, p);
+        }
 
-            // Draw a filled rectangle (x, y, width, height)
-            // Rectangle2D.Float rect = new Rectangle2D.Float(p.x, p.y, 50.5f, 50.5f);
-            Rectangle2D.Float rect = new Rectangle2D.Float(50, 50, 50.5f, 50.5f);
+        public void drawPlayer(Graphics2D g2d, PlayerInfo p) {
+            g2d.setColor(Color.RED);
+            Rectangle2D.Float rect = new Rectangle2D.Float(p.x, p.y, 50.5f, 50.5f);
             g2d.fill(rect);
 
         }
-    }
+
+        public void drawTrail(Graphics2D g2d, PlayerInfo p) {
+
+            g2d.setColor(Color.RED);
+            for (ImmutablePair<Float, Float> t : p.trail) {
+                Rectangle2D.Float rect = new Rectangle2D.Float(t.left, t.right, 25, 25);
+                g2d.fill(rect);
+            }
+
+        }
     }
 }
-
