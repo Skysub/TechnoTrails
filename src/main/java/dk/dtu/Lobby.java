@@ -47,6 +47,15 @@ public class Lobby extends JPanel {
         this.repository = new SpaceRepository();
         this.lobbySpace = new SequentialSpace();
         this.repository.add("lobby", this.lobbySpace);
+		players2 = new ArrayList<String>();
+		
+		try {
+            playerJoin(); // Call this when the Lobby view is initialized
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
         initLobby();
     }
 
@@ -61,11 +70,11 @@ public class Lobby extends JPanel {
         gbc.weightx = 1;
         gbc.insets = new Insets(0, 10, 0, 10);
 
-        JLabel title = new JLabel("Port: " + client.getHostAddress());
-        title.setFont(new Font("Serif", Font.BOLD, 40));
-        title.setForeground(new Color(0, 76, 153));
-        title.setHorizontalAlignment(0);
-        players2 = new ArrayList<String>();
+		JLabel title = new JLabel("Port: " + client.getHostAddress());
+		title.setFont(new Font("Serif", Font.BOLD, 40));
+		title.setForeground(new Color(0, 76, 153));
+		title.setHorizontalAlignment(0);
+		
 
         // The table showing the players
         String[] TABLE_COLUMNS = { "Players" };
@@ -139,6 +148,7 @@ public class Lobby extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 playerReady = true;
+
             }
         });
 
@@ -212,50 +222,53 @@ public class Lobby extends JPanel {
         // drawPlayerPanel(g);
     }
 
-    public void playerJoin() throws InterruptedException {
+	public void playerJoin() throws InterruptedException {
         // Add player to the JSpace lobby
         lobbySpace.put(client.getName(), false); // False indicates the player is not ready
         updatePlayerList();
     }
 
-    private void updatePlayerList() throws InterruptedException {
+
+	private void updatePlayerList() throws InterruptedException {
         // Query all players from the lobby space
         List<Object[]> allPlayers = lobbySpace.queryAll(new FormalField(String.class), new FormalField(Boolean.class));
-
+        
         // Clear the existing player list
         players2.clear();
-
+    
         // Add each player to the list
         for (Object[] playerInfo : allPlayers) {
             String playerName = (String) playerInfo[0];
-            client.setName(playerName);
             players2.add(playerName);
         }
-
+    
         // Update the UI with the new list
         updatePlayerTable();
     }
-
-    private void updatePlayerTable() {
-        DefaultTableModel tableModel = (DefaultTableModel) playerTable.getModel();
-        tableModel.setRowCount(0); // Clear existing table rows
-
-        // Add new rows for each player
-        for (String playerName : players2) {
-            tableModel.addRow(new Object[] { playerName });
-        }
+	
+	private void updatePlayerTable() {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                DefaultTableModel tableModel = (DefaultTableModel) playerTable.getModel();
+                tableModel.setRowCount(0); // Clear existing table rows
+            
+                // Add new rows for each player
+                for (String playerName : players2) {
+                    tableModel.addRow(new Object[]{ playerName });
+                }
+            }
+        });
     }
+		
+	
 
-    /*
-     * public void playerReady(String playerName) throws InterruptedException {
-     * RemoteSpace lobbySpace = new RemoteSpace("tcp://" + getHostAddress() +
-     * ":9001/lobby?keep");
-     * 
-     * lobbySpace.get(new ActualField(playerName), new ActualField(playerReady));
-     * playerReady = true;
-     * lobbySpace.put(playerName, playerReady);
-     * }
-     */
+	/*public void playerReady(String playerName) throws InterruptedException {
+		RemoteSpace lobbySpace = new RemoteSpace("tcp://" + getHostAddress() + ":9001/lobby?keep");
+
+		lobbySpace.get(new ActualField(playerName), new ActualField(playerReady));
+		playerReady = true;
+		lobbySpace.put(playerName, playerReady);
+	}*/
 
     public boolean allPlayersReady() throws InterruptedException {
         List<Object[]> players = lobbySpace.queryAll(new FormalField(String.class), new ActualField(Boolean.class));

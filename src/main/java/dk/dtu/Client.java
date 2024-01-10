@@ -37,7 +37,8 @@ public class Client {
 	//Used when you're the host
 	public void CreateLobby() {
 		host = true;
-		setHostAddress(hostAddress);
+		hostAddress = "localhost";
+
 		ServerInfo si = new ServerInfo();
 		si.tps = defaultTickRate;
 		si.playerList = new ArrayList<ImmutablePair<Integer, String>>();
@@ -88,7 +89,7 @@ public class Client {
 
 
 	public String getHostAddress() {
-    return this.hostAddress;
+    return hostAddress;
     }
 	public void setHostAddress(String hostAddress) {
 		this.hostAddress = hostAddress;
