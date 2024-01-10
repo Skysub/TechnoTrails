@@ -62,11 +62,12 @@ public class Lobby extends JPanel {
         gbc.weightx = 1;
         gbc.insets = new Insets(0, 10, 0, 10);
 
-        JLabel title = new JLabel("Port: " + 12345);
-        title.setFont(new Font("Serif", Font.BOLD, 40));
-        title.setForeground(new Color(0, 76, 153));
-        title.setHorizontalAlignment(0);
-        players2 = new ArrayList<String>();
+		JLabel title = new JLabel("Port: " + client.getHostAddress());
+		title.setFont(new Font("Serif", Font.BOLD, 40));
+		title.setForeground(new Color(0, 76, 153));
+		title.setHorizontalAlignment(0);
+		players2 = new ArrayList<String>();
+		
 
         // The table showing the players
         String[] TABLE_COLUMNS = { "Players" };
@@ -211,52 +212,50 @@ public class Lobby extends JPanel {
         // drawPlayerPanel(g);
     }
 
-    public void playerJoin(String playerName) throws InterruptedException {
-        // Add player to the JSpace lobby
-        lobbySpace.put(playerName, false); // False indicates the player is not ready
+	public void playerJoin() throws InterruptedException {
+		// Add player to the JSpace lobby
+		lobbySpace.put(client.getName(), false); // False indicates the player is not ready
+		updatePlayerList();
+	}
 
-        // Update the list of players and the lobby UI
-        updatePlayerList();
-    }
 
-    private void updatePlayerList() throws InterruptedException {
-        // Query all players from the lobby space
-        List<Object[]> allPlayers = lobbySpace.queryAll(new FormalField(String.class), new FormalField(Boolean.class));
+	private void updatePlayerList() throws InterruptedException {
+		// Query all players from the lobby space
+		List<Object[]> allPlayers = lobbySpace.queryAll(new FormalField(String.class), new FormalField(Boolean.class));
+		
+		// Clear the existing player list
+		players2.clear();
+	
+		// Add each player to the list
+		for (Object[] playerInfo : allPlayers) {
+			String playerName = (String) playerInfo[0];
+			client.setName(playerName);
+			players2.add(playerName);
+		}
+	
+		// Update the UI with the new list
+		updatePlayerTable();
+	}
+	
+	private void updatePlayerTable() {
+		DefaultTableModel tableModel = (DefaultTableModel) playerTable.getModel();
+		tableModel.setRowCount(0); // Clear existing table rows
+	
+		// Add new rows for each player
+		for (String playerName : players2) {
+			tableModel.addRow(new Object[]{ playerName });
+		}
+	}
+		
+	
 
-        // Clear the existing player list
-        players2.clear();
+	/*public void playerReady(String playerName) throws InterruptedException {
+		RemoteSpace lobbySpace = new RemoteSpace("tcp://" + getHostAddress() + ":9001/lobby?keep");
 
-        // Add each player to the list
-        for (Object[] playerInfo : allPlayers) {
-            String playerName = (String) playerInfo[0];
-            players2.add(playerName);
-            System.out.println(players2);
-        }
-
-        // Update the UI with the new list
-        updatePlayerTable();
-    }
-
-    private void updatePlayerTable() {
-        DefaultTableModel tableModel = (DefaultTableModel) playerTable.getModel();
-        tableModel.setRowCount(0); // Clear existing table rows
-
-        // Add new rows for each player
-        for (String playerName : players2) {
-            tableModel.addRow(new Object[] { playerName });
-        }
-    }
-
-    /*
-     * public void playerReady(String playerName) throws InterruptedException {
-     * RemoteSpace lobbySpace = new RemoteSpace("tcp://" + getHostAddress() +
-     * ":9001/lobby?keep");
-     * 
-     * lobbySpace.get(new ActualField(playerName), new ActualField(playerReady));
-     * playerReady = true;
-     * lobbySpace.put(playerName, playerReady);
-     * }
-     */
+		lobbySpace.get(new ActualField(playerName), new ActualField(playerReady));
+		playerReady = true;
+		lobbySpace.put(playerName, playerReady);
+	}*/
 
     public boolean allPlayersReady() throws InterruptedException {
         List<Object[]> players = lobbySpace.queryAll(new FormalField(String.class), new ActualField(Boolean.class));
