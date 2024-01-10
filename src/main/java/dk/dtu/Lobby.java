@@ -59,11 +59,7 @@ public class Lobby extends JPanel {
 		title.setForeground(new Color(0, 76, 153));
 		title.setHorizontalAlignment(0);
 		players2 = new ArrayList<String>();
-		// Players added to list for testing
-		/*players2 = new ArrayList<String>();
-		for (int i = 1; i < 26; i++) {
-			players2.add(client.getName() + i);
-		}*/
+		
 
 		// The table showing the players
 		String[] TABLE_COLUMNS = { "Players" };
@@ -131,12 +127,45 @@ public class Lobby extends JPanel {
 		// drawPlayerPanel(g);
 	}
 
-	/*public void playerJoin(String playerName) throws InterruptedException {
-		playerReady = false;
-		lobbySpace.put(playerName, false);	
+	public void playerJoin(String playerName) throws InterruptedException {
+		// Add player to the JSpace lobby
+		lobbySpace.put(playerName, false); // False indicates the player is not ready
+	
+		// Update the list of players and the lobby UI
+		updatePlayerList();
 	}
 
-	public void playerReady(String playerName) throws InterruptedException {
+
+	private void updatePlayerList() throws InterruptedException {
+		// Query all players from the lobby space
+		List<Object[]> allPlayers = lobbySpace.queryAll(new FormalField(String.class), new FormalField(Boolean.class));
+		
+		// Clear the existing player list
+		players2.clear();
+	
+		// Add each player to the list
+		for (Object[] playerInfo : allPlayers) {
+			String playerName = (String) playerInfo[0];
+			players2.add(playerName);
+			System.out.println(players2);
+		}
+	
+		// Update the UI with the new list
+		updatePlayerTable();
+	}
+	private void updatePlayerTable() {
+		DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+		tableModel.setRowCount(0); // Clear existing table rows
+	
+		// Add new rows for each player
+		for (String playerName : players2) {
+			tableModel.addRow(new Object[]{ playerName });
+		}
+	}
+		
+	
+
+	/*public void playerReady(String playerName) throws InterruptedException {
 		RemoteSpace lobbySpace = new RemoteSpace("tcp://" + getHostAddress() + ":9001/lobby?keep");
 
 		lobbySpace.get(new ActualField(playerName), new ActualField(playerReady));
