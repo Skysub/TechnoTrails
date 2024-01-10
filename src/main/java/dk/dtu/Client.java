@@ -28,11 +28,14 @@ public class Client {
 			lobbySpace.put(getName(), false); // Add the client to the lobby space
 			System.out.println("You have joined the lobby");
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			System.out.println("Error joining lobby");
+			//Code here that shows the player an error message
+			//TODO
 		}
 	}
-
-	// Used when you're the host
+	
+	//Used when you're the host
 	public void CreateLobby() {
 		host = true;
 		ServerInfo si = new ServerInfo();
