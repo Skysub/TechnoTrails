@@ -28,18 +28,11 @@ public class Menu extends JPanel {
 	Client client;
 	Lobby lobby;
 
-	public Menu(ViewManager viewManager, Client client, Lobby lobby) {
+	public Menu(ViewManager viewManager, Client client) {
 		this.viewManager = viewManager;
 		this.client = client;
-		this.lobby = lobby;
 		initMenu();
 	}
-
-    public String getHostAddress() {
-        // Prompt the user to enter the host's IP address
-        String hostAddress = JOptionPane.showInputDialog(this, "Enter Host's IP Address:", "Connect to Host", JOptionPane.QUESTION_MESSAGE);
-        return hostAddress;
-    }
 
 	void initMenu() {
 
@@ -89,16 +82,37 @@ public class Menu extends JPanel {
 		joinButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// Get the host's IP address
-				String hostAddress = getHostAddress();
-				if (hostAddress != null && !hostAddress.isEmpty()) {
-					client.joinLobby(hostAddress);  
-					viewManager.changeView("lobby");
+				// Prompt the user to enter the host's IP address
+				String inputHostAddress = JOptionPane.showInputDialog(Menu.this, "Enter Host's IP Address:", "Connect to Host", JOptionPane.QUESTION_MESSAGE);
+				
+				if (inputHostAddress != null && !inputHostAddress.isEmpty()) {
+					// Get the actual host address from the client
+					String actualHostAddress = client.getHostAddress();
+		
+					// Check if the input address matches the actual host address
+					if (inputHostAddress.equals(actualHostAddress)) {
+						// If they match, join the lobby
+						try {
+							client.joinLobby(inputHostAddress);  
+							viewManager.changeView("lobby");
+						} catch (Exception ex) {
+							JOptionPane.showMessageDialog(Menu.this, "Failed to connect. Check the IP address and try again.", "Connection Error", JOptionPane.ERROR_MESSAGE);
+							viewManager.changeView("menu");
+						}
+					} else {
+						// If they do not match, show an error message
+						JOptionPane.showMessageDialog(Menu.this, "Incorrect IP address. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+					}
 				} else {
+					JOptionPane.showMessageDialog(Menu.this, "Please input an IP address", "Error", JOptionPane.ERROR_MESSAGE);
 					System.out.println("No host address provided");
+					viewManager.changeView("menu");
 				}
 			}
 		});
+		
+		
+		
 		
 
 		// Add a "Save" JButton

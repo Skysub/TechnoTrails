@@ -33,7 +33,7 @@ public class Lobby extends JPanel {
 	Client client;
 	Menu menu;
 
-	public Lobby(ViewManager viewManager, Client client, Menu menu) {
+	public Lobby(ViewManager viewManager, Client client) {
 		this.viewManager = viewManager;
 		this.client = client;
 		setBounds(viewManager.getBounds());
@@ -54,7 +54,7 @@ public class Lobby extends JPanel {
 		gbc.fill = GridBagConstraints.VERTICAL;
 		gbc.weighty = 1;
 
-		JLabel title = new JLabel("Port: " + 12345);
+		JLabel title = new JLabel("Port: " + client.getHostAddress());
 		title.setFont(new Font("Serif", Font.BOLD, 40));
 		title.setForeground(new Color(0, 76, 153));
 		title.setHorizontalAlignment(0);
@@ -127,11 +127,9 @@ public class Lobby extends JPanel {
 		// drawPlayerPanel(g);
 	}
 
-	public void playerJoin(String playerName) throws InterruptedException {
+	public void playerJoin() throws InterruptedException {
 		// Add player to the JSpace lobby
-		lobbySpace.put(playerName, false); // False indicates the player is not ready
-	
-		// Update the list of players and the lobby UI
+		lobbySpace.put(client.getName(), false); // False indicates the player is not ready
 		updatePlayerList();
 	}
 
@@ -146,13 +144,14 @@ public class Lobby extends JPanel {
 		// Add each player to the list
 		for (Object[] playerInfo : allPlayers) {
 			String playerName = (String) playerInfo[0];
+			client.setName(playerName);
 			players2.add(playerName);
-			System.out.println(players2);
 		}
 	
 		// Update the UI with the new list
 		updatePlayerTable();
 	}
+	
 	private void updatePlayerTable() {
 		DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
 		tableModel.setRowCount(0); // Clear existing table rows

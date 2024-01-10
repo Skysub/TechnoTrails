@@ -11,7 +11,7 @@ import org.jspace.SpaceRepository;
 public class Client{
 	
 	static final int defaultTickRate = 60;
-	
+	private String hostAddress;
 	Boolean host = false; //Is this player also a host?
 	Server server = null; //The server object we're hosting
 	private String myName = "unset";
@@ -19,30 +19,18 @@ public class Client{
 	Client(){
 		setName(RandomWords.getRandomWord());
 	}
-
-
-	public void joinLobby(String hostAddress) {
-		try {
-			// Connect to the remote lobby space hosted by the server
-			Space lobbySpace = new RemoteSpace("tcp://" + hostAddress + ":9001/lobby?keep");
-			lobbySpace.put(getName(), false); // Add the client to the lobby space
-			System.out.println("You have joined the lobby");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
 	
 	//Used when you're the host
 	public void CreateLobby() {
 		host = true;
+		hostAddress = "localhost";
+
 		ServerInfo si = new ServerInfo();
 		si.tps = defaultTickRate;
 		si.playerList = new ArrayList<ImmutablePair<Integer, String>>();
 		si.addPlayer(getName());
-	
 		SpaceRepository repository = new SpaceRepository();
-		repository.addGate("tcp://localhost:9001/?keep"); // Host's IP address and port
+		repository.addGate("tcp://"+hostAddress+":9001/?keep"); // Host's IP address and port
 		Space lobbySpace = new SequentialSpace();
 		repository.add("lobby", lobbySpace);
 	
@@ -55,7 +43,22 @@ public class Client{
 	
 		server = new Server();
 	}
+
+
+	public void joinLobby(String inputHostAddress) {
+		try {
+			System.out.println("Attempting to join lobby at: " + inputHostAddress);
+			
+			Space lobbySpace = new RemoteSpace("tcp://" + inputHostAddress + ":9001/lobby?keep");
+			lobbySpace.put(getName(), false); // Add the client to the lobby space
+			System.out.println("Successfully joined the lobby");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Failed to join the lobby");
+		}
+	}
 	
+
 	
 	//Closing the lobby as well as closing the game when you're the host
 	public void CloseLobby() {
@@ -67,6 +70,11 @@ public class Client{
 	//===============================================
 	//Getters and setters
 
+
+	public String getHostAddress() {
+    return this.hostAddress;
+    }
+	
 	public String getName() {
 		return myName;
 	}

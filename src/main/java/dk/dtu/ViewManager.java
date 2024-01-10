@@ -33,8 +33,8 @@ public class ViewManager extends JFrame {
         client = new Client();
 
         //Creating the views and adding them to the viewPanel
-        menu = new Menu(this, client, lobby);
-        lobby = new Lobby(this, client, menu);
+        menu = new Menu(this, client);
+        lobby = new Lobby(this, client);
         viewPanel.add(menu, "menu");
         viewPanel.add(lobby, "lobby");
 
