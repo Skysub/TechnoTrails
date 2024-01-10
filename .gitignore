@@ -15,3 +15,5 @@ settings.json
 .settings/
 .classpath
 .settings/org.eclipse.jdt.core.prefs
+
+.fake
