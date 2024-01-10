@@ -37,6 +37,8 @@ public class Client {
 	//Used when you're the host
 	public void CreateLobby() {
 		host = true;
+		hostAddress = "localhost";
+
 		ServerInfo si = new ServerInfo();
 		si.tps = defaultTickRate;
 		si.playerList = new ArrayList<ImmutablePair<Integer, String>>();
@@ -46,8 +48,12 @@ public class Client {
 		Space lobbySpace = new SequentialSpace();
 		repository.add("lobby", lobbySpace);
 
+		
+		Space chatSpace = new SequentialSpace();
+		repository.add("chat", chatSpace);
+
 		try {
-			lobbySpace.put(getName(), false); // Add the host to the lobby space
+			lobbySpace.put(getName()); // Add the host to the lobby space
 			System.out.println("You have created and joined the lobby");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -86,6 +92,9 @@ public class Client {
 	public String getHostAddress() {
     return hostAddress;
     }
+	public void setHostAddress(String hostAddress) {
+		this.hostAddress = hostAddress;
+	}
 	
 	public String getName() {
 		return myName;

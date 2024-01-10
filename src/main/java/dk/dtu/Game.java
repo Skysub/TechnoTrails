@@ -25,6 +25,17 @@ public class Game {
 		}
 		GameState newState = new GameState();
 		
+		//Updates the gametime and calculates the difference to use in game calculation
+		long timeNow = System.nanoTime();
+		double deltaTime = (timeNow - gameState.gameTime) / 1000000000; //Difference in time in seconds
+		gameState.gameTime = timeNow;
+		
+		//If the difference in time since the last update is more than 250ms then update according to the tps not actual elapsed time
+		//This ensures proper gameplay even if the server has a massive lag spike or if the game has been paused
+		if(deltaTime > 0.25d) {
+			deltaTime = (1d/tps);
+		}
+		
 		//Handle all aspects of the game here
 		
 		return update;

@@ -9,7 +9,7 @@ public class GameState {
 	int numberOfPlayers = 0;
 	ArrayList<PlayerInfo> players;
 	
-	int gameTime = -1; //In ms
+	long gameTime = -1; //In ns
 	boolean paused = true;
 }
 
