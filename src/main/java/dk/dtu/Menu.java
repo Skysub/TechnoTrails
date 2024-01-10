@@ -26,7 +26,6 @@ public class Menu extends JPanel {
 	private JTextField textField;
 	ViewManager viewManager;
 	Client client;
-	Lobby lobby;
 
 	public Menu(ViewManager viewManager, Client client) {
 		this.viewManager = viewManager;

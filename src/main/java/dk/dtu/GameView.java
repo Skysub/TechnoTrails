@@ -3,20 +3,21 @@ package dk.dtu;
 import javax.swing.*;
 import java.awt.*;
 
-public class GameView extends JFrame {
+public class GameView extends JPanel {
     private BattlePanel battlePanel;
     private GameLeaderboardPanel gameLeaderboardPanel;
     private GameChatPanel chatPanel;
+    ViewManager viewManager;
+	Client client;
+	Lobby lobby;
+    Menu menu;
 
-    public GameView() {
-        setTitle("Three Boxes Frame");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(600, 600);
+    public GameView(ViewManager viewManager, Client client) {
         gamePanels();
     }
 
     public void gamePanels() {
-        battlePanel = new BattlePanel();
+        battlePanel = new BattlePanel(client);
         gameLeaderboardPanel = new GameLeaderboardPanel();
         chatPanel = new GameChatPanel();
 
@@ -42,7 +43,4 @@ public class GameView extends JFrame {
         setVisible(true);
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new GameView());
-    }
 }

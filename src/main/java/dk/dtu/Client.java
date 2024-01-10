@@ -8,17 +8,31 @@ import org.jspace.SequentialSpace;
 import org.jspace.Space;
 import org.jspace.SpaceRepository;
 
-public class Client{
-	
+public class Client {
+
+	GameState gameState;
 	static final int defaultTickRate = 60;
 	private String hostAddress;
 	Boolean host = false; //Is this player also a host?
 	Server server = null; //The server object we're hosting
 	private String myName = "unset";
-	
-	Client(){
+
+	Client() {
 		setName(RandomWords.getRandomWord());
 	}
+
+
+	public void joinLobby(String hostAddress) {
+		try {
+			// Connect to the remote lobby space hosted by the server
+			Space lobbySpace = new RemoteSpace("tcp://" + hostAddress + ":9001/lobby?keep");
+			lobbySpace.put(getName(), false); // Add the client to the lobby space
+			System.out.println("You have joined the lobby");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 	//Used when you're the host
 	public void CreateLobby() {
@@ -33,19 +47,19 @@ public class Client{
 		repository.addGate("tcp://"+hostAddress+":9001/?keep"); // Host's IP address and port
 		Space lobbySpace = new SequentialSpace();
 		repository.add("lobby", lobbySpace);
-	
+
 		try {
 			lobbySpace.put(getName(), false); // Add the host to the lobby space
 			System.out.println("You have created and joined the lobby");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-	
+
 		server = new Server();
 	}
 
 
-	public void joinLobby(String inputHostAddress) {
+	/*public void joinLobby(String inputHostAddress) {
 		try {
 			System.out.println("Attempting to join lobby at: " + inputHostAddress);
 			
@@ -56,7 +70,7 @@ public class Client{
 			e.printStackTrace();
 			System.out.println("Failed to join the lobby");
 		}
-	}
+	}*/
 	
 
 	
@@ -81,5 +95,10 @@ public class Client{
 
 	public void setName(String myName) {
 		this.myName = myName;
+	}
+
+	public GameState getGameState() {
+		return gameState;
+
 	}
 }
