@@ -38,10 +38,11 @@ public class Lobby extends JPanel {
     Client client;
     Menu menu;
 
-    public Lobby(ViewManager viewManager, Client client, Menu menu) {
-        this.viewManager = viewManager;
-        this.client = client;
-        setBounds(viewManager.getBounds());
+	public Lobby(ViewManager viewManager, Client client) {
+		this.viewManager = viewManager;
+		this.client = client;
+		setBounds(viewManager.getBounds());
+
 
         this.repository = new SpaceRepository();
         this.lobbySpace = new SequentialSpace();
@@ -60,18 +61,12 @@ public class Lobby extends JPanel {
         gbc.weightx = 1;
         gbc.insets = new Insets(10, 10, 10, 10);
 
-        JLabel title = new JLabel("Port: " + 12345);
-        title.setFont(new Font("Serif", Font.BOLD, 40));
-        title.setForeground(new Color(0, 76, 153));
-        title.setHorizontalAlignment(0);
-        players2 = new ArrayList<String>();
-        // Players added to list for testing
-        /*
-         * players2 = new ArrayList<String>();
-         * for (int i = 1; i < 26; i++) {
-         * players2.add(client.getName() + i);
-         * }
-         */
+		JLabel title = new JLabel("Port: " + 12345);
+		title.setFont(new Font("Serif", Font.BOLD, 40));
+		title.setForeground(new Color(0, 76, 153));
+		title.setHorizontalAlignment(0);
+		players2 = new ArrayList<String>();
+		
 
         // The table showing the players
         String[] TABLE_COLUMNS = { "Players" };
@@ -205,21 +200,51 @@ public class Lobby extends JPanel {
         // drawPlayerPanel(g);
     }
 
-    /*
-     * public void playerJoin(String playerName) throws InterruptedException {
-     * playerReady = false;
-     * lobbySpace.put(playerName, false);
-     * }
-     * 
-     * public void playerReady(String playerName) throws InterruptedException {
-     * RemoteSpace lobbySpace = new RemoteSpace("tcp://" + getHostAddress() +
-     * ":9001/lobby?keep");
-     * 
-     * lobbySpace.get(new ActualField(playerName), new ActualField(playerReady));
-     * playerReady = true;
-     * lobbySpace.put(playerName, playerReady);
-     * }
-     */
+	public void playerJoin(String playerName) throws InterruptedException {
+		// Add player to the JSpace lobby
+		lobbySpace.put(playerName, false); // False indicates the player is not ready
+	
+		// Update the list of players and the lobby UI
+		updatePlayerList();
+	}
+
+
+	private void updatePlayerList() throws InterruptedException {
+		// Query all players from the lobby space
+		List<Object[]> allPlayers = lobbySpace.queryAll(new FormalField(String.class), new FormalField(Boolean.class));
+		
+		// Clear the existing player list
+		players2.clear();
+	
+		// Add each player to the list
+		for (Object[] playerInfo : allPlayers) {
+			String playerName = (String) playerInfo[0];
+			players2.add(playerName);
+			System.out.println(players2);
+		}
+	
+		// Update the UI with the new list
+		updatePlayerTable();
+	}
+	private void updatePlayerTable() {
+		DefaultTableModel tableModel = (DefaultTableModel) playerTable.getModel();
+		tableModel.setRowCount(0); // Clear existing table rows
+	
+		// Add new rows for each player
+		for (String playerName : players2) {
+			tableModel.addRow(new Object[]{ playerName });
+		}
+	}
+		
+	
+
+	/*public void playerReady(String playerName) throws InterruptedException {
+		RemoteSpace lobbySpace = new RemoteSpace("tcp://" + getHostAddress() + ":9001/lobby?keep");
+
+		lobbySpace.get(new ActualField(playerName), new ActualField(playerReady));
+		playerReady = true;
+		lobbySpace.put(playerName, playerReady);
+	}*/
 
     public boolean allPlayersReady() throws InterruptedException {
         List<Object[]> players = lobbySpace.queryAll(new FormalField(String.class), new ActualField(Boolean.class));
