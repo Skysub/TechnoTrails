@@ -48,6 +48,11 @@ public class Client {
 		Space lobbySpace = new SequentialSpace();
 		repository.add("lobby", lobbySpace);
 
+		SpaceRepository chatRepository = new SpaceRepository();
+		chatRepository.addGate("tcp://localhost:9002/?keep"); // Host's IP address and port
+		Space chatSpace = new SequentialSpace();
+		chatRepository.add("lobby", chatSpace);
+
 		try {
 			lobbySpace.put(getName(), false); // Add the host to the lobby space
 			System.out.println("You have created and joined the lobby");
