@@ -61,11 +61,7 @@ public class Menu extends JPanel implements View {
 		hostButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (client.getServer() == null) {
-					Server server = new Server();
-					server.createLobby(client.getName()); // This starts the server and initializes the lobby
-					client.setServer(server); // Set the server instance in the client
-				}
+				client.CreateLobby();
 				viewManager.changeView("lobby");
 			}
 		});
@@ -139,6 +135,10 @@ public class Menu extends JPanel implements View {
 	
 	//Called when the view is changed to menu
 	public void whenEntering() {
+		
+	}
+	
+	public void whenExiting() {
 		
 	}
 

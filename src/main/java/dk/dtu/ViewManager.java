@@ -57,6 +57,7 @@ public class ViewManager extends JFrame {
         
     //Changes the current view to the one specified
     void changeView(String s) {
+    	views.get(currentView).whenExiting();
     	viewLayout.show(viewPanel, s);
     	currentView = s;
     	views.get(s).whenEntering(); //The views get to know when they get changed to

@@ -1,7 +1,8 @@
 package dk.dtu;
 
-import java.util.ArrayList;
-import org.apache.commons.lang3.tuple.ImmutablePair;
+import java.util.HashMap;
+import java.util.Map.Entry;
+
 import org.jspace.FormalField;
 import org.jspace.SequentialSpace;
 import org.jspace.Space;
@@ -10,26 +11,32 @@ import org.jspace.SpaceRepository;
 public class Server {
 
     ServerInfo info;
+	int lastID = 0;
     Space lobbySpace;
     Space chatSpace;
     static final int defaultTickRate = 60;
     String hostAddress = "localhost";
+    
+    LobbyServer lobbyServer;
 
     Server() {
         info = new ServerInfo();
         info.tps = defaultTickRate;
-        info.playerList = new ArrayList<ImmutablePair<Integer, String>>();
+        info.playerList = new HashMap<Integer, String>();
     }
 
     public void createLobby(String hostName) {
-        info.addPlayer(hostName);
+        addPlayer(hostName);
         SpaceRepository repository = new SpaceRepository();
         repository.addGate("tcp://" + hostAddress + ":9001/?keep");
         lobbySpace = new SequentialSpace();
         repository.add("lobby", lobbySpace);
         chatSpace = new SequentialSpace();
         repository.add("chat", chatSpace);
+        
+        lobbyServer = new LobbyServer(lobbySpace, info);
 
+        //Needs to be refactored to match the new lobby protocol
         try {
             lobbySpace.put(hostName);
             System.out.println("You have created and joined the lobby");
@@ -53,6 +60,19 @@ public class Server {
             lobbySpace = null;
             chatSpace = null;
             info = null;
+        }
+    }
+    
+    // create list of names and id's
+    public int addPlayer(String name) {
+    	info.playerList.put(lastID++, name);
+    	return lastID;
+    }
+    
+    public void printPlayers() {
+    	// print list of names and id's
+        for (Entry<Integer, String> i : info.playerList.entrySet()) {
+            System.out.println("ID "+i.getKey()+" : "+i.getValue());
         }
     }
 

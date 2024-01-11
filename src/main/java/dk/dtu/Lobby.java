@@ -39,7 +39,7 @@ public class Lobby extends JPanel implements View {
     JTable playerTable;
     JTable chatTable;
 
-    JButton backButton = new JButton("<-");
+    JButton backButton = new JButton("<-");;
     JButton readyButton = new JButton("Ready");
     JButton startButton = new JButton("Start Game");
     ViewManager viewManager;
@@ -54,8 +54,6 @@ public class Lobby extends JPanel implements View {
         this.lobbySpace = new SequentialSpace();
         this.repository.add("lobby", this.lobbySpace);
         players2 = new ArrayList<String>();
-        
-
         
     }
 
@@ -96,7 +94,7 @@ public class Lobby extends JPanel implements View {
         gbc.weightx = 1;
         gbc.insets = new Insets(0, 10, 0, 10);
 
-        JLabel title = new JLabel("Port: " + client.getHostAddress());
+        JLabel title = new JLabel("IP: " + client.getHostAddress());
         title.setFont(new Font("Serif", Font.BOLD, 40));
         title.setForeground(new Color(0, 76, 153));
         title.setHorizontalAlignment(0);
@@ -131,12 +129,11 @@ public class Lobby extends JPanel implements View {
         chatField.setFocusable(true);
         chatField.addKeyListener(new MyKeyAdapter());
 
-        backButton.setPreferredSize(new Dimension(50, 50));
+        backButton.setPreferredSize(new Dimension(150, 50));
         backButton.setForeground(Color.blue);
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                removeAll();
                 viewManager.changeView("menu");
             }
         });
@@ -214,7 +211,22 @@ public class Lobby extends JPanel implements View {
     
 	//Called when the view is changed to lobby
 	public void whenEntering() {
+        if(client.getIsHost()) {
+            backButton.setText("Close Lobby");
+        } else {
+        	backButton.setText("Leave Lobby");
+        }
+        
 		initPlayerTable();
+	}
+	
+	public void whenExiting() {
+		if(client.getIsHost()) {
+			client.KillLobby();
+		} else {
+			client.LeaveLobby();
+		}
+        removeAll();
 	}
 
     void remakePlayerTable() {

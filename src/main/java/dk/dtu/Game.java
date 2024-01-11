@@ -3,6 +3,7 @@ package dk.dtu;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
@@ -65,17 +66,15 @@ public class Game {
 	}
 	
 	//Creates a fresh game
-	GameState CreateGameState(ArrayList<ImmutablePair<Integer, String>> playerList) {
+	GameState CreateGameState(HashMap<Integer, String> playerList) {
 		GameState freshState = new GameState();
 		freshState.players = new HashMap<Integer, PlayerInfo>();
 		
 		//Adds players to the game in the form of playerInfo objects
 		PlayerInfo pInfo;
-		ImmutablePair<Integer, String> player;
-		for (int i = 0; i < playerList.size(); i++) {
+		for (int i : playerList.keySet()) {
 			pInfo = new PlayerInfo();
-			player = playerList.get(i);
-			pInfo.id = player.getKey();
+			pInfo.id = i;
 			pInfo.trail = new ArrayList<ImmutablePair<Float, Float>>();
 			freshState.players.put(pInfo.id, pInfo);
 		}

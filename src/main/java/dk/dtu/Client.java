@@ -10,6 +10,7 @@ public class Client {
 	private String myName = "unset";
 	public String hostAddress = "localhost";
 	public Server server;
+	private boolean isHost = false;
 
 	Client() {
 		setName(RandomWords.getRandomWord());
@@ -25,6 +26,27 @@ public class Client {
 			// Re-throw the exception to be handled by the caller
 			throw e;
 		}
+	}
+	
+	public void CreateLobby() {
+		if (getServer() == null) {
+			Server server = new Server();
+			server.createLobby(getName()); // This starts the server and initializes the lobby
+			setServer(server); // Set the server instance in the client
+		}
+		isHost = true;
+	}
+	
+	public void KillLobby() {
+		LeaveLobby();
+		
+		server.kill();
+		server = null;
+		isHost = false;
+	}
+	
+	public void LeaveLobby() {
+		
 	}
 
 	// Getters and setters
@@ -62,5 +84,9 @@ public class Client {
 
 	public String getClientMessage() {
 		return server.getChatMessage();
+	}
+	
+	public boolean getIsHost() {
+		return isHost;
 	}
 }

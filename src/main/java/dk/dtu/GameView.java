@@ -46,5 +46,9 @@ public class GameView extends JPanel implements View {
     public void whenEntering() {
     	
     }
+    
+	public void whenExiting() {
+		
+	}
 
 }
