@@ -19,7 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
-public class Menu extends JPanel {
+public class Menu extends JPanel implements View {
 
 	JButton joinButton = new JButton("JOIN GAME");
 	JButton hostButton = new JButton("HOST GAME");
@@ -57,16 +57,11 @@ public class Menu extends JPanel {
 		hostButton.setBackground(new Color(0, 76, 153));
 		hostButton.setOpaque(true);
 		hostButton.setBorderPainted(false);
-		
-		
+
 		hostButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (client.getServer() == null) {
-					Server server = new Server();
-					server.createLobby(client.getName()); // This starts the server and initializes the lobby
-					client.setServer(server); // Set the server instance in the client
-				}
+				client.CreateLobby("localhost");
 				viewManager.changeView("lobby");
 			}
 		});
@@ -77,45 +72,29 @@ public class Menu extends JPanel {
 		joinButton.setBackground(new Color(0, 76, 153));
 		joinButton.setOpaque(true);
 		joinButton.setBorderPainted(false);
-		
-		
+
 		joinButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// Prompt the user to enter the host's IP address
-				String inputHostAddress = JOptionPane.showInputDialog(Menu.this, "Enter Host's IP Address:", "Connect to Host", JOptionPane.QUESTION_MESSAGE);
-				System.out.println(inputHostAddress);
-				System.out.println(client.getHostAddress());
+				String inputHostAddress = JOptionPane.showInputDialog(Menu.this, "Enter Host's IP Address:",
+						"Connect to Host", JOptionPane.QUESTION_MESSAGE);
+
 				if (inputHostAddress != null && !inputHostAddress.isEmpty()) {
-					// Get the actual host address from the client
-					String actualHostAddress = client.getHostAddress();
-					
-		
-					// Check if the input address matches the actual host address
-					if (inputHostAddress.equals(actualHostAddress)) {
-						// If they match, join the lobby
-						try {
-							client.joinLobby(inputHostAddress);  
-							viewManager.changeView("lobby");
-						} catch (Exception ex) {
-							JOptionPane.showMessageDialog(Menu.this, "Failed to connect. Check the IP address and try again.", "Connection Error", JOptionPane.ERROR_MESSAGE);
-							viewManager.changeView("menu");
-						}
-					} else {
-						// If they do not match, show an error message
-						JOptionPane.showMessageDialog(Menu.this, "Incorrect IP address. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+					try {
+						client.joinLobby(inputHostAddress);
+						viewManager.changeView("lobby");					
+					} catch (Exception ex) {
+						JOptionPane.showMessageDialog(Menu.this,
+								"Failed to connect. Check the IP address and try again.", "Connection Error",
+								JOptionPane.ERROR_MESSAGE);
 					}
 				} else {
-					JOptionPane.showMessageDialog(Menu.this, "Please input an IP address", "Error", JOptionPane.ERROR_MESSAGE);
-					System.out.println("No host address provided");
-					viewManager.changeView("menu");
+					JOptionPane.showMessageDialog(Menu.this, "Please input an IP address", "Error",
+							JOptionPane.ERROR_MESSAGE);
 				}
+
 			}
 		});
-		
-		
-		
-		
 
 		// Add a "Save" JButton
 		JButton saveButton = new JButton("Save");
@@ -133,7 +112,7 @@ public class Menu extends JPanel {
 
 				// Clear the JTextField, ready for the next one
 				textField.setText("");
-				
+
 				repaint();
 			}
 		});
@@ -152,6 +131,19 @@ public class Menu extends JPanel {
 		add(textField, gbc);
 		gbc.insets = new Insets(0, 0, 20, 0);
 		add(saveButton, gbc);
+	}
+	
+	//Called when the view is changed to menu
+	public void whenEntering() {
+		
+	}
+	
+	public void whenExiting() {
+		
+	}
+	
+	public void clientRequestedUpdate() {
+		
 	}
 
 	@Override

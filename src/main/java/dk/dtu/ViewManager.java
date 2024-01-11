@@ -2,6 +2,7 @@ package dk.dtu;
 
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.util.HashMap;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -16,8 +17,8 @@ public class ViewManager extends JFrame {
 	Lobby lobby;
     GameView gameView;
 	CardLayout viewLayout = new CardLayout();;
-	
 	Client client;
+	HashMap<String, View> views;
     
     public ViewManager() {
         setTitle("Tehcno Trails");
@@ -31,19 +32,24 @@ public class ViewManager extends JFrame {
         viewPanel.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         
         //Creating the client model
-        client = new Client();
+        client = new Client(this);
+        views = new HashMap<String, View>(); //The viewManager needs a reference to the views
 
         //Creating the views and adding them to the viewPanel
-        menu = new Menu(this, client);
         lobby = new Lobby(this, client);
+        menu = new Menu(this, client);
+        gameView = new GameView(this, client);
+		viewPanel.add(lobby, "lobby");
         viewPanel.add(menu, "menu");
-        viewPanel.add(lobby, "lobby");
-        //viewPanel.add(gameView, "gameView");
+        viewPanel.add(gameView, "gameView");
+        views.put("lobby", lobby);
+        views.put("menu", menu);
+        views.put("gameView", gameView);
+
 
         add(viewPanel);
         changeView("menu");
         
-        System.out.println(viewLayout.preferredLayoutSize(menu).toString());
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
@@ -51,9 +57,17 @@ public class ViewManager extends JFrame {
         
     //Changes the current view to the one specified
     void changeView(String s) {
+    	views.get(currentView).whenExiting();
     	viewLayout.show(viewPanel, s);
     	currentView = s;
+    	updateView();
+    	views.get(s).whenEntering(); //The views get to know when they get changed to
     }
+    
+	public void updateView() {
+		views.get(currentView).clientRequestedUpdate();
+	}
+    
     String getCurrentView() {
     	return currentView;
     }

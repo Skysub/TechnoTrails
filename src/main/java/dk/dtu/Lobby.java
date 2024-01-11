@@ -7,7 +7,6 @@ import javax.swing.table.DefaultTableModel;
 
 import org.jspace.ActualField;
 import org.jspace.FormalField;
-import org.jspace.RemoteSpace;
 import org.jspace.SequentialSpace;
 import org.jspace.Space;
 import org.jspace.SpaceRepository;
@@ -16,29 +15,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.*;
 
-public class Lobby extends JPanel {
+public class Lobby extends JPanel implements View {
 
     private boolean playerReady;
     public int numberOfPlayers;
 
     public SpaceRepository repository;
     public Space lobbySpace;
+    public int greenRowIndex;
 
     public JScrollPane playerPanel;
     public JScrollPane chatPanel;
     public JFrame playerLabel;
     private JTextField chatField;
     DefaultTableModel chatModel;
+    DefaultTableModel tableModel;
     ArrayList<String> players2;
     ArrayList<String> chat;
     JTable playerTable;
     JTable chatTable;
-    JButton backButton = new JButton("<-");
+
+    JButton backButton = new JButton("<-");;
     JButton readyButton = new JButton("Ready");
     JButton startButton = new JButton("Start Game");
     ViewManager viewManager;
     Client client;
-    Menu menu;
+    Server server;
 
     public Lobby(ViewManager viewManager, Client client) {
         this.viewManager = viewManager;
@@ -48,13 +50,30 @@ public class Lobby extends JPanel {
         this.lobbySpace = new SequentialSpace();
         this.repository.add("lobby", this.lobbySpace);
         players2 = new ArrayList<String>();
+        
+    }
 
-        try {
-            playerJoin(); // Call this when the Lobby view is initialized
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+
+    public void initPlayerTable(ServerInfo info){
+    	updatePlayerList(info);
+    	
+        // The table showing the players
+        String[] TABLE_COLUMNS = { "Players" };
+        tableModel = new DefaultTableModel(TABLE_COLUMNS, 0) {
+			private static final long serialVersionUID = -4371585539792034587L;
+
+			@Override
+            public boolean isCellEditable(int row, int column) {
+                // all cells false
+                return false;
+            }
+        };
+        for (int i = 0; i < players2.size(); i++) {
+
+            tableModel.addRow(new String[] { players2.get(i) + client.getName() });
         }
-
+        playerTable = new JTable(tableModel);
+        playerTable.setRowHeight(20);
         initLobby();
     }
 
@@ -69,30 +88,17 @@ public class Lobby extends JPanel {
         gbc.weightx = 1;
         gbc.insets = new Insets(0, 10, 0, 10);
 
-        JLabel title = new JLabel("Port: " + client.getHostAddress());
+        JLabel title = new JLabel("IP: " + client.getHostAddress());
         title.setFont(new Font("Serif", Font.BOLD, 40));
         title.setForeground(new Color(0, 76, 153));
         title.setHorizontalAlignment(0);
 
-        // The table showing the players
-        String[] TABLE_COLUMNS = { "Players" };
-        DefaultTableModel tableModel = new DefaultTableModel(TABLE_COLUMNS, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                // all cells false
-                return false;
-            }
-        };
-        for (int i = 0; i < players2.size(); i++) {
-
-            tableModel.addRow(new String[] { players2.get(i) });
-        }
-        playerTable = new JTable(tableModel);
-        playerTable.setRowHeight(20);
-
+ 
         String[] CHAT_COLUMNS = { "Chat" };
         chatModel = new DefaultTableModel(CHAT_COLUMNS, 0) {
-            @Override
+			private static final long serialVersionUID = -1892645556686553938L;
+
+			@Override
             public boolean isCellEditable(int row, int column) {
                 // all cells false
                 return false;
@@ -120,7 +126,7 @@ public class Lobby extends JPanel {
         chatField.setFocusable(true);
         chatField.addKeyListener(new MyKeyAdapter());
 
-        backButton.setPreferredSize(new Dimension(50, 50));
+        backButton.setPreferredSize(new Dimension(150, 50));
         backButton.setForeground(Color.blue);
         backButton.addActionListener(new ActionListener() {
             @Override
@@ -143,7 +149,6 @@ public class Lobby extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 playerReady = true;
-
             }
         });
 
@@ -200,6 +205,31 @@ public class Lobby extends JPanel {
         add(Box.createVerticalStrut(30), paddgbc);
 
     }
+    
+	//Called when the view is changed to lobby
+	public void whenEntering() {
+        if(client.getIsHost()) {
+            backButton.setText("Close Lobby");
+        } else {
+        	backButton.setText("Leave Lobby");
+        }
+        
+		initPlayerTable(client.getServerInfo());
+	}
+	
+	public void whenExiting() {
+		if(client.getIsHost()) {
+			client.KillLobby();
+		} else {
+			client.LeaveLobby();
+		}
+        removeAll();
+	}
+	
+	public void clientRequestedUpdate() {
+		initPlayerTable(client.getServerInfo());
+		repaint();
+	}
 
     void remakePlayerTable() {
         initLobby();
@@ -212,27 +242,15 @@ public class Lobby extends JPanel {
 
         g.setColor(new Color(102, 178, 255));
         g.fillRect(0, 0, viewManager.getWidth(), viewManager.getHeight());
-
-        // drawPlayerPanel(g);
     }
 
-    public void playerJoin() throws InterruptedException {
-        // Add player to the JSpace lobby
-        lobbySpace.put(client.getName(), false); // False indicates the player is not ready
-        updatePlayerList();
-    }
-
-    private void updatePlayerList() throws InterruptedException {
-        // Query all players from the lobby space
-        List<Object[]> allPlayers = lobbySpace.queryAll(new FormalField(String.class), new FormalField(Boolean.class));
-
+    private void updatePlayerList(ServerInfo info) {
         // Clear the existing player list
         players2.clear();
 
         // Add each player to the list
-        for (Object[] playerInfo : allPlayers) {
-            String playerName = (String) playerInfo[0];
-            players2.add(playerName);
+        for (String name : info.playerList.values()) {
+            players2.add(name);
         }
 
         // Update the UI with the new list
@@ -242,27 +260,17 @@ public class Lobby extends JPanel {
     private void updatePlayerTable() {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                DefaultTableModel tableModel = (DefaultTableModel) playerTable.getModel();
-                tableModel.setRowCount(0); // Clear existing table rows
+                if (playerTable != null) {
+                    DefaultTableModel tableModel = (DefaultTableModel) playerTable.getModel();
+                    tableModel.setRowCount(0);
 
-                // Add new rows for each player
-                for (String playerName : players2) {
-                    tableModel.addRow(new Object[] { playerName });
+                    for (String playerName : players2) {
+                        tableModel.addRow(new Object[] { playerName });
+                    }
                 }
             }
         });
     }
-
-    /*
-     * public void playerReady(String playerName) throws InterruptedException {
-     * RemoteSpace lobbySpace = new RemoteSpace("tcp://" + getHostAddress() +
-     * ":9001/lobby?keep");
-     * 
-     * lobbySpace.get(new ActualField(playerName), new ActualField(playerReady));
-     * playerReady = true;
-     * lobbySpace.put(playerName, playerReady);
-     * }
-     */
 
     public boolean allPlayersReady() throws InterruptedException {
         List<Object[]> players = lobbySpace.queryAll(new FormalField(String.class), new ActualField(Boolean.class));
@@ -288,28 +296,11 @@ public class Lobby extends JPanel {
                 message = chatField.getText();
                 chatField.setText("");
                 try {
-                    //System.out.println(client.checkHost());
-                    if (client.getCheckClient()) {
-                       
-                        client.getClientChatSpace().put(client.getName(), message);
-                        
-                    } else {
-                         System.out.println("Er det host");
-                        client.getServerChatSpace().put(client.getName(), message);
-                    }
-                    List<Object[]> allChat = client.getServerChatSpace().queryAll(new FormalField(String.class),
-                            new FormalField(String.class));
-                    for (Object[] chat : allChat) {
-                        String chatMsg = (String) chat[1];
-                        System.out.println(chatMsg);
-
-                    }
-                    /*
-                     * 
-                     * String msg =client.getClientMessage();
-                     * System.out.println(msg);
-                     */
-                    // chatModel.addRow(new Object[] {msg});
+                    client.getChatSpace().put(client.getName(), message);
+                    //System.out.println(client.getClientMessage());
+                    
+                    chatModel.addRow(new Object[]  {client.getClientMessage()});
+                    System.out.println("client.getClientMessage()");
                 } catch (InterruptedException e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
