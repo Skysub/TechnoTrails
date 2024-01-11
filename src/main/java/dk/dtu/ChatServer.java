@@ -52,14 +52,12 @@ public class ChatServer implements Runnable {
         }
     }
 
-    private void broadcastMessage(Integer playerId, String message) throws InterruptedException {
-        // Format and broadcast the message to all clients
+    public void broadcastMessage(Integer playerId, String message) throws InterruptedException {
         String formattedMessage = info.playerList.get(playerId) + ": " + message;
         chatSpace.put("broadcast", ChatMessageServer.ChatMessage, formattedMessage);
     }
 
-    private void broadcastNotification(String notification) throws InterruptedException {
-        // Broadcast a notification to all clients
+    public void broadcastNotification(String notification) throws InterruptedException {
         chatSpace.put("broadcast", ChatMessageServer.ChatNotification, notification);
     }
 }
