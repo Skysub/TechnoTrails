@@ -4,16 +4,12 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
 
 import org.jspace.ActualField;
 import org.jspace.FormalField;
-import org.jspace.RemoteSpace;
 import org.jspace.SequentialSpace;
 import org.jspace.Space;
 import org.jspace.SpaceRepository;
-
-import dk.dtu.Lobby.MyKeyAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,17 +54,15 @@ public class Lobby extends JPanel implements View {
     }
 
 
-    public void initPlayerTable(){
-        
-        try {
-            playerJoin(); // Call this when the Lobby view is initialized
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-               // The table showing the players
+    public void initPlayerTable(ServerInfo info){
+    	updatePlayerList(info);
+    	
+        // The table showing the players
         String[] TABLE_COLUMNS = { "Players" };
         tableModel = new DefaultTableModel(TABLE_COLUMNS, 0) {
-            @Override
+			private static final long serialVersionUID = -4371585539792034587L;
+
+			@Override
             public boolean isCellEditable(int row, int column) {
                 // all cells false
                 return false;
@@ -102,7 +96,9 @@ public class Lobby extends JPanel implements View {
  
         String[] CHAT_COLUMNS = { "Chat" };
         chatModel = new DefaultTableModel(CHAT_COLUMNS, 0) {
-            @Override
+			private static final long serialVersionUID = -1892645556686553938L;
+
+			@Override
             public boolean isCellEditable(int row, int column) {
                 // all cells false
                 return false;
@@ -217,7 +213,7 @@ public class Lobby extends JPanel implements View {
         	backButton.setText("Leave Lobby");
         }
         
-		initPlayerTable();
+		initPlayerTable(client.getServerInfo());
 	}
 	
 	public void whenExiting() {
@@ -227,6 +223,11 @@ public class Lobby extends JPanel implements View {
 			client.LeaveLobby();
 		}
         removeAll();
+	}
+	
+	public void clientRequestedUpdate() {
+		initPlayerTable(client.getServerInfo());
+		repaint();
 	}
 
     void remakePlayerTable() {
@@ -242,23 +243,13 @@ public class Lobby extends JPanel implements View {
         g.fillRect(0, 0, viewManager.getWidth(), viewManager.getHeight());
     }
 
-    public void playerJoin() throws InterruptedException {
-        // Add player to the JSpace lobby
-        lobbySpace.put(client.getName(), false); // False indicates the player is not ready
-        updatePlayerList();
-    }
-
-    private void updatePlayerList() throws InterruptedException {
-        // Query all players from the lobby space
-        List<Object[]> allPlayers = lobbySpace.queryAll(new FormalField(String.class), new FormalField(Boolean.class));
-
+    private void updatePlayerList(ServerInfo info) {
         // Clear the existing player list
         players2.clear();
 
         // Add each player to the list
-        for (Object[] playerInfo : allPlayers) {
-            String playerName = (String) playerInfo[0];
-            players2.add(playerName);
+        for (String name : info.playerList.values()) {
+            players2.add(name);
         }
 
         // Update the UI with the new list
@@ -279,17 +270,6 @@ public class Lobby extends JPanel implements View {
             }
         });
     }
-
-    /*
-     * public void playerReady(String playerName) throws InterruptedException {
-     * RemoteSpace lobbySpace = new RemoteSpace("tcp://" + getHostAddress() +
-     * ":9001/lobby?keep");
-     * 
-     * lobbySpace.get(new ActualField(playerName), new ActualField(playerReady));
-     * playerReady = true;
-     * lobbySpace.put(playerName, playerReady);
-     * }
-     */
 
     public boolean allPlayersReady() throws InterruptedException {
         List<Object[]> players = lobbySpace.queryAll(new FormalField(String.class), new ActualField(Boolean.class));

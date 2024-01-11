@@ -1,55 +1,94 @@
 package dk.dtu;
 
+import java.util.concurrent.ThreadLocalRandom;
+
+import org.jspace.ActualField;
+import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
 import org.jspace.Space;
 
 public class Client {
-
+	
+	ViewManager viewManager;
 	GameState gameState;
 	Space chatSpace;
 	private String myName = "unset";
 	public String hostAddress = "localhost";
 	public Server server;
 	private boolean isHost = false;
+	private int myID = -1;
 
-	Client() {
+	LobbyClient lobbyClient;
+	Thread lobbyClientThread;
+	Space lobbySpace;
+
+	ServerInfo serverInfo;
+
+	Client(ViewManager viewManager) {
+		this.viewManager = viewManager;
 		setName(RandomWords.getRandomWord());
 	}
 
-	public void joinLobby(String hostAddress) throws Exception {
-		try {
-			Space lobbySpace = new RemoteSpace("tcp://" + hostAddress + ":9001/lobby?keep");
-			chatSpace = new RemoteSpace("tcp://" + hostAddress + ":9001/chat?keep");
-			lobbySpace.put(getName(), false);
-			System.out.println("You have joined the lobby");
-		} catch (Exception e) {
-			// Re-throw the exception to be handled by the caller
-			throw e;
-		}
-	}
-	
-	public void CreateLobby() {
-		if (getServer() == null) {
-			Server server = new Server();
-			server.createLobby(getName()); // This starts the server and initializes the lobby
-			setServer(server); // Set the server instance in the client
-		}
+	public void CreateLobby(String hAddress) {
+		this.hostAddress = hAddress;
+		server = new Server();
+		server.createLobby(); // This starts the server and initializes the lobby
 		isHost = true;
-	}
-	
-	public void KillLobby() {
-		LeaveLobby();
-		
-		server.kill();
-		server = null;
-		isHost = false;
-	}
-	
-	public void LeaveLobby() {
-		
+		joinLobby(hostAddress);
 	}
 
+	public void KillLobby() {
+		if (isHost) {
+			LeaveLobby();
+
+			server.kill();
+			server = null;
+			isHost = false;
+		}
+	}
+
+	public void joinLobby(String hostAddress) {
+		try {
+			lobbySpace = new RemoteSpace("tcp://" + hostAddress + ":9001/lobby?keep");
+			chatSpace = new RemoteSpace("tcp://" + hostAddress + ":9001/chat?keep");
+
+			// 1
+			int randomInt = ThreadLocalRandom.current().nextInt(1000001, 1000000001); // 1 million to 1 billion
+			lobbySpace.put(randomInt, LobbyMessage.ClientJoin);
+
+			// 4
+			Object[] response = lobbySpace.get(new FormalField(Integer.class), new ActualField(randomInt));
+			myID = (int) response[0];
+
+			// 5
+			lobbySpace.put(myID, myName);
+			
+			response = lobbySpace.query(new FormalField(ServerInfo.class));
+			setNewServerInfo((ServerInfo)response[0]);
+			
+			System.out.println("You have joined the lobby");
+		} catch (Exception e) {
+			System.out.println("Error Joining lobby with ip: " + hostAddress);
+		}
+
+		// Enter loop querying the lobby
+		lobbyClient = new LobbyClient(lobbySpace, myID, this);
+		lobbyClientThread = new Thread(lobbyClient);
+		lobbyClientThread.start();
+	}
+
+	public void LeaveLobby() {
+
+	}
+
+	public void setNewServerInfo(ServerInfo serverInfo) {
+		this.serverInfo = serverInfo;
+		viewManager.updateView();
+	}
+
+	// ==========================================
 	// Getters and setters
+
 	public String getHostAddress() {
 		return hostAddress;
 	}
@@ -78,15 +117,15 @@ public class Client {
 		return server;
 	}
 
-	public void setServer(Server server) {
-		this.server = server;
-	}
-
 	public String getClientMessage() {
 		return server.getChatMessage();
 	}
-	
+
 	public boolean getIsHost() {
 		return isHost;
+	}
+
+	public ServerInfo getServerInfo() {
+			return serverInfo;
 	}
 }

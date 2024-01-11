@@ -32,7 +32,7 @@ public class ViewManager extends JFrame {
         viewPanel.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         
         //Creating the client model
-        client = new Client();
+        client = new Client(this);
         views = new HashMap<String, View>(); //The viewManager needs a reference to the views
 
         //Creating the views and adding them to the viewPanel
@@ -60,8 +60,14 @@ public class ViewManager extends JFrame {
     	views.get(currentView).whenExiting();
     	viewLayout.show(viewPanel, s);
     	currentView = s;
+    	updateView();
     	views.get(s).whenEntering(); //The views get to know when they get changed to
     }
+    
+	public void updateView() {
+		views.get(currentView).clientRequestedUpdate();
+	}
+    
     String getCurrentView() {
     	return currentView;
     }

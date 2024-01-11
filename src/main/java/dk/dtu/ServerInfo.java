@@ -8,6 +8,7 @@ public class ServerInfo {
 }
 
 enum LobbyMessage {
+	LobbyStart,
 	ClientJoin,
 	LobbyUpdate,
 	ClientDisconnect,

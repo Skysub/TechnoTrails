@@ -61,7 +61,7 @@ public class Menu extends JPanel implements View {
 		hostButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				client.CreateLobby();
+				client.CreateLobby("localhost");
 				viewManager.changeView("lobby");
 			}
 		});
@@ -139,6 +139,10 @@ public class Menu extends JPanel implements View {
 	}
 	
 	public void whenExiting() {
+		
+	}
+	
+	public void clientRequestedUpdate() {
 		
 	}
 

@@ -50,5 +50,9 @@ public class GameView extends JPanel implements View {
 	public void whenExiting() {
 		
 	}
+	
+	public void clientRequestedUpdate() {
+		
+	}
 
 }
