@@ -34,7 +34,7 @@ public class BattlePanel extends JPanel {
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             Graphics2D g2d = (Graphics2D) g;
-            for (PlayerInfo p : client.getGameState().players)
+            for (PlayerInfo p : client.getGameState().players.values())
                 drawGame(g2d, p);
         }
 

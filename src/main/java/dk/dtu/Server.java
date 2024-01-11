@@ -1,24 +1,61 @@
 package dk.dtu;
 
-public class Server{
-	
-	ServerInfo info;
-	
-	Server(){
-		info = new ServerInfo();
-	}
-	
-	//Functions dealing with the server side of networking 
-	
-	
-	
-	//Closes the server and prepares this object for deletion
+import java.util.ArrayList;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.jspace.SequentialSpace;
+import org.jspace.Space;
+import org.jspace.SpaceRepository;
+
+public class Server {
+
+    ServerInfo info;
+    Space lobbySpace;
+    Space chatSpace;
+    static final int defaultTickRate = 60;
+    String hostAddress = "localhost";
+
+    Server() {
+        info = new ServerInfo();
+        info.tps = defaultTickRate;
+        info.playerList = new ArrayList<ImmutablePair<Integer, String>>();
+    }
+
+    public void createLobby(String hostName) {
+        info.addPlayer(hostName);
+        SpaceRepository repository = new SpaceRepository();
+        repository.addGate("tcp://" + hostAddress + ":9001/?keep");
+        lobbySpace = new SequentialSpace();
+        repository.add("lobby", lobbySpace);
+        chatSpace = new SequentialSpace();
+        repository.add("chat", chatSpace);
+
+        try {
+            lobbySpace.put(hostName);
+            System.out.println("You have created and joined the lobby");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
 	void kill() {
-		
-	}
-	
-	ServerInfo getInfo() {
-		return info;
-	}
-	
+        try {
+            if (lobbySpace != null) {
+                lobbySpace.put("shutdown");
+            }
+            if (chatSpace != null) {
+                chatSpace.put("shutdown");
+            }
+            // Add any additional cleanup or shutdown procedures here
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            lobbySpace = null;
+            chatSpace = null;
+            info = null;
+        }
+    }
+
+    ServerInfo getInfo() {
+        return info;
+    }
 }
