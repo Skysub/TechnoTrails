@@ -17,10 +17,10 @@ public class Client {
 	public Server server;
 	private boolean isHost = false;
 	private int myID = -1;
-
+	Space lobbySpace;
 	LobbyClient lobbyClient;
 	Thread lobbyClientThread;
-	Space lobbySpace;
+	
 
 	ServerInfo serverInfo;
 
@@ -124,4 +124,12 @@ public class Client {
 	public String getClientMessage() {
 		return server.getChatMessage();
 	}
+
+	public boolean getIsHost() {
+		return isHost;
+	}
+
+    public ServerInfo getServerInfo() {
+       return this.serverInfo;
+    }
 }

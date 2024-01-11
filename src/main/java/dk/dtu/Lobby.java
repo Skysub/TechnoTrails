@@ -296,7 +296,7 @@ public class Lobby extends JPanel implements View {
                 message = chatField.getText();
                 chatField.setText("");
                 try {
-                    client.getChatSpace().put(client.getName(), message);
+                    client.getClientChatSpace().put(client.getName(), message);
                     //System.out.println(client.getClientMessage());
                     
                     chatModel.addRow(new Object[]  {client.getClientMessage()});
