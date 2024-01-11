@@ -32,7 +32,7 @@ public class Lobby extends JPanel {
     ArrayList<String> chat;
     JTable playerTable;
     JTable chatTable;
-
+ DefaultTableModel chatModel;
     JButton backButton = new JButton("<-");
     JButton readyButton = new JButton("Ready");
     JButton startButton = new JButton("Start Game");
@@ -91,17 +91,14 @@ public class Lobby extends JPanel {
         playerTable.setRowHeight(20);
 
         String[] CHAT_COLUMNS = { "Chat" };
-        DefaultTableModel chatModel = new DefaultTableModel(CHAT_COLUMNS, 0) {
+        chatModel = new DefaultTableModel(CHAT_COLUMNS, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 // all cells false
                 return false;
             }
         };
-        for (int i = 0; i < chat.size(); i++) {
-
-        chatModel.addRow(new String[] { chat.get(i) });
-        }
+       
         chatTable = new JTable(chatModel);
         chatTable.setRowHeight(20);
 
@@ -285,6 +282,8 @@ public class Lobby extends JPanel {
 
     String message;
 
+   
+
     public class MyKeyAdapter extends KeyAdapter {
         public void keyPressed(KeyEvent e) {
             if (e.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -292,6 +291,10 @@ public class Lobby extends JPanel {
                 chatField.setText("");
                 try {
                     client.getChatSpace().put(client.getName(), message);
+                    
+                    Object[] t= client.getChatSpace().getp(new FormalField(String.class),new FormalField(String.class));
+                    chatModel.addRow(new Object[] {t[0]+ ": " + t[1]});
+                    
                 } catch (InterruptedException e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
