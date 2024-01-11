@@ -92,7 +92,6 @@ public class Lobby extends JPanel {
 
         String[] CHAT_COLUMNS = { "Chat" };
         chatModel = new DefaultTableModel(CHAT_COLUMNS, 0) {
-        chatModel = new DefaultTableModel(CHAT_COLUMNS, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 // all cells false
