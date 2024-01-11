@@ -4,6 +4,7 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import org.jspace.ActualField;
 import org.jspace.FormalField;
@@ -11,6 +12,8 @@ import org.jspace.RemoteSpace;
 import org.jspace.SequentialSpace;
 import org.jspace.Space;
 import org.jspace.SpaceRepository;
+
+import dk.dtu.Lobby.MyKeyAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +26,7 @@ public class Lobby extends JPanel {
 
     public SpaceRepository repository;
     public Space lobbySpace;
+    public int greenRowIndex;
 
     public JScrollPane playerPanel;
     public JScrollPane chatPanel;
@@ -33,11 +37,13 @@ public class Lobby extends JPanel {
     ArrayList<String> chat;
     JTable playerTable;
     JTable chatTable;
+
     JButton backButton = new JButton("<-");
     JButton readyButton = new JButton("Ready");
     JButton startButton = new JButton("Start Game");
     ViewManager viewManager;
     Client client;
+    Server server;
     Menu menu;
 
     public Lobby(ViewManager viewManager, Client client) {
@@ -98,7 +104,6 @@ public class Lobby extends JPanel {
                 return false;
             }
         };
-        
         chatTable = new JTable(chatModel);
         chatTable.setRowHeight(20);
 
@@ -143,7 +148,6 @@ public class Lobby extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 playerReady = true;
-
             }
         });
 
@@ -281,8 +285,6 @@ public class Lobby extends JPanel {
     }
 
     String message;
-
-   
 
     public class MyKeyAdapter extends KeyAdapter {
         public void keyPressed(KeyEvent e) {
