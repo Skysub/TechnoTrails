@@ -63,7 +63,7 @@ public class Server {
     public String getChatMessage() {
         
         try {
-           Object[] t = chatSpace.getp(new FormalField(String.class), new FormalField(String.class));
+           Object[] t = chatSpace.query(new FormalField(String.class), new FormalField(String.class));
            return t[0] + ": " + t[1];
         
         } catch (InterruptedException e) {
@@ -76,4 +76,5 @@ public class Server {
     public Space getChatSpace() {
         return chatSpace;
     }
+
 }

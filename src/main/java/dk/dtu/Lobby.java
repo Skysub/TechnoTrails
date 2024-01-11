@@ -98,7 +98,7 @@ public class Lobby extends JPanel {
                 return false;
             }
         };
-        
+
         chatTable = new JTable(chatModel);
         chatTable.setRowHeight(20);
 
@@ -282,19 +282,34 @@ public class Lobby extends JPanel {
 
     String message;
 
-   
-
     public class MyKeyAdapter extends KeyAdapter {
         public void keyPressed(KeyEvent e) {
             if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                 message = chatField.getText();
                 chatField.setText("");
                 try {
-                    client.getChatSpace().put(client.getName(), message);
-                    //System.out.println(client.getClientMessage());
-                    
-                    chatModel.addRow(new Object[]  {client.getClientMessage()});
-                    System.out.println("client.getClientMessage()");
+                    //System.out.println(client.checkHost());
+                    if (client.getCheckClient()) {
+                       
+                        client.getClientChatSpace().put(client.getName(), message);
+                        
+                    } else {
+                         System.out.println("Er det host");
+                        client.getServerChatSpace().put(client.getName(), message);
+                    }
+                    List<Object[]> allChat = client.getServerChatSpace().queryAll(new FormalField(String.class),
+                            new FormalField(String.class));
+                    for (Object[] chat : allChat) {
+                        String chatMsg = (String) chat[1];
+                        System.out.println(chatMsg);
+
+                    }
+                    /*
+                     * 
+                     * String msg =client.getClientMessage();
+                     * System.out.println(msg);
+                     */
+                    // chatModel.addRow(new Object[] {msg});
                 } catch (InterruptedException e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();

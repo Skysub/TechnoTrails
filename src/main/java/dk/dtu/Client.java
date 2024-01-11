@@ -10,6 +10,7 @@ public class Client {
 	private String myName = "unset";
 	public String hostAddress = "localhost";
 	public Server server;
+	Boolean client = false;
 
 	Client() {
 		setName(RandomWords.getRandomWord());
@@ -17,6 +18,7 @@ public class Client {
 
 	public void joinLobby(String hostAddress) {
 		try {
+			client = true;
 			Space lobbySpace = new RemoteSpace("tcp://" + hostAddress + ":9001/lobby?keep");
 			chatSpace = new RemoteSpace("tcp://" + hostAddress + ":9001/chat?keep");
 			lobbySpace.put(getName(), false);
@@ -47,8 +49,12 @@ public class Client {
 		return gameState;
 	}
 
-	public Space getChatSpace() {
+	public Space getServerChatSpace() {
 		return server.getChatSpace();
+	}
+
+	public Space getClientChatSpace() {
+		return chatSpace;
 	}
 
 	public Object getServer() {
@@ -62,4 +68,10 @@ public class Client {
 	public String getClientMessage() {
 		return server.getChatMessage();
 	}
+	public boolean getCheckClient(){
+
+		return client;
+	}
+
+	
 }
