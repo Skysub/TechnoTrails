@@ -16,7 +16,6 @@ public class ViewManager extends JFrame {
 	Lobby lobby;
     GameView gameView;
 	CardLayout viewLayout = new CardLayout();;
-	
 	Client client;
     
     public ViewManager() {
@@ -34,10 +33,10 @@ public class ViewManager extends JFrame {
         client = new Client();
 
         //Creating the views and adding them to the viewPanel
-        menu = new Menu(this, client);
         lobby = new Lobby(this, client);
+        menu = new Menu(this, client, lobby);
+		viewPanel.add(lobby, "lobby");
         viewPanel.add(menu, "menu");
-        viewPanel.add(lobby, "lobby");
         //viewPanel.add(gameView, "gameView");
 
         add(viewPanel);

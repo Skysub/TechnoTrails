@@ -26,12 +26,17 @@ public class Menu extends JPanel {
 	private JTextField textField;
 	ViewManager viewManager;
 	Client client;
+	Lobby lobby;
+	
 
-	public Menu(ViewManager viewManager, Client client) {
+	public Menu(ViewManager viewManager, Client client, Lobby lobby) {
 		this.viewManager = viewManager;
 		this.client = client;
+		this.lobby = lobby;
 		initMenu();
 	}
+
+	
 
 	void initMenu() {
 
@@ -67,6 +72,8 @@ public class Menu extends JPanel {
 					server.createLobby(client.getName()); // This starts the server and initializes the lobby
 					client.setServer(server); // Set the server instance in the client
 				}
+				
+				lobby.initPlayerTable();
 				viewManager.changeView("lobby");
 			}
 		});

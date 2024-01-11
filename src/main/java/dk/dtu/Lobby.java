@@ -33,6 +33,7 @@ public class Lobby extends JPanel {
     public JFrame playerLabel;
     private JTextField chatField;
     DefaultTableModel chatModel;
+    DefaultTableModel tableModel;
     ArrayList<String> players2;
     ArrayList<String> chat;
     JTable playerTable;
@@ -44,7 +45,6 @@ public class Lobby extends JPanel {
     ViewManager viewManager;
     Client client;
     Server server;
-    Menu menu;
 
     public Lobby(ViewManager viewManager, Client client) {
         this.viewManager = viewManager;
@@ -55,20 +55,20 @@ public class Lobby extends JPanel {
         this.repository.add("lobby", this.lobbySpace);
         players2 = new ArrayList<String>();
 
+        
+    }
+
+
+    public void initPlayerTable(){
+        
         try {
             playerJoin(); // Call this when the Lobby view is initialized
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-       initPlayerTable();
-    }
-
-
-    public void initPlayerTable(){
                // The table showing the players
         String[] TABLE_COLUMNS = { "Players" };
-        DefaultTableModel tableModel = new DefaultTableModel(TABLE_COLUMNS, 0) {
+        tableModel = new DefaultTableModel(TABLE_COLUMNS, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 // all cells false
@@ -77,7 +77,7 @@ public class Lobby extends JPanel {
         };
         for (int i = 0; i < players2.size(); i++) {
 
-            tableModel.addRow(new String[] { players2.get(i) });
+            tableModel.addRow(new String[] { players2.get(i) + client.getName() });
         }
         playerTable = new JTable(tableModel);
         playerTable.setRowHeight(20);
@@ -301,7 +301,6 @@ public class Lobby extends JPanel {
                 try {
                     client.getChatSpace().put(client.getName(), message);
                     //System.out.println(client.getClientMessage());
-                    
                     chatModel.addRow(new Object[]  {client.getClientMessage()});
                     System.out.println("client.getClientMessage()");
                 } catch (InterruptedException e1) {
