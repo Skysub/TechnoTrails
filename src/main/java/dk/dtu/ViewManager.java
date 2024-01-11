@@ -33,21 +33,23 @@ public class ViewManager extends JFrame {
         
         //Creating the client model
         client = new Client();
-        views = new HashMap<String, View>();
+        views = new HashMap<String, View>(); //The viewManager needs a reference to the views
 
         //Creating the views and adding them to the viewPanel
         lobby = new Lobby(this, client);
         menu = new Menu(this, client);
+        gameView = new GameView(this, client);
 		viewPanel.add(lobby, "lobby");
         viewPanel.add(menu, "menu");
+        viewPanel.add(gameView, "gameView");
         views.put("lobby", lobby);
         views.put("menu", menu);
-        //viewPanel.add(gameView, "gameView");
+        views.put("gameView", gameView);
+
 
         add(viewPanel);
         changeView("menu");
         
-        System.out.println(viewLayout.preferredLayoutSize(menu).toString());
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
@@ -57,7 +59,7 @@ public class ViewManager extends JFrame {
     void changeView(String s) {
     	viewLayout.show(viewPanel, s);
     	currentView = s;
-    	views.get(s).whenEntering();
+    	views.get(s).whenEntering(); //The views get to know when they get changed to
     }
     String getCurrentView() {
     	return currentView;
