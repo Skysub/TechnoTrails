@@ -37,8 +37,22 @@ public class Server {
         }
     }
 
-    void kill() {
-        // Add server shutdown logic here
+	void kill() {
+        try {
+            if (lobbySpace != null) {
+                lobbySpace.put("shutdown");
+            }
+            if (chatSpace != null) {
+                chatSpace.put("shutdown");
+            }
+            // Add any additional cleanup or shutdown procedures here
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            lobbySpace = null;
+            chatSpace = null;
+            info = null;
+        }
     }
 
     ServerInfo getInfo() {
