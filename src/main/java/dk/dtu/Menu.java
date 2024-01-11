@@ -72,7 +72,6 @@ public class Menu extends JPanel {
 					server.createLobby(client.getName()); // This starts the server and initializes the lobby
 					client.setServer(server); // Set the server instance in the client
 				}
-				
 				lobby.initPlayerTable();
 				viewManager.changeView("lobby");
 			}

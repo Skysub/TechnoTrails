@@ -54,6 +54,7 @@ public class Lobby extends JPanel {
         this.lobbySpace = new SequentialSpace();
         this.repository.add("lobby", this.lobbySpace);
         players2 = new ArrayList<String>();
+        
 
         
     }
@@ -81,7 +82,6 @@ public class Lobby extends JPanel {
         }
         playerTable = new JTable(tableModel);
         playerTable.setRowHeight(20);
-
         initLobby();
     }
 
@@ -136,6 +136,7 @@ public class Lobby extends JPanel {
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                removeAll();
                 viewManager.changeView("menu");
             }
         });
@@ -222,8 +223,6 @@ public class Lobby extends JPanel {
 
         g.setColor(new Color(102, 178, 255));
         g.fillRect(0, 0, viewManager.getWidth(), viewManager.getHeight());
-
-        // drawPlayerPanel(g);
     }
 
     public void playerJoin() throws InterruptedException {
