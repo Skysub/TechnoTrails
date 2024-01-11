@@ -15,14 +15,15 @@ public class Client {
 		setName(RandomWords.getRandomWord());
 	}
 
-	public void joinLobby(String hostAddress) {
+	public void joinLobby(String hostAddress) throws Exception {
 		try {
 			Space lobbySpace = new RemoteSpace("tcp://" + hostAddress + ":9001/lobby?keep");
 			chatSpace = new RemoteSpace("tcp://" + hostAddress + ":9001/chat?keep");
 			lobbySpace.put(getName(), false);
 			System.out.println("You have joined the lobby");
 		} catch (Exception e) {
-			e.printStackTrace();
+			// Re-throw the exception to be handled by the caller
+			throw e;
 		}
 	}
 
