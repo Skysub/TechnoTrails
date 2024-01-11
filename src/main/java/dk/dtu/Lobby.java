@@ -61,6 +61,27 @@ public class Lobby extends JPanel {
             e.printStackTrace();
         }
 
+       initPlayerTable();
+    }
+
+
+    public void initPlayerTable(){
+               // The table showing the players
+        String[] TABLE_COLUMNS = { "Players" };
+        DefaultTableModel tableModel = new DefaultTableModel(TABLE_COLUMNS, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                // all cells false
+                return false;
+            }
+        };
+        for (int i = 0; i < players2.size(); i++) {
+
+            tableModel.addRow(new String[] { players2.get(i) });
+        }
+        playerTable = new JTable(tableModel);
+        playerTable.setRowHeight(20);
+
         initLobby();
     }
 
@@ -80,22 +101,7 @@ public class Lobby extends JPanel {
         title.setForeground(new Color(0, 76, 153));
         title.setHorizontalAlignment(0);
 
-        // The table showing the players
-        String[] TABLE_COLUMNS = { "Players" };
-        DefaultTableModel tableModel = new DefaultTableModel(TABLE_COLUMNS, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                // all cells false
-                return false;
-            }
-        };
-        for (int i = 0; i < players2.size(); i++) {
-
-            tableModel.addRow(new String[] { players2.get(i) });
-        }
-        playerTable = new JTable(tableModel);
-        playerTable.setRowHeight(20);
-
+ 
         String[] CHAT_COLUMNS = { "Chat" };
         chatModel = new DefaultTableModel(CHAT_COLUMNS, 0) {
             @Override
@@ -246,12 +252,13 @@ public class Lobby extends JPanel {
     private void updatePlayerTable() {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                DefaultTableModel tableModel = (DefaultTableModel) playerTable.getModel();
-                tableModel.setRowCount(0); // Clear existing table rows
+                if (playerTable != null) {
+                    DefaultTableModel tableModel = (DefaultTableModel) playerTable.getModel();
+                    tableModel.setRowCount(0);
 
-                // Add new rows for each player
-                for (String playerName : players2) {
-                    tableModel.addRow(new Object[] { playerName });
+                    for (String playerName : players2) {
+                        tableModel.addRow(new Object[] { playerName });
+                    }
                 }
             }
         });
