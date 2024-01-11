@@ -60,7 +60,6 @@ public class Client {
 	}
 
 	public String getClientMessage() {
-		String s = server.getChatMessage();
-		return s;
+		return server.getChatMessage();
 	}
 }

@@ -63,9 +63,9 @@ public class Server {
     public String getChatMessage() {
         
         try {
-           Object[] t = chatSpace.get(new FormalField(String.class), new FormalField(String.class));
-           //return t[0] + ": " + t[1];
-           return "Hej";
+           Object[] t = chatSpace.getp(new FormalField(String.class), new FormalField(String.class));
+           return t[0] + ": " + t[1];
+        
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

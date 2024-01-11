@@ -291,9 +291,9 @@ public class Lobby extends JPanel {
                 chatField.setText("");
                 try {
                     client.getChatSpace().put(client.getName(), message);
-                    System.out.println(client.getClientMessage());
-                    String msg = client.getClientMessage();
-                    chatModel.addRow(new Object[]  {msg});
+                    //System.out.println(client.getClientMessage());
+                    
+                    chatModel.addRow(new Object[]  {client.getClientMessage()});
                     System.out.println("client.getClientMessage()");
                 } catch (InterruptedException e1) {
                     // TODO Auto-generated catch block
