@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.*;
 
-public class Lobby extends JPanel {
+public class Lobby extends JPanel implements View {
 
     private boolean playerReady;
     public int numberOfPlayers;
@@ -211,6 +211,11 @@ public class Lobby extends JPanel {
         add(Box.createVerticalStrut(30), paddgbc);
 
     }
+    
+	//Called when the view is changed to lobby
+	public void whenEntering() {
+		initPlayerTable();
+	}
 
     void remakePlayerTable() {
         initLobby();

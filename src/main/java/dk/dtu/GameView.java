@@ -3,7 +3,7 @@ package dk.dtu;
 import javax.swing.*;
 import java.awt.*;
 
-public class GameView extends JPanel {
+public class GameView extends JPanel implements View {
     private BattlePanel battlePanel;
     private GameLeaderboardPanel gameLeaderboardPanel;
     private GameChatPanel chatPanel;
@@ -41,6 +41,10 @@ public class GameView extends JPanel {
         add(battlePanel, BorderLayout.CENTER);
         add(rightPanel, BorderLayout.EAST);
         setVisible(true);
+    }
+    
+    public void whenEntering() {
+    	
     }
 
 }

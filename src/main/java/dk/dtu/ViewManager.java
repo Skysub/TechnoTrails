@@ -2,6 +2,7 @@ package dk.dtu;
 
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.util.HashMap;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -17,6 +18,7 @@ public class ViewManager extends JFrame {
     GameView gameView;
 	CardLayout viewLayout = new CardLayout();;
 	Client client;
+	HashMap<String, View> views;
     
     public ViewManager() {
         setTitle("Tehcno Trails");
@@ -31,12 +33,15 @@ public class ViewManager extends JFrame {
         
         //Creating the client model
         client = new Client();
+        views = new HashMap<String, View>();
 
         //Creating the views and adding them to the viewPanel
         lobby = new Lobby(this, client);
-        menu = new Menu(this, client, lobby);
+        menu = new Menu(this, client);
 		viewPanel.add(lobby, "lobby");
         viewPanel.add(menu, "menu");
+        views.put("lobby", lobby);
+        views.put("menu", menu);
         //viewPanel.add(gameView, "gameView");
 
         add(viewPanel);
@@ -52,6 +57,7 @@ public class ViewManager extends JFrame {
     void changeView(String s) {
     	viewLayout.show(viewPanel, s);
     	currentView = s;
+    	views.get(s).whenEntering();
     }
     String getCurrentView() {
     	return currentView;

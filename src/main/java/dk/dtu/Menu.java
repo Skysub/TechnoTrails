@@ -19,19 +19,17 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
-public class Menu extends JPanel {
+public class Menu extends JPanel implements View {
 
 	JButton joinButton = new JButton("JOIN GAME");
 	JButton hostButton = new JButton("HOST GAME");
 	private JTextField textField;
 	ViewManager viewManager;
 	Client client;
-	Lobby lobby;
 
-	public Menu(ViewManager viewManager, Client client, Lobby lobby) {
+	public Menu(ViewManager viewManager, Client client) {
 		this.viewManager = viewManager;
 		this.client = client;
-		this.lobby = lobby;
 		initMenu();
 	}
 
@@ -68,7 +66,6 @@ public class Menu extends JPanel {
 					server.createLobby(client.getName()); // This starts the server and initializes the lobby
 					client.setServer(server); // Set the server instance in the client
 				}
-				lobby.initPlayerTable();
 				viewManager.changeView("lobby");
 			}
 		});
@@ -89,10 +86,7 @@ public class Menu extends JPanel {
 				if (inputHostAddress != null && !inputHostAddress.isEmpty()) {
 					try {
 						client.joinLobby(inputHostAddress);
-						lobby.initPlayerTable();
-						viewManager.changeView("lobby");
-
-						
+						viewManager.changeView("lobby");					
 					} catch (Exception ex) {
 						JOptionPane.showMessageDialog(Menu.this,
 								"Failed to connect. Check the IP address and try again.", "Connection Error",
@@ -141,6 +135,11 @@ public class Menu extends JPanel {
 		add(textField, gbc);
 		gbc.insets = new Insets(0, 0, 20, 0);
 		add(saveButton, gbc);
+	}
+	
+	//Called when the view is changed to menu
+	public void whenEntering() {
+		
 	}
 
 	@Override
