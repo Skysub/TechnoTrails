@@ -2,6 +2,7 @@ package dk.dtu;
 
 import java.util.ArrayList;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.jspace.FormalField;
 import org.jspace.SequentialSpace;
 import org.jspace.Space;
 import org.jspace.SpaceRepository;
@@ -37,7 +38,7 @@ public class Server {
         }
     }
 
-	void kill() {
+    void kill() {
         try {
             if (lobbySpace != null) {
                 lobbySpace.put("shutdown");
@@ -57,5 +58,22 @@ public class Server {
 
     ServerInfo getInfo() {
         return info;
+    }
+
+    public String getChatMessage() {
+        
+        try {
+           Object[] t = chatSpace.get(new FormalField(String.class), new FormalField(String.class));
+           //return t[0] + ": " + t[1];
+           return "Hej";
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return "";
+
+    }
+    public Space getChatSpace() {
+        return chatSpace;
     }
 }

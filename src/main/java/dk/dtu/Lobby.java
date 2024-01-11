@@ -92,17 +92,13 @@ public class Lobby extends JPanel {
 
         String[] CHAT_COLUMNS = { "Chat" };
         chatModel = new DefaultTableModel(CHAT_COLUMNS, 0) {
-        chatModel = new DefaultTableModel(CHAT_COLUMNS, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 // all cells false
                 return false;
             }
         };
-        for (int i = 0; i < chat.size(); i++) {
-
-        chatModel.addRow(new String[] { chat.get(i) });
-        }
+        
         chatTable = new JTable(chatModel);
         chatTable.setRowHeight(20);
 
@@ -295,6 +291,10 @@ public class Lobby extends JPanel {
                 chatField.setText("");
                 try {
                     client.getChatSpace().put(client.getName(), message);
+                    System.out.println(client.getClientMessage());
+                    String msg = client.getClientMessage();
+                    chatModel.addRow(new Object[]  {msg});
+                    System.out.println("client.getClientMessage()");
                 } catch (InterruptedException e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
