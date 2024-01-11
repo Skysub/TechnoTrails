@@ -27,7 +27,6 @@ public class Menu extends JPanel {
 	ViewManager viewManager;
 	Client client;
 	Lobby lobby;
-	
 
 	public Menu(ViewManager viewManager, Client client, Lobby lobby) {
 		this.viewManager = viewManager;
@@ -35,8 +34,6 @@ public class Menu extends JPanel {
 		this.lobby = lobby;
 		initMenu();
 	}
-
-	
 
 	void initMenu() {
 
@@ -62,8 +59,7 @@ public class Menu extends JPanel {
 		hostButton.setBackground(new Color(0, 76, 153));
 		hostButton.setOpaque(true);
 		hostButton.setBorderPainted(false);
-		
-		
+
 		hostButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -83,29 +79,32 @@ public class Menu extends JPanel {
 		joinButton.setBackground(new Color(0, 76, 153));
 		joinButton.setOpaque(true);
 		joinButton.setBorderPainted(false);
-		
-		
+
 		joinButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String inputHostAddress = JOptionPane.showInputDialog(Menu.this, "Enter Host's IP Address:", "Connect to Host", JOptionPane.QUESTION_MESSAGE);
-				
+				String inputHostAddress = JOptionPane.showInputDialog(Menu.this, "Enter Host's IP Address:",
+						"Connect to Host", JOptionPane.QUESTION_MESSAGE);
+
 				if (inputHostAddress != null && !inputHostAddress.isEmpty()) {
 					try {
-						client.joinLobby(inputHostAddress);  
+						client.joinLobby(inputHostAddress);
+						lobby.initPlayerTable();
 						viewManager.changeView("lobby");
+
+						
 					} catch (Exception ex) {
-						JOptionPane.showMessageDialog(Menu.this, "Failed to connect. Check the IP address and try again.", "Connection Error", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(Menu.this,
+								"Failed to connect. Check the IP address and try again.", "Connection Error",
+								JOptionPane.ERROR_MESSAGE);
 					}
 				} else {
-					JOptionPane.showMessageDialog(Menu.this, "Please input an IP address", "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(Menu.this, "Please input an IP address", "Error",
+							JOptionPane.ERROR_MESSAGE);
 				}
+
 			}
 		});
-		
-		
-		
-		
 
 		// Add a "Save" JButton
 		JButton saveButton = new JButton("Save");
@@ -123,7 +122,7 @@ public class Menu extends JPanel {
 
 				// Clear the JTextField, ready for the next one
 				textField.setText("");
-				
+
 				repaint();
 			}
 		});
