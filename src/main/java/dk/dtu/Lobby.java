@@ -50,19 +50,19 @@ public class Lobby extends JPanel implements View {
         this.lobbySpace = new SequentialSpace();
         this.repository.add("lobby", this.lobbySpace);
         players2 = new ArrayList<String>();
-        
+
     }
 
 
     public void initPlayerTable(ServerInfo info){
-    	updatePlayerList(info);
-    	
+        updatePlayerList(info);
+
         // The table showing the players
         String[] TABLE_COLUMNS = { "Players" };
         tableModel = new DefaultTableModel(TABLE_COLUMNS, 0) {
-			private static final long serialVersionUID = -4371585539792034587L;
+            private static final long serialVersionUID = -4371585539792034587L;
 
-			@Override
+            @Override
             public boolean isCellEditable(int row, int column) {
                 // all cells false
                 return false;
@@ -93,12 +93,11 @@ public class Lobby extends JPanel implements View {
         title.setForeground(new Color(0, 76, 153));
         title.setHorizontalAlignment(0);
 
- 
         String[] CHAT_COLUMNS = { "Chat" };
         chatModel = new DefaultTableModel(CHAT_COLUMNS, 0) {
-			private static final long serialVersionUID = -1892645556686553938L;
+            private static final long serialVersionUID = -1892645556686553938L;
 
-			@Override
+            @Override
             public boolean isCellEditable(int row, int column) {
                 // all cells false
                 return false;
@@ -148,6 +147,7 @@ public class Lobby extends JPanel implements View {
         readyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                viewManager.changeView("gameView");
                 playerReady = true;
             }
         });
@@ -205,31 +205,31 @@ public class Lobby extends JPanel implements View {
         add(Box.createVerticalStrut(30), paddgbc);
 
     }
-    
-	//Called when the view is changed to lobby
-	public void whenEntering() {
-        if(client.getIsHost()) {
+
+    // Called when the view is changed to lobby
+    public void whenEntering() {
+        if (client.getIsHost()) {
             backButton.setText("Close Lobby");
         } else {
-        	backButton.setText("Leave Lobby");
+            backButton.setText("Leave Lobby");
         }
-        
-		initPlayerTable(client.getServerInfo());
-	}
-	
-	public void whenExiting() {
-		if(client.getIsHost()) {
-			client.KillLobby();
-		} else {
-			client.LeaveLobby();
-		}
+
+        initPlayerTable(client.getServerInfo());
+    }
+
+    public void whenExiting() {
+        if (client.getIsHost()) {
+            client.KillLobby();
+        } else {
+            client.LeaveLobby();
+        }
         removeAll();
-	}
-	
-	public void clientRequestedUpdate() {
-		initPlayerTable(client.getServerInfo());
-		repaint();
-	}
+    }
+
+    public void clientRequestedUpdate() {
+        initPlayerTable(client.getServerInfo());
+        repaint();
+    }
 
     void remakePlayerTable() {
         initLobby();
@@ -297,10 +297,8 @@ public class Lobby extends JPanel implements View {
                 chatField.setText("");
                 try {
                     client.getClientChatSpace().put(client.getName(), message);
-                    //System.out.println(client.getClientMessage());
-                    
-                    chatModel.addRow(new Object[]  {client.getClientMessage()});
-                    System.out.println("client.getClientMessage()");
+                    chatModel.addRow(new Object[] { client.getClientMessage() });
+
                 } catch (InterruptedException e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();

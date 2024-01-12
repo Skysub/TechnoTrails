@@ -15,6 +15,8 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 public class BattlePanel extends JPanel {
     private CustomDrawingPanel drawingPanel;
     private Client client;
+    static final int SCREEN_HEIGHT = 720;
+	static final int SCREEN_WIDTH = 1280;
 
     public BattlePanel(Client client) {
         this.client = client;
@@ -25,7 +27,7 @@ public class BattlePanel extends JPanel {
         gbc.fill = GridBagConstraints.BOTH;
         drawingPanel = new CustomDrawingPanel();
         drawingPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        drawingPanel.setPreferredSize(new Dimension(400, 400));
+        drawingPanel.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         add(drawingPanel, gbc);
     }
 
@@ -34,8 +36,11 @@ public class BattlePanel extends JPanel {
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             Graphics2D g2d = (Graphics2D) g;
-            for (PlayerInfo p : client.getGameState().players.values())
-                drawGame(g2d, p);
+            g2d.setColor(Color.RED);
+            Rectangle2D.Float rect = new Rectangle2D.Float(100, 100, 50.5f, 50.5f);
+            g2d.fill(rect);
+            /*for (PlayerInfo p : client.getGameState().players.values())
+                drawGame(g2d, p);*/
         }
 
         public void drawGame(Graphics2D g2d, PlayerInfo p) {
