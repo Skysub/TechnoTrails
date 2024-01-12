@@ -299,4 +299,8 @@ public class Lobby extends JPanel implements View {
 			}
 		}
 	}
+
+    public DefaultTableModel getChatModel() {
+        return chatModel;
+    }
 }

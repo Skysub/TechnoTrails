@@ -13,6 +13,8 @@ public class Client {
 	ViewManager viewManager;
 	GameState gameState;
 	Space chatSpace;
+	ChatClient chatClient;
+	Thread chatThread;
 	private String myName = "unset";
 	public String hostAddress = "localhost";
 	public Server server;
@@ -78,7 +80,13 @@ public class Client {
 		lobbyClient = new LobbyClient(lobbySpace, myID, this);
 		lobbyClientThread = new Thread(lobbyClient);
 		lobbyClientThread.start();
+		
+		Lobby lobbyView = (Lobby) viewManager.getView("lobby");
+		chatClient = new ChatClient(getClientChatSpace(), getMyID(), this, lobbyView.getChatModel());
+		chatThread = new Thread(chatClient);
 	}
+
+	
 
 	public void LeaveLobby() {
 
@@ -135,4 +143,7 @@ public class Client {
     public ServerInfo getServerInfo() {
        return this.serverInfo;
     }
+	public int getMyID() {
+		return myID;
+	}
 }
