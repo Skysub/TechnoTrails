@@ -45,6 +45,10 @@ public class LobbyClient implements Runnable {
 					case LobbyShutdown:
 
 						break;
+						
+					case LobbySaysGoodbye:
+						if(client.FinalizeDisconnect()) return;
+						break;
 
 					default:
 						System.out.println(

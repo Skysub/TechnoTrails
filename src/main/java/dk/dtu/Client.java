@@ -9,7 +9,7 @@ import org.jspace.RemoteSpace;
 import org.jspace.Space;
 
 public class Client {
-	
+
 	ViewManager viewManager;
 	GameState gameState;
 	Space chatSpace;
@@ -21,7 +21,6 @@ public class Client {
 	Space lobbySpace;
 	LobbyClient lobbyClient;
 	Thread lobbyClientThread;
-	
 
 	ServerInfo serverInfo;
 
@@ -42,7 +41,7 @@ public class Client {
 
 	public void KillLobby() {
 		if (isHost) {
-			LeaveLobby();
+			AttemptDisconnect();
 
 			server.kill();
 			server = null;
@@ -65,10 +64,10 @@ public class Client {
 
 			// 5
 			lobbySpace.put(myID, myName);
-			
-			//response = lobbySpace.query(new FormalField(ServerInfo.class));
-			//setNewServerInfo((ServerInfo)response[0]);
-			
+
+			// response = lobbySpace.query(new FormalField(ServerInfo.class));
+			// setNewServerInfo((ServerInfo)response[0]);
+
 			System.out.println("You have joined the lobby");
 		} catch (Exception e) {
 			System.out.println("Error Joining lobby with ip: " + hostAddress);
@@ -80,8 +79,27 @@ public class Client {
 		lobbyClientThread.start();
 	}
 
-	public void LeaveLobby() {
-
+	public void AttemptDisconnect() {
+		try {
+			lobbySpace.put(myID, ClientToLobbyMessage.ClientDisconnect);
+		} catch (InterruptedException e) {
+			System.out.println("Error when attempting to disconnect");
+			e.printStackTrace();
+		}
+	}
+	
+	public boolean FinalizeDisconnect() {
+		chatSpace = null;
+		lobbySpace = null;
+		//gameSpace = null;
+		myID = -1;
+		serverInfo = new ServerInfo();
+		serverInfo.playerList = new HashMap<Integer, String>();
+		hostAddress = "localhost";
+		lobbyClientThread = null;
+		lobbyClient = null;
+		
+		return true;
 	}
 
 	public void setNewServerInfo(ServerInfo serverInfo) {
@@ -132,7 +150,7 @@ public class Client {
 		return isHost;
 	}
 
-    public ServerInfo getServerInfo() {
-       return this.serverInfo;
-    }
+	public ServerInfo getServerInfo() {
+		return this.serverInfo;
+	}
 }

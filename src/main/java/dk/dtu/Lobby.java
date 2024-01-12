@@ -216,7 +216,7 @@ public class Lobby extends JPanel implements View {
 		if (client.getIsHost()) {
 			client.KillLobby();
 		} else {
-			client.LeaveLobby();
+			client.AttemptDisconnect();
 		}
 	}
 
