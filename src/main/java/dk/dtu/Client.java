@@ -21,6 +21,7 @@ public class Client {
 	public String hostAddress = "localhost";
 	public Server server;
 	private boolean isHost = false;
+	private boolean disconnecting = false;
 	private int myID = -1;
 	Space lobbySpace;
 	LobbyClient lobbyClient;
@@ -38,95 +39,111 @@ public class Client {
 
 	public boolean CreateLobby(String hAddress) {
 		this.hostAddress = hAddress;
-		
-		//check if a lobby already exists here
+
+		// check if a lobby already exists here
 		try {
 			new RemoteSpace("tcp://" + hostAddress + ":9001/lobby?keep").close();
-			
+
 			System.out.println("A lobby already exists at the adress: " + hostAddress);
-			return false; //A lobbyspace is already open here
+			return false; // A lobbyspace is already open here
 		} catch (UnknownHostException e) {
 			System.out.println("host bad");
 			e.printStackTrace();
+			return false;
 		} catch (IOException e) {
-			//We may continue
+			// We may continue
 		}
-		
+
+		isHost = true;
 		server = new Server();
 		server.createLobby(); // This starts the server and initializes the lobby
-		isHost = true;
-		joinLobby(hostAddress);
+		try {
+			joinLobby(hostAddress);
+		} catch (IOException | InterruptedException e) {
+			System.out.println("Could not join fresh lobby");
+			e.printStackTrace();
+		}
 		return true;
 	}
 
 	public void KillLobby() {
-		if (isHost) {
-			server.kill();
-			server = null;
-			isHost = false;
-		}
+		server.kill();
+		server = null;
+		isHost = false;
 	}
 
-	public void joinLobby(String hostAddress) {
-		try {
-			lobbySpace = new RemoteSpace("tcp://" + hostAddress + ":9001/lobby?keep");
-			chatSpace = new RemoteSpace("tcp://" + hostAddress + ":9001/chat?keep");
+	public boolean joinLobby(String hostAddress) throws UnknownHostException, IOException, InterruptedException {
+		lobbySpace = new RemoteSpace("tcp://" + hostAddress + ":9001/lobby?keep");
+		chatSpace = new RemoteSpace("tcp://" + hostAddress + ":9001/chat?keep");
 
-			// 1
-			int randomInt = ThreadLocalRandom.current().nextInt(1000001, 1000000001); // 1 million to 1 billion
-			lobbySpace.put(randomInt, ClientToLobbyMessage.ClientJoin);
+		// 1
+		int randomInt = ThreadLocalRandom.current().nextInt(1000001, 1000000001); // 1 million to 1 billion
+		lobbySpace.put(randomInt, ClientToLobbyMessage.ClientJoin);
 
-			// 4
-			Object[] response = lobbySpace.get(new FormalField(Integer.class), new ActualField(randomInt));
-			myID = (int) response[0];
+		// 4
+		Object[] response = lobbySpace.get(new FormalField(Integer.class), new ActualField(randomInt));
+		myID = (int) response[0];
 
-			// 5
-			lobbySpace.put(myID, myName);
+		// 5
+		lobbySpace.put(myID, myName);
 
-			// response = lobbySpace.query(new FormalField(ServerInfo.class));
-			// setNewServerInfo((ServerInfo)response[0]);
+		// response = lobbySpace.query(new FormalField(ServerInfo.class));
+		// setNewServerInfo((ServerInfo)response[0]);
 
-			System.out.println("You have joined the lobby");
-		} catch (Exception e) {
-			System.out.println("Error Joining lobby with ip: " + hostAddress);
-		}
+		System.out.println("You have joined the lobby");
 
 		// Enter loop querying the lobby
 		lobbyClient = new LobbyClient(lobbySpace, myID, this);
 		lobbyClientThread = new Thread(lobbyClient);
 		lobbyClientThread.start();
 		Lobby lobbyView = (Lobby) viewManager.getView("lobby");
-		/*chatClient = new ChatClient(getClientChatSpace(), getMyID(), this, lobbyView.getChatModel());
-		chatClientThread = new Thread(chatClient);
-		chatClientThread.start();*/
+		/*
+		 * chatClient = new ChatClient(getClientChatSpace(), getMyID(), this,
+		 * lobbyView.getChatModel()); chatClientThread = new Thread(chatClient);
+		 * chatClientThread.start();
+		 */
+		return true;
 	}
 
 	public void AttemptDisconnect() {
-		try {
-			lobbySpace.put(myID, ClientToLobbyMessage.ClientDisconnect);
-		} catch (InterruptedException e) {
-			System.out.println("Error when attempting to disconnect");
-			e.printStackTrace();
+		if (!disconnecting) {
+			System.out.println("Attempting to disconnect");
+			try {
+				if (lobbySpace != null) {
+					lobbySpace.put(myID, ClientToLobbyMessage.ClientDisconnect);
+					disconnecting = true;
+				} else {
+					System.out.println("lobbySpace was null when attempting to disconnect");
+				}
+			} catch (InterruptedException e) {
+				System.out.println("Error when attempting to disconnect");
+				e.printStackTrace();
+			}
+		} else {
+			System.out.println("Already attempting to disconnect");
 		}
 	}
-	
+
 	public boolean FinalizeDisconnect() {
 		try {
+			System.out.print("Finalizing disconnection, sending (" + myID + ", ClientDone) ...");
 			lobbySpace.put(myID, ClientToLobbyMessage.ClientDone);
+			System.out.println("sent");
 		} catch (InterruptedException e) {
 			System.out.println("Error when finalizing a disconnect");
 			e.printStackTrace();
 		}
 		chatSpace = null;
 		lobbySpace = null;
-		//gameSpace = null;
+		// gameSpace = null;
 		myID = -1;
 		serverInfo = new ServerInfo();
 		serverInfo.playerList = new HashMap<Integer, String>();
 		hostAddress = "localhost";
 		lobbyClientThread = null;
 		lobbyClient = null;
-		
+		disconnecting = false;
+
 		viewManager.changeView("menu");
 		return true;
 	}
@@ -179,9 +196,10 @@ public class Client {
 		return isHost;
 	}
 
-    public ServerInfo getServerInfo() {
-       return this.serverInfo;
-    }
+	public ServerInfo getServerInfo() {
+		return this.serverInfo;
+	}
+
 	public int getMyID() {
 		return myID;
 	}

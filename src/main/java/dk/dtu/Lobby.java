@@ -128,13 +128,15 @@ public class Lobby extends JPanel implements View {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (client.getIsHost()) {
+					System.out.println("Host pressed closed lobby");
 					client.KillLobby();
 				} else {
+					System.out.println("Non host pressed leave lobby");
 					client.AttemptDisconnect();
 				}
 			}
 		});
-
+		
 		GridBagConstraints backgbc = new GridBagConstraints();
 		backgbc.gridwidth = GridBagConstraints.REMAINDER;
 		backgbc.fill = GridBagConstraints.NONE;

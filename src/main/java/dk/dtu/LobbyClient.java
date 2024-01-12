@@ -39,7 +39,6 @@ public class LobbyClient implements Runnable {
 						break;
 
 					case LobbyGameStart:
-
 						break;
 
 					case LobbyShutdown:

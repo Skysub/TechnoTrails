@@ -79,8 +79,12 @@ public class Server {
 	
 	public boolean DropClient(int ID) {
 		try {
+			System.out.print("Saying goodbye to ID:"+ID+" ... ");
 			lobbySpace.put(ID, LobbyToClientMessage.LobbySaysGoodbye);
+			System.out.println("sent");
+			System.out.print("Waiting for ClientDone from ID:"+ID+" ... ");
 			lobbySpace.get(new ActualField(ID), new ActualField(ClientToLobbyMessage.ClientDone));
+			System.out.println("recieved");
 		} catch (InterruptedException e) {
 			System.out.println("Error when saying goodbye to a client");
 			e.printStackTrace();
@@ -92,7 +96,7 @@ public class Server {
 	}
 
 	void kill() {
-		System.out.println("Server shutting down...");
+		System.out.println("Server shutting down");
 		shuttingDown = true;
 		try {
 			for (int id : info.playerList.keySet()) {
@@ -103,7 +107,17 @@ public class Server {
 			System.out.println("Error when shutting down the lobby");
 			e.printStackTrace();
 		}
+		
+		//Waiting for 100 ms and then shutting down the repository of spaces
+		System.out.print("Shutting down the spaceRepo ... ");
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			System.out.println("Attempted to sleep before shutting down repo, but was interrupted");
+			e.printStackTrace();
+		}
 		repository.shutDown();
+		System.out.println("done");
 	}
 
 	public void setNewServerInfo(ServerInfo serverInfo) {
