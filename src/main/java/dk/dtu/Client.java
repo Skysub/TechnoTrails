@@ -34,7 +34,7 @@ public class Client {
 		this.viewManager = viewManager;
 		setName(RandomWords.getRandomWord());
 		serverInfo = new ServerInfo();
-		serverInfo.playerList = new HashMap<Integer, String>();
+		serverInfo.playerList = new HashMap<Integer, PlayerServerInfo>();
 	}
 
 	public boolean CreateLobby(String hAddress) {
@@ -138,7 +138,7 @@ public class Client {
 		// gameSpace = null;
 		myID = -1;
 		serverInfo = new ServerInfo();
-		serverInfo.playerList = new HashMap<Integer, String>();
+		serverInfo.playerList = new HashMap<Integer, PlayerServerInfo>();
 		hostAddress = "localhost";
 		lobbyClientThread = null;
 		lobbyClient = null;
@@ -146,6 +146,15 @@ public class Client {
 
 		viewManager.changeView("menu");
 		return true;
+	}
+	
+	public void ToggleReady() {
+		try {
+			lobbySpace.put(myID, ClientToLobbyMessage.ClientToggleReady);
+		} catch (InterruptedException e) {
+			System.out.println("Error when toggling ready");
+			e.printStackTrace();
+		}
 	}
 
 	public void setNewServerInfo(ServerInfo serverInfo) {

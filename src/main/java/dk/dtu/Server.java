@@ -28,7 +28,7 @@ public class Server {
 	Server() {
 		info = new ServerInfo();
 		info.tps = defaultTickRate;
-		info.playerList = new HashMap<Integer, String>();
+		info.playerList = new HashMap<Integer, PlayerServerInfo>();
 	}
 
 	public boolean createLobby() {
@@ -72,7 +72,7 @@ public class Server {
 			e.printStackTrace();
 			return;
 		}
-		info.playerList.put(lastID, newName);
+		info.playerList.put(lastID, new PlayerServerInfo(newName));
 		//7
 		ServerClientLobbyUpdate();
 	}
@@ -124,6 +124,12 @@ public class Server {
 		this.info = serverInfo;
 		ServerClientLobbyUpdate();
 	}
+	
+	public void TogglePlayerReady(int ID) {
+		boolean pReady = info.playerList.get(ID).ready;
+		info.playerList.get(ID).ready = !pReady;
+		ServerClientLobbyUpdate();
+	}
 
 	public void ServerClientLobbyUpdate() {
 		try {
@@ -147,8 +153,8 @@ public class Server {
 
 	public void printPlayers() {
 		// print list of names and id's
-		for (Entry<Integer, String> i : info.playerList.entrySet()) {
-			System.out.println("ID " + i.getKey() + " : " + i.getValue());
+		for (Entry<Integer, PlayerServerInfo> i : info.playerList.entrySet()) {
+			System.out.println("ID " + i.getKey() + " : " + i.getValue().name);
 		}
 	}
 
@@ -172,4 +178,6 @@ public class Server {
     public Space getChatSpace() {
         return chatSpace;
     }
+
+
 }

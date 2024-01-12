@@ -52,7 +52,8 @@ public class LobbyServer implements Runnable {
 					break;
 
 				case ClientToggleReady:
-
+					System.out.println("toggleReady for ID:" + ID);
+					server.TogglePlayerReady(ID);
 					break;
 
 				default:

@@ -64,7 +64,7 @@ public class Game {
 	}
 	
 	//Creates a fresh game
-	GameState CreateGameState(HashMap<Integer, String> playerList) {
+	GameState CreateGameState(HashMap<Integer, PlayerServerInfo> playerList) {
 		GameState freshState = new GameState();
 		freshState.players = new HashMap<Integer, PlayerInfo>();
 		

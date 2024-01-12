@@ -36,8 +36,8 @@ public class Lobby extends JPanel implements View {
 	JTable chatTable;
 
 	JButton backButton = new JButton("<-");;
-	JButton readyButton = new JButton("Ready");
-	JButton startButton = new JButton("Start Game");
+	JButton readyButton = new JButton("Not Ready");
+	JButton startButton = new JButton("Not all players ready");
 	ViewManager viewManager;
 	Client client;
 	Server server;
@@ -65,9 +65,12 @@ public class Lobby extends JPanel implements View {
 				return false;
 			}
 		};
-		for (String name : info.playerList.values()) {
-
-			tableModel.addRow(new String[] { name });
+		for (PlayerServerInfo player : info.playerList.values()) {
+			String readyString = "Ready - ";
+			if (!player.ready) {
+				readyString =    "Not ready - ";
+			}
+			tableModel.addRow(new String[] { readyString + player.name });
 		}
 		playerTable = new JTable(tableModel);
 		playerTable.setRowHeight(20);
@@ -145,13 +148,14 @@ public class Lobby extends JPanel implements View {
 		backgbc.weighty = 1;
 		backgbc.insets = new Insets(20, 20, 20, 20);
 
+		readyButton = new JButton("Not ready");
 		readyButton.setPreferredSize(new Dimension(50, 50));
 		readyButton.setForeground(Color.blue);
 		readyButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				viewManager.changeView("gameView");
-				playerReady = true;
+				System.out.println("Readybutton pressed");
+				client.ToggleReady();
 			}
 		});
 
@@ -223,11 +227,14 @@ public class Lobby extends JPanel implements View {
 	}
 
 	public void clientRequestedUpdate() {
-		remakePlayerTable();
-	}
-
-	void remakePlayerTable() {
 		initLobby();
+		
+		if(client.getServerInfo().playerList.get(client.getMyID()).ready) {
+			readyButton.setText("Ready");
+		} else {
+			readyButton.setText("Not Ready");
+		}
+		
 		repaint();
 	}
 
@@ -237,34 +244,6 @@ public class Lobby extends JPanel implements View {
 
 		g.setColor(new Color(102, 178, 255));
 		g.fillRect(0, 0, viewManager.getWidth(), viewManager.getHeight());
-	}
-
-	private void updatePlayerList(ServerInfo info) {
-		// Clear the existing player list
-		players2.clear();
-
-		// Add each player to the list
-		for (String name : info.playerList.values()) {
-			players2.add(name);
-		}
-
-		// Update the UI with the new list
-		updatePlayerTable();
-	}
-
-	private void updatePlayerTable() {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				if (playerTable != null) {
-					DefaultTableModel tableModel = (DefaultTableModel) playerTable.getModel();
-					tableModel.setRowCount(0);
-
-					for (String playerName : players2) {
-						tableModel.addRow(new Object[] { playerName });
-					}
-				}
-			}
-		});
 	}
 
 	public boolean allPlayersReady() throws InterruptedException {
