@@ -16,39 +16,57 @@ public class ChatServer implements Runnable {
     @Override
     public void run() {
         try {
-            while (!Thread.currentThread().isInterrupted()) {
-                // Retrieve the next message in the chat space
-                Object[] tuple = chatSpace.get(new FormalField(Integer.class), new FormalField(ChatMessageServer.class), new FormalField(String.class));
+            chatSpace.put(ChatMessageServer.ChatStart);
+        } catch (InterruptedException e) {
+            System.out.println("Error in ChatServer when starting up");
+            e.printStackTrace();
+        }
 
-                Integer playerId = (Integer) tuple[0];
-                ChatMessageServer messageTag = (ChatMessageServer) tuple[1];
-                String content = (String) tuple[2];
-
-                switch (messageTag) {
-                    case ChatMessage:
-                        // Handle regular chat message
+        while (true) {
+            Object[] response;
+            try {
+                // Assuming you have defined playerId and content as fields
+                Object[] template = { new FormalField(Integer.class), new FormalField(ChatMessageServer.class), new FormalField(String.class) };
+                response = chatSpace.get(new FormalField(Integer.class), new FormalField(ChatMessageServer.class));
+            } catch (InterruptedException e) {
+                System.out.println("Error in LobbyServer when reading the lobbySpace");
+                e.printStackTrace();
+                continue;
+            }
+            int playerId = (int) response[0];
+            String content = (String) response[2];
+            try {
+                switch ((ChatMessageServer) response[1]) {
+                    case ChatJoin:
                         broadcastMessage(playerId, content);
                         break;
-                    case ChatJoin:
-                        // Handle client joining chat
-                        broadcastNotification(playerId + " has joined the chat.");
-                        break;
+
                     case ChatLeave:
-                        // Handle client leaving chat
                         broadcastNotification(playerId + " has left the chat.");
                         break;
+
+                    case ChatMessage:
+                        broadcastMessage(playerId, content);
+                        break;
+
                     case ChatShutdown:
                         // Handle chat server shutdown
                         broadcastNotification("Chat server is shutting down.");
                         break;
-                    default:
-                        // Handle unknown message types
-                        System.out.println("Unknown chat message type received: " + messageTag);
+
+                    case ChatNotification:
+                        // Handle chat notification
+                        broadcastNotification(content);
                         break;
+
+                    default:
+					System.out.println(
+					"ChatServer hasn't implemented a response for the ChatServerMessage: " + (ChatMessageServer) response[1]);
+					break;
                 }
+            } catch (InterruptedException e) {
+                System.out.println("Chat server interrupted: " + e.getMessage());
             }
-        } catch (InterruptedException e) {
-            System.out.println("Chat server interrupted: " + e.getMessage());
         }
     }
 

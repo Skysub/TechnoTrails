@@ -17,9 +17,10 @@ enum LobbyMessage {
 	LobbyShutdown,
 }
 enum ChatMessageServer{
+	ChatStart,
 	ChatJoin,
     ChatLeave,
     ChatMessage,
-    ChatNotification,
     ChatShutdown,
+	ChatNotification,
 }

@@ -148,6 +148,7 @@ public class Lobby extends JPanel implements View {
         readyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                
                 playerReady = true;
             }
         });

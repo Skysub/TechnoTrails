@@ -20,6 +20,8 @@ public class Server {
 
 	LobbyServer lobbyServer;
 	Thread lobbyThread;
+	ChatServer chatServer;
+	Thread chatThread;
 
 	Server() {
 		info = new ServerInfo();
@@ -39,6 +41,10 @@ public class Server {
 		lobbyServer = new LobbyServer(lobbySpace, info, this);
 		lobbyThread = new Thread(lobbyServer);
 		lobbyThread.start();
+
+		chatServer = new ChatServer(chatSpace, info, this);
+		chatThread = new Thread(chatServer);
+		chatThread.start();
 
 		try {
 			lobbySpace.get(new ActualField(LobbyMessage.LobbyStart));
