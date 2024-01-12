@@ -75,6 +75,18 @@ public class Server {
 		//7
 		ServerClientLobbyUpdate();
 	}
+	
+	public void DropClient(int ID) {
+		try {
+			lobbySpace.put(ID, LobbyToClientMessage.LobbySaysGoodbye);
+		} catch (InterruptedException e) {
+			System.out.println("Error when saying goodbye to a client");
+			e.printStackTrace();
+		}
+		
+		info.playerList.remove(ID);
+		ServerClientLobbyUpdate();
+	}
 
 	void kill() {
 		try {

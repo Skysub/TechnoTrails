@@ -46,7 +46,7 @@ public class LobbyServer implements Runnable {
 					break;
 
 				case ClientDisconnect:
-
+					server.DropClient(ID);
 					break;
 
 				case ClientToggleReady:
