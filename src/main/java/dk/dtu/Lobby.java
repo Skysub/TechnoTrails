@@ -78,7 +78,7 @@ public class Lobby extends JPanel implements View {
     }
 
     public void initLobby() {
-
+        removeAll();
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER;
@@ -223,7 +223,6 @@ public class Lobby extends JPanel implements View {
         } else {
             client.LeaveLobby();
         }
-        removeAll();
     }
 
     public void clientRequestedUpdate() {
