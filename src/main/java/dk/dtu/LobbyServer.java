@@ -1,6 +1,5 @@
 package dk.dtu;
 
-import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.Space;
 
@@ -21,7 +20,7 @@ public class LobbyServer implements Runnable {
 	@Override
 	public void run() {
 		try {
-			lobbySpace.put(LobbyMessage.LobbyStart);
+			lobbySpace.put(LobbyToClientMessage.LobbyStart);
 		} catch (InterruptedException e) {
 			System.out.println("Error in LobbyServer when starting up");
 			e.printStackTrace();
@@ -31,7 +30,7 @@ public class LobbyServer implements Runnable {
 			Object[] response;
 			try {
 				//2
-				response = lobbySpace.get(new FormalField(Integer.class), new FormalField(LobbyMessage.class));
+				response = lobbySpace.get(new FormalField(Integer.class), new FormalField(ClientToLobbyMessage.class));
 			} catch (InterruptedException e) {
 				System.out.println("Error in LobbyServer when reading the lobbySpace");
 				e.printStackTrace();
@@ -41,7 +40,7 @@ public class LobbyServer implements Runnable {
 			int ID = (int) response[0];
 			// Now to handle the lobbymessage
 			try {
-				switch ((LobbyMessage) response[1]) {
+				switch ((ClientToLobbyMessage) response[1]) {
 				case ClientJoin:
 					server.addPlayer(ID);
 					break;
@@ -56,11 +55,11 @@ public class LobbyServer implements Runnable {
 
 				default:
 					System.out.println(
-							"LobbyServer hasn't implemented a response for the LobbyMessage: " + (LobbyMessage) response[1]);
+							"LobbyServer hasn't implemented a response for the ClientToLobbyMessage: " + (ClientToLobbyMessage) response[1]);
 					break;
 				}
 			} catch (Exception e) {
-				System.out.println("Error in LobbyServer when handling a LobbyMessage: " + (LobbyMessage) response[1]);
+				System.out.println("Error in LobbyServer when handling a ClientToLobbyMessage: " + (ClientToLobbyMessage) response[1]);
 			}
 		}
 	}

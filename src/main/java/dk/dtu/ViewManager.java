@@ -60,7 +60,6 @@ public class ViewManager extends JFrame {
     	views.get(currentView).whenExiting();
     	viewLayout.show(viewPanel, s);
     	currentView = s;
-    	updateView();
     	views.get(s).whenEntering(); //The views get to know when they get changed to
     }
     

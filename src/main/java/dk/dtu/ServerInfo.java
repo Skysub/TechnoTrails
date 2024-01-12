@@ -4,18 +4,22 @@ import java.util.HashMap;
 
 public class ServerInfo {
     public HashMap<Integer, String> playerList = new HashMap<Integer, String>();
-    public int tps;
+    public int tps = -1;
 }
 
-enum LobbyMessage {
+enum LobbyToClientMessage {
 	LobbyStart,
-	ClientJoin,
 	LobbyUpdate,
-	ClientDisconnect,
-	ClientToggleReady,
 	LobbyGameStart,
 	LobbyShutdown,
 }
+
+enum ClientToLobbyMessage {
+	ClientJoin,
+	ClientDisconnect,
+	ClientToggleReady,
+}
+
 enum ChatMessageServer{
 	ChatStart,
 	ChatJoin,

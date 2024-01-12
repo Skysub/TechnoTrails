@@ -1,5 +1,6 @@
 package dk.dtu;
 
+import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.jspace.ActualField;
@@ -27,6 +28,8 @@ public class Client {
 	Client(ViewManager viewManager) {
 		this.viewManager = viewManager;
 		setName(RandomWords.getRandomWord());
+		serverInfo = new ServerInfo();
+		serverInfo.playerList = new HashMap<Integer, String>();
 	}
 
 	public void CreateLobby(String hAddress) {
@@ -49,12 +52,12 @@ public class Client {
 
 	public void joinLobby(String hostAddress) {
 		try {
-			Space lobbySpace = new RemoteSpace("tcp://" + hostAddress + ":9001/lobby?keep");
+			lobbySpace = new RemoteSpace("tcp://" + hostAddress + ":9001/lobby?keep");
 			chatSpace = new RemoteSpace("tcp://" + hostAddress + ":9001/chat?keep");
 
 			// 1
 			int randomInt = ThreadLocalRandom.current().nextInt(1000001, 1000000001); // 1 million to 1 billion
-			lobbySpace.put(randomInt, LobbyMessage.ClientJoin);
+			lobbySpace.put(randomInt, ClientToLobbyMessage.ClientJoin);
 
 			// 4
 			Object[] response = lobbySpace.get(new FormalField(Integer.class), new ActualField(randomInt));
@@ -63,8 +66,8 @@ public class Client {
 			// 5
 			lobbySpace.put(myID, myName);
 			
-			response = lobbySpace.query(new FormalField(ServerInfo.class));
-			setNewServerInfo((ServerInfo)response[0]);
+			//response = lobbySpace.query(new FormalField(ServerInfo.class));
+			//setNewServerInfo((ServerInfo)response[0]);
 			
 			System.out.println("You have joined the lobby");
 		} catch (Exception e) {
