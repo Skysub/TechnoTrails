@@ -234,8 +234,6 @@ public class Lobby extends JPanel implements View {
 		} else {
 			readyButton.setText("Not Ready");
 		}
-		
-		//repaint();
 	}
 
 	@Override
