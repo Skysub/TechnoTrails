@@ -68,9 +68,9 @@ public class Lobby extends JPanel implements View {
                 return false;
             }
         };
-        for (int i = 0; i < players2.size(); i++) {
+        for (String name : info.playerList.values()) {
 
-            tableModel.addRow(new String[] { players2.get(i) + client.getName() });
+            tableModel.addRow(new String[] { name });
         }
         playerTable = new JTable(tableModel);
         playerTable.setRowHeight(20);

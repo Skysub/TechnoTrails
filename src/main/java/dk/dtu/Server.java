@@ -47,8 +47,8 @@ public class Server {
 		chatThread.start();
 
 		try {
-			lobbySpace.get(new ActualField(LobbyMessage.LobbyStart));
-			setNewServerInfo(info);
+			lobbySpace.get(new ActualField(LobbyToClientMessage.LobbyStart));
+			//setNewServerInfo(info);
 		} catch (InterruptedException e) {
 			System.out.println("Error when starting lobby");
 			e.printStackTrace();
@@ -62,7 +62,8 @@ public class Server {
 		String newName;
 		try {
 			//3
-			lobbySpace.put(lastID++, identifier);
+			lastID++;
+			lobbySpace.put(lastID, identifier);
 			//6
 			newName = (String) lobbySpace.get(new ActualField(lastID), new FormalField(String.class))[1];
 		} catch (InterruptedException e) {
@@ -109,7 +110,7 @@ public class Server {
 			// 3
 			for (int id : info.playerList.keySet()) {
 				// 4
-				lobbySpace.put(id, LobbyMessage.LobbyUpdate);
+				lobbySpace.put(id, LobbyToClientMessage.LobbyUpdate);
 			}
 
 		} catch (InterruptedException e) {

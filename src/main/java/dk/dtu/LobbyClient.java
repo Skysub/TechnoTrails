@@ -23,7 +23,7 @@ public class LobbyClient implements Runnable {
 			try {
 				// 5 in server-client lobby update, 3 in host kills server, 3 in lobby signals
 				// gamestart
-				response = lobbySpace.get(new ActualField(myID), new FormalField(LobbyMessage.class));
+				response = lobbySpace.get(new ActualField(myID), new FormalField(LobbyToClientMessage.class));
 			} catch (InterruptedException e) {
 				System.out.println("Error in LobbyClient when reading the lobbySpace");
 				e.printStackTrace();
@@ -32,7 +32,7 @@ public class LobbyClient implements Runnable {
 
 			// Now to handle the lobbymessage
 			try {
-				switch ((LobbyMessage) response[1]) {
+				switch ((LobbyToClientMessage) response[1]) {
 					case LobbyUpdate:
 						// 6
 						client.setNewServerInfo((ServerInfo) lobbySpace.query(new FormalField(ServerInfo.class))[0]);
@@ -48,12 +48,12 @@ public class LobbyClient implements Runnable {
 
 					default:
 						System.out.println(
-								"Client hasn't implemented a response for the LobbyMessage: "
-										+ (LobbyMessage) response[1]);
+								"Client hasn't implemented a response for the LobbyToClientMessage: "
+										+ (LobbyToClientMessage) response[1]);
 						break;
 				}
 			} catch (InterruptedException e) {
-				System.out.println("Error in LobbyClient when handling a LobbyMessage: " + (LobbyMessage) response[1]);
+				System.out.println("Error in LobbyClient when handling a LobbyToClientMessage: " + (LobbyToClientMessage) response[1]);
 			}
 		}
 	}
