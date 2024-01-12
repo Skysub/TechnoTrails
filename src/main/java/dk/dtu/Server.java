@@ -22,6 +22,8 @@ public class Server {
 	Thread lobbyThread;
 	ChatServer chatServer;
 	Thread chatThread;
+	SpaceRepository repository;
+	boolean shuttingDown = false;
 
 	Server() {
 		info = new ServerInfo();
@@ -30,8 +32,7 @@ public class Server {
 	}
 
 	public boolean createLobby() {
-		// addPlayer(hostName);
-		SpaceRepository repository = new SpaceRepository();
+		repository = new SpaceRepository();
 		repository.addGate("tcp://" + hostAddress + ":9001/?keep");
 		lobbySpace = new SequentialSpace();
 		repository.add("lobby", lobbySpace);
@@ -76,34 +77,33 @@ public class Server {
 		ServerClientLobbyUpdate();
 	}
 	
-	public void DropClient(int ID) {
+	public boolean DropClient(int ID) {
 		try {
 			lobbySpace.put(ID, LobbyToClientMessage.LobbySaysGoodbye);
+			lobbySpace.get(new ActualField(ID), new ActualField(ClientToLobbyMessage.ClientDone));
 		} catch (InterruptedException e) {
 			System.out.println("Error when saying goodbye to a client");
 			e.printStackTrace();
 		}
-		
+
 		info.playerList.remove(ID);
-		ServerClientLobbyUpdate();
+		if(!shuttingDown) ServerClientLobbyUpdate();
+		return (shuttingDown && info.playerList.isEmpty());
 	}
 
 	void kill() {
+		System.out.println("Server shutting down...");
+		shuttingDown = true;
 		try {
-			if (lobbySpace != null) {
-				lobbySpace.put("shutdown");
+			for (int id : info.playerList.keySet()) {
+				lobbySpace.put(id, LobbyToClientMessage.LobbyShutdown);
 			}
-			if (chatSpace != null) {
-				chatSpace.put("shutdown");
-			}
-			// Add any additional cleanup or shutdown procedures here
+			lobbySpace.get(new ActualField(LobbyToClientMessage.Done));
 		} catch (InterruptedException e) {
+			System.out.println("Error when shutting down the lobby");
 			e.printStackTrace();
-		} finally {
-			lobbySpace = null;
-			chatSpace = null;
-			info = null;
 		}
+		repository.shutDown();
 	}
 
 	public void setNewServerInfo(ServerInfo serverInfo) {

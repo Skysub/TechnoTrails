@@ -127,7 +127,11 @@ public class Lobby extends JPanel implements View {
 		backButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				viewManager.changeView("menu");
+				if (client.getIsHost()) {
+					client.KillLobby();
+				} else {
+					client.AttemptDisconnect();
+				}
 			}
 		});
 
@@ -213,11 +217,7 @@ public class Lobby extends JPanel implements View {
 	}
 
 	public void whenExiting() {
-		if (client.getIsHost()) {
-			client.KillLobby();
-		} else {
-			client.AttemptDisconnect();
-		}
+
 	}
 
 	public void clientRequestedUpdate() {

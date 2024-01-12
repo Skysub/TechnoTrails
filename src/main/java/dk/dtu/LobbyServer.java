@@ -5,18 +5,17 @@ import org.jspace.Space;
 
 //Handles the lobby functionality of the server
 public class LobbyServer implements Runnable {
-	
+
 	Space lobbySpace;
 	Server server;
 	ServerInfo info;
 
-
-	LobbyServer (Space lobbySpace, ServerInfo info, Server server){
+	LobbyServer(Space lobbySpace, ServerInfo info, Server server) {
 		this.lobbySpace = lobbySpace;
 		this.info = info;
 		this.server = server;
 	}
-	
+
 	@Override
 	public void run() {
 		try {
@@ -25,11 +24,11 @@ public class LobbyServer implements Runnable {
 			System.out.println("Error in LobbyServer when starting up");
 			e.printStackTrace();
 		}
-		
+
 		while (true) {
 			Object[] response;
 			try {
-				//2
+				// 2
 				response = lobbySpace.get(new FormalField(Integer.class), new FormalField(ClientToLobbyMessage.class));
 			} catch (InterruptedException e) {
 				System.out.println("Error in LobbyServer when reading the lobbySpace");
@@ -46,7 +45,10 @@ public class LobbyServer implements Runnable {
 					break;
 
 				case ClientDisconnect:
-					server.DropClient(ID);
+					if (server.DropClient(ID)) {
+						lobbySpace.put(LobbyToClientMessage.Done);
+						return;
+					}
 					break;
 
 				case ClientToggleReady:
@@ -54,12 +56,13 @@ public class LobbyServer implements Runnable {
 					break;
 
 				default:
-					System.out.println(
-							"LobbyServer hasn't implemented a response for the ClientToLobbyMessage: " + (ClientToLobbyMessage) response[1]);
+					System.out.println("LobbyServer hasn't implemented a response for the ClientToLobbyMessage: "
+							+ (ClientToLobbyMessage) response[1]);
 					break;
 				}
 			} catch (Exception e) {
-				System.out.println("Error in LobbyServer when handling a ClientToLobbyMessage: " + (ClientToLobbyMessage) response[1]);
+				System.out.println("Error in LobbyServer when handling a ClientToLobbyMessage: "
+						+ (ClientToLobbyMessage) response[1]);
 			}
 		}
 	}

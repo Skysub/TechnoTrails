@@ -43,7 +43,7 @@ public class LobbyClient implements Runnable {
 						break;
 
 					case LobbyShutdown:
-
+						client.AttemptDisconnect();
 						break;
 						
 					case LobbySaysGoodbye:

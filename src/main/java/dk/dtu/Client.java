@@ -1,5 +1,7 @@
 package dk.dtu;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -31,18 +33,31 @@ public class Client {
 		serverInfo.playerList = new HashMap<Integer, String>();
 	}
 
-	public void CreateLobby(String hAddress) {
+	public boolean CreateLobby(String hAddress) {
 		this.hostAddress = hAddress;
+		
+		//check if a lobby already exists here
+		try {
+			new RemoteSpace("tcp://" + hostAddress + ":9001/lobby?keep").close();
+			
+			System.out.println("A lobby already exists at the adress: " + hostAddress);
+			return false; //A lobbyspace is already open here
+		} catch (UnknownHostException e) {
+			System.out.println("host bad");
+			e.printStackTrace();
+		} catch (IOException e) {
+			//We may continue
+		}
+		
 		server = new Server();
 		server.createLobby(); // This starts the server and initializes the lobby
 		isHost = true;
 		joinLobby(hostAddress);
+		return true;
 	}
 
 	public void KillLobby() {
 		if (isHost) {
-			AttemptDisconnect();
-
 			server.kill();
 			server = null;
 			isHost = false;
@@ -89,6 +104,12 @@ public class Client {
 	}
 	
 	public boolean FinalizeDisconnect() {
+		try {
+			lobbySpace.put(myID, ClientToLobbyMessage.ClientDone);
+		} catch (InterruptedException e) {
+			System.out.println("Error when finalizing a disconnect");
+			e.printStackTrace();
+		}
 		chatSpace = null;
 		lobbySpace = null;
 		//gameSpace = null;
@@ -99,6 +120,7 @@ public class Client {
 		lobbyClientThread = null;
 		lobbyClient = null;
 		
+		viewManager.changeView("menu");
 		return true;
 	}
 

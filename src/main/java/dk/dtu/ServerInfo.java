@@ -12,13 +12,15 @@ enum LobbyToClientMessage {
 	LobbyUpdate,
 	LobbyGameStart,
 	LobbyShutdown,
-	LobbySaysGoodbye,
+	LobbySaysGoodbye, 
+	Done,
 }
 
 enum ClientToLobbyMessage {
 	ClientJoin,
 	ClientDisconnect,
 	ClientToggleReady,
+	ClientDone,
 }
 
 enum ChatMessageServer{

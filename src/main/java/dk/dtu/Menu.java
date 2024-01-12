@@ -61,8 +61,9 @@ public class Menu extends JPanel implements View {
 		hostButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				client.CreateLobby("localhost");
-				viewManager.changeView("lobby");
+				if (client.CreateLobby("localhost")) {
+					viewManager.changeView("lobby");
+				}
 			}
 		});
 
@@ -82,7 +83,7 @@ public class Menu extends JPanel implements View {
 				if (inputHostAddress != null && !inputHostAddress.isEmpty()) {
 					try {
 						client.joinLobby(inputHostAddress);
-						viewManager.changeView("lobby");					
+						viewManager.changeView("lobby");
 					} catch (Exception ex) {
 						JOptionPane.showMessageDialog(Menu.this,
 								"Failed to connect. Check the IP address and try again.", "Connection Error",
@@ -132,18 +133,18 @@ public class Menu extends JPanel implements View {
 		gbc.insets = new Insets(0, 0, 20, 0);
 		add(saveButton, gbc);
 	}
-	
-	//Called when the view is changed to menu
+
+	// Called when the view is changed to menu
 	public void whenEntering() {
-		
+
 	}
-	
+
 	public void whenExiting() {
-		
+
 	}
-	
+
 	public void clientRequestedUpdate() {
-		
+
 	}
 
 	@Override
