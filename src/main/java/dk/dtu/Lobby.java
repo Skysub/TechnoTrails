@@ -68,7 +68,7 @@ public class Lobby extends JPanel implements View {
 		for (PlayerServerInfo player : info.playerList.values()) {
 			String readyString = "Ready - ";
 			if (!player.ready) {
-				readyString =    "Not ready - ";
+				readyString = "Not ready - ";
 			}
 			tableModel.addRow(new String[] { readyString + player.name });
 		}
@@ -139,7 +139,7 @@ public class Lobby extends JPanel implements View {
 				}
 			}
 		});
-		
+
 		GridBagConstraints backgbc = new GridBagConstraints();
 		backgbc.gridwidth = GridBagConstraints.REMAINDER;
 		backgbc.fill = GridBagConstraints.NONE;
@@ -162,7 +162,6 @@ public class Lobby extends JPanel implements View {
 		startButton.setPreferredSize(new Dimension(50, 50));
 		startButton.setForeground(Color.blue);
 		startButton.setToolTipText("Only host can start game when all players are ready");
-		startButton.setEnabled(playerReady);
 		startButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -228,12 +227,23 @@ public class Lobby extends JPanel implements View {
 
 	public void clientRequestedUpdate() {
 		initLobby();
-		
-		if(client.getServerInfo().playerList.get(client.getMyID()).ready) {
+
+		if (client.getServerInfo().playerList.get(client.getMyID()).ready) {
 			readyButton.setText("Ready");
 		} else {
 			readyButton.setText("Not Ready");
 		}
+
+		if (client.IsEveryoneReady()) {
+			if (client.getIsHost()) {
+				startButton.setText("Start Game");
+			} else {
+				startButton.setText("Waiting for host to start");
+			}
+		} else {
+			startButton.setText("Not everyone is ready");
+		}
+		startButton.setEnabled(client.getIsHost() && client.IsEveryoneReady());
 	}
 
 	@Override
@@ -269,12 +279,12 @@ public class Lobby extends JPanel implements View {
 				chatField.setText("");
 				try {
 					client.getClientChatSpace().put(client.getName(), message);
-                    chatModel.setRowCount(0);
-                    List<Object[]> chatMessage = client.getClientChatSpace().queryAll(new FormalField(String.class), new FormalField(String.class));
-                    for (Object[] chatm : chatMessage) {
-                        chatModel.addRow(new Object[] {chatm[0]+": "+chatm[1]});
-                    }
-					
+					chatModel.setRowCount(0);
+					List<Object[]> chatMessage = client.getClientChatSpace().queryAll(new FormalField(String.class),
+							new FormalField(String.class));
+					for (Object[] chatm : chatMessage) {
+						chatModel.addRow(new Object[] { chatm[0] + ": " + chatm[1] });
+					}
 
 				} catch (InterruptedException e1) {
 					// TODO Auto-generated catch block
@@ -284,7 +294,7 @@ public class Lobby extends JPanel implements View {
 		}
 	}
 
-    public DefaultTableModel getChatModel() {
-        return chatModel;
-    }
+	public DefaultTableModel getChatModel() {
+		return chatModel;
+	}
 }

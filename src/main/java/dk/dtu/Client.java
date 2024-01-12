@@ -3,6 +3,7 @@ package dk.dtu;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.jspace.ActualField;
@@ -155,6 +156,13 @@ public class Client {
 			System.out.println("Error when toggling ready");
 			e.printStackTrace();
 		}
+	}
+	
+	public boolean IsEveryoneReady() {
+		for (PlayerServerInfo player : serverInfo.playerList.values()) {
+			if(!player.ready) return false;
+		}
+		return true;
 	}
 
 	public void setNewServerInfo(ServerInfo serverInfo) {
