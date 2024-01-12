@@ -1,6 +1,5 @@
 package dk.dtu;
 
-import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.Space;
 

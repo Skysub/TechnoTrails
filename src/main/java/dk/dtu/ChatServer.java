@@ -26,7 +26,6 @@ public class ChatServer implements Runnable {
             Object[] response;
             try {
                 // Assuming you have defined playerId and content as fields
-                Object[] template = { new FormalField(Integer.class), new FormalField(ChatMessageServer.class), new FormalField(String.class) };
                 response = chatSpace.get(new FormalField(Integer.class), new FormalField(ChatMessageServer.class));
             } catch (InterruptedException e) {
                 System.out.println("Error in LobbyServer when reading the lobbySpace");
