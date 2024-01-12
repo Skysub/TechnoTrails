@@ -70,6 +70,10 @@ public class ViewManager extends JFrame {
     String getCurrentView() {
     	return currentView;
     }
+
+    public View getView(String viewName) {
+        return views.get(viewName);
+    }
 }
 
 

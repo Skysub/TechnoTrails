@@ -15,6 +15,8 @@ public class Client {
 	ViewManager viewManager;
 	GameState gameState;
 	Space chatSpace;
+	ChatClient chatClient;
+	Thread chatThread;
 	private String myName = "unset";
 	public String hostAddress = "localhost";
 	public Server server;
@@ -23,6 +25,7 @@ public class Client {
 	Space lobbySpace;
 	LobbyClient lobbyClient;
 	Thread lobbyClientThread;
+	Thread chatClientThread;
 
 	ServerInfo serverInfo;
 
@@ -92,6 +95,10 @@ public class Client {
 		lobbyClient = new LobbyClient(lobbySpace, myID, this);
 		lobbyClientThread = new Thread(lobbyClient);
 		lobbyClientThread.start();
+		Lobby lobbyView = (Lobby) viewManager.getView("lobby");
+		/*chatClient = new ChatClient(getClientChatSpace(), getMyID(), this, lobbyView.getChatModel());
+		chatClientThread = new Thread(chatClient);
+		chatClientThread.start();*/
 	}
 
 	public void AttemptDisconnect() {
@@ -172,7 +179,10 @@ public class Client {
 		return isHost;
 	}
 
-	public ServerInfo getServerInfo() {
-		return this.serverInfo;
+    public ServerInfo getServerInfo() {
+       return this.serverInfo;
+    }
+	public int getMyID() {
+		return myID;
 	}
 }
