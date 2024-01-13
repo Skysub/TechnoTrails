@@ -28,6 +28,7 @@ public class ChatClient implements Runnable {
 
                 // Update chat model with the received message
                 SwingUtilities.invokeLater(() -> {
+                    //chatModel.setRowCount(0);
                     chatModel.addRow(new Object[] { "Player " + senderId, content });
                 });
 

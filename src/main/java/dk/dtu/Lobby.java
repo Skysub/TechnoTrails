@@ -281,12 +281,7 @@ public class Lobby extends JPanel implements View {
 				chatField.setText("");
 				try {
 					client.getClientChatSpace().put(client.getName(), message);
-					chatModel.setRowCount(0);
-					List<Object[]> chatMessage = client.getClientChatSpace().queryAll(new FormalField(String.class),
-							new FormalField(String.class));
-					for (Object[] chatm : chatMessage) {
-						chatModel.addRow(new Object[] { chatm[0] + ": " + chatm[1] });
-					}
+					
 
 				} catch (InterruptedException e1) {
 					e1.printStackTrace();
