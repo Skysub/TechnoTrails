@@ -3,7 +3,6 @@ package dk.dtu;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.table.DefaultTableModel;
@@ -32,7 +31,7 @@ public class Client {
 	Space lobbySpace;
 	LobbyClient lobbyClient;
 	Thread lobbyClientThread;
-	DefaultTableModel chatModel = new DefaultTableModel();
+	DefaultTableModel chatModel;
 
 	ServerInfo serverInfo;
 

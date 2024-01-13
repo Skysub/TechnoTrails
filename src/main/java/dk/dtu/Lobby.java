@@ -210,6 +210,7 @@ public class Lobby extends JPanel implements View {
 		readyGbc.gridy = 3;
 		add(readyButton, readyGbc);
 		add(Box.createVerticalStrut(30), paddgbc);
+		updateChatModel();
 		revalidate();
 	}
 
@@ -299,4 +300,37 @@ public class Lobby extends JPanel implements View {
 	public DefaultTableModel getClientChatModel(){
 		return client.chatModel;
 	}
+// Create a method to periodically check for new chat messages and update the chat model
+public void updateChatModel() {
+    Timer timer = new Timer(500, new ActionListener() { // Adjust the interval as needed
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                // Query for new chat messages
+                List<Object[]> chatMessages = client.getClientChatSpace().queryAll(
+                        new FormalField(String.class),
+                        new FormalField(String.class));
+
+                // Update the chat model with new messages
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        chatModel.setRowCount(0);
+                        for (Object[] chatm : chatMessages) {
+                            chatModel.addRow(new Object[] { chatm[0] + ": " + chatm[1] });
+                        }
+                    }
+                });
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        }
+    });
+    timer.setRepeats(true);
+    timer.start();
+}
+
+
+
+
 }
