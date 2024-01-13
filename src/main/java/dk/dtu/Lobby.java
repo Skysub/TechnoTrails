@@ -17,7 +17,6 @@ import java.awt.event.*;
 
 public class Lobby extends JPanel implements View {
 
-	private boolean playerReady;
 	public int numberOfPlayers;
 
 	public SpaceRepository repository;
@@ -50,9 +49,11 @@ public class Lobby extends JPanel implements View {
 		this.lobbySpace = new SequentialSpace();
 		this.repository.add("lobby", this.lobbySpace);
 		players2 = new ArrayList<String>();
+		chatModel = getClientChatModel();
 
 	}
 
+	
 	public void initPlayerTable(ServerInfo info) {
 		// The table showing the players
 		String[] TABLE_COLUMNS = { "Players" };
@@ -287,14 +288,15 @@ public class Lobby extends JPanel implements View {
 					}
 
 				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
 		}
 	}
 
-	public DefaultTableModel getChatModel() {
-		return chatModel;
+
+
+	public DefaultTableModel getClientChatModel(){
+		return client.chatModel;
 	}
 }

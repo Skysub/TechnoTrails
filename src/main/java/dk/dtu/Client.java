@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.ThreadLocalRandom;
 
+import javax.swing.table.DefaultTableModel;
+
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
@@ -15,19 +17,22 @@ public class Client {
 
 	ViewManager viewManager;
 	GameState gameState;
+	
 	Space chatSpace;
 	ChatClient chatClient;
 	Thread chatThread;
+	
 	private String myName = "unset";
 	public String hostAddress = "localhost";
 	public Server server;
 	private boolean isHost = false;
 	private boolean disconnecting = false;
 	private int myID = -1;
+	
 	Space lobbySpace;
 	LobbyClient lobbyClient;
 	Thread lobbyClientThread;
-	Thread chatClientThread;
+	DefaultTableModel chatModel = new DefaultTableModel();
 
 	ServerInfo serverInfo;
 
@@ -97,14 +102,17 @@ public class Client {
 		lobbyClient = new LobbyClient(lobbySpace, myID, this);
 		lobbyClientThread = new Thread(lobbyClient);
 		lobbyClientThread.start();
-		Lobby lobbyView = (Lobby) viewManager.getView("lobby");
-		/*
-		 * chatClient = new ChatClient(getClientChatSpace(), getMyID(), this,
-		 * lobbyView.getChatModel()); chatClientThread = new Thread(chatClient);
-		 * chatClientThread.start();
-		 */
+		
+		initializeChatClient();
 		return true;
 	}
+
+
+	public void initializeChatClient() {
+        chatClient = new ChatClient(chatSpace, this, myID, chatModel); 
+        chatThread = new Thread(chatClient);
+        chatThread.start();
+    }
 
 	public void AttemptDisconnect() {
 		if (!disconnecting) {
