@@ -156,6 +156,7 @@ public class Lobby extends JPanel implements View {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Readybutton pressed");
+				updateChatModel();
 				client.ToggleReady();
 			}
 		});
@@ -261,21 +262,7 @@ public class Lobby extends JPanel implements View {
 		g.fillRect(0, 0, viewManager.getWidth(), viewManager.getHeight());
 	}
 
-	public boolean allPlayersReady() throws InterruptedException {
-		List<Object[]> players = lobbySpace.queryAll(new FormalField(String.class), new ActualField(Boolean.class));
-		if (players.size() != numberOfPlayers) {
-			return false;
-		}
 
-		// Check if all players are ready
-		for (Object[] player : players) {
-			if (!(Boolean) player[1]) {
-				return false;
-			}
-		}
-
-		return true;
-	}
 
 	String message;
 
@@ -302,7 +289,7 @@ public class Lobby extends JPanel implements View {
 	}
 // Create a method to periodically check for new chat messages and update the chat model
 public void updateChatModel() {
-    Timer timer = new Timer(500, new ActionListener() { // Adjust the interval as needed
+    Timer timer = new Timer(10, new ActionListener() { // Adjust the interval as needed
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
@@ -315,9 +302,12 @@ public void updateChatModel() {
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        chatModel.setRowCount(0);
-                        for (Object[] chatm : chatMessages) {
-                            chatModel.addRow(new Object[] { chatm[0] + ": " + chatm[1] });
+                        // Update the model only with new messages
+                        if (chatMessages.size() != chatModel.getRowCount()) {
+                            for (int i = chatModel.getRowCount(); i < chatMessages.size(); i++) {
+                                Object[] chatm = chatMessages.get(i);
+                                chatModel.addRow(new Object[] { chatm[0] + ": " + chatm[1] });
+                            }
                         }
                     }
                 });
@@ -329,6 +319,7 @@ public void updateChatModel() {
     timer.setRepeats(true);
     timer.start();
 }
+
 
 
 
