@@ -24,19 +24,20 @@ public class Game {
 		if(gameState.paused) {
 			return update;
 		}
-		GameState newState = new GameState();
+		//GameState newState = new GameState();
 		
 		//Updates the gametime and calculates the difference to use in game calculation
 		long timeNow = System.nanoTime();
-		double deltaTime = (timeNow - gameState.gameTime) / 1000000000; //Difference in time in seconds
+		float deltaTime = (timeNow - gameState.gameTime) / 1000000000; //Difference in time in seconds
 		update.gameTime = timeNow;
-		newState.gameTime = timeNow;
+		//newState.gameTime = timeNow;
 		
 		//If the difference in time since the last update is more than 250ms then update according to the tps not actual elapsed time
 		//This ensures proper gameplay even if the server has a massive lag spike or if the game has been paused
 		if(deltaTime > 0.25d) {
-			deltaTime = (1d/tps);
+			deltaTime = (1f/tps);
 		}
+		update.deltaTime = deltaTime;
 		
 		update.playerUpdate = new HashMap<Integer, PlayerInfo>();
 		for (int k : gameState.players.keySet()) {
@@ -45,7 +46,7 @@ public class Game {
 		}
 		
 		//Handle all aspects of the game here
-		GamePlay.HandleInput(gameState, newState, update, playerInput);
+		GamePlay.HandleInput(gameState, update, playerInput);
 		
 		UpdateGameState(gameState, update);
 		
