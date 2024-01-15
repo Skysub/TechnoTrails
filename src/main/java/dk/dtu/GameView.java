@@ -15,7 +15,7 @@ public class GameView extends JPanel implements View {
     Menu menu;
     private JLabel countdownLabel;
     private Timer countdownTimer;
-    private int countdownNumber = 50;
+    private int countdownNumber = -1;
 
     
     public GameView(ViewManager viewManager, Client client) {
@@ -51,12 +51,15 @@ public class GameView extends JPanel implements View {
     }
 
     public void initCountdown() {
+    	countdownNumber = 5;
         countdownLabel = new JLabel(String.valueOf(countdownNumber), SwingConstants.CENTER);
         countdownLabel.setFont(new Font("Serif", Font.BOLD, 48)); // Set font size and style
         countdownLabel.setForeground(Color.RED); // Set text color
 
         // Position the countdownLabel in the middle of the battlePanel
-        countdownLabel.setBounds(battlePanel.getWidth() / 2 - 50, battlePanel.getHeight() / 2 - 50, 100, 100);
+        
+        //Setbounds doesn't work. Use prefferedSize instead
+        //countdownLabel.setBounds(battlePanel.getWidth() / 2 - 20, battlePanel.getHeight() / 2 - 50, 100, 100);
         battlePanel.add(countdownLabel);
 
         countdownTimer = new Timer(1000, new ActionListener() {
@@ -66,7 +69,10 @@ public class GameView extends JPanel implements View {
                 if (countdownNumber <= 0) {
                     countdownTimer.stop();
                     countdownLabel.setText(""); // Clear the countdown label
+                    battlePanel.remove(countdownLabel); //The component is no longer needed
                 } else {
+
+                    //countdownNumber++;
                     countdownLabel.setText(String.valueOf(countdownNumber));
                 }
             }
@@ -76,7 +82,7 @@ public class GameView extends JPanel implements View {
     }
     
     public void whenEntering() {
-    	initCountdown();
+    	if(countdownNumber == -1) initCountdown();
     }
     
 	public void whenExiting() {
