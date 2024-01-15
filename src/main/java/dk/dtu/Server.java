@@ -49,7 +49,7 @@ public class Server {
 
 		try {
 			lobbySpace.get(new ActualField(LobbyToClientMessage.LobbyStart));
-			//setNewServerInfo(info);
+			// setNewServerInfo(info);
 		} catch (InterruptedException e) {
 			System.out.println("Error when starting lobby");
 			e.printStackTrace();
@@ -62,10 +62,10 @@ public class Server {
 	public void addPlayer(int identifier) {
 		String newName;
 		try {
-			//3
+			// 3
 			lastID++;
 			lobbySpace.put(lastID, identifier);
-			//6
+			// 6
 			newName = (String) lobbySpace.get(new ActualField(lastID), new FormalField(String.class))[1];
 		} catch (InterruptedException e) {
 			System.out.println("Error adding a player to lobby");
@@ -73,16 +73,16 @@ public class Server {
 			return;
 		}
 		info.playerList.put(lastID, new PlayerServerInfo(newName));
-		//7
+		// 7
 		ServerClientLobbyUpdate();
 	}
-	
+
 	public boolean DropClient(int ID) {
 		try {
-			System.out.print("Saying goodbye to ID:"+ID+" ... ");
+			System.out.print("Saying goodbye to ID:" + ID + " ... ");
 			lobbySpace.put(ID, LobbyToClientMessage.LobbySaysGoodbye);
 			System.out.println("sent");
-			System.out.print("Waiting for ClientDone from ID:"+ID+" ... ");
+			System.out.print("Waiting for ClientDone from ID:" + ID + " ... ");
 			lobbySpace.get(new ActualField(ID), new ActualField(ClientToLobbyMessage.ClientDone));
 			System.out.println("recieved");
 		} catch (InterruptedException e) {
@@ -91,7 +91,8 @@ public class Server {
 		}
 
 		info.playerList.remove(ID);
-		if(!shuttingDown) ServerClientLobbyUpdate();
+		if (!shuttingDown)
+			ServerClientLobbyUpdate();
 		return (shuttingDown && info.playerList.isEmpty());
 	}
 
@@ -107,8 +108,8 @@ public class Server {
 			System.out.println("Error when shutting down the lobby");
 			e.printStackTrace();
 		}
-		
-		//Waiting for 100 ms and then shutting down the repository of spaces
+
+		// Waiting for 100 ms and then shutting down the repository of spaces
 		System.out.print("Shutting down the spaceRepo ... ");
 		try {
 			Thread.sleep(100);
@@ -124,7 +125,7 @@ public class Server {
 		this.info = serverInfo;
 		ServerClientLobbyUpdate();
 	}
-	
+
 	public void TogglePlayerReady(int ID) {
 		boolean pReady = info.playerList.get(ID).ready;
 		info.playerList.get(ID).ready = !pReady;
@@ -162,6 +163,27 @@ public class Server {
 		return info;
 	}
 
+	// change view for all clients
+	public void changeView(String view) {
+		try {
+			// 1
+			lobbySpace.getp(new FormalField(ServerInfo.class));
+
+			// 2
+			info.setView(view);
+
+			// 3
+			for (int id : info.playerList.keySet()) {
+				// 4
+				lobbySpace.put(id, LobbyToClientMessage.LobbyUpdate);
+			}
+
+		} catch (InterruptedException e) {
+			System.out.println("Error when updating server info");
+			e.printStackTrace();
+		}
+	}
+
 	public String getChatMessage() {
 
 		try {
@@ -174,12 +196,10 @@ public class Server {
 		}
 		return "";
 
-    }
-    public Space getChatSpace() {
-        return chatSpace;
-    }
+	}
 
-
-
+	public Space getChatSpace() {
+		return chatSpace;
+	}
 
 }

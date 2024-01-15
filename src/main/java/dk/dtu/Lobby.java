@@ -169,8 +169,8 @@ public class Lobby extends JPanel implements View {
 			public void actionPerformed(ActionEvent e) {
 				viewManager.changeView("gameView");
 
-				//vhange game view for all players
-				client.ToggleReady();
+				//change game view for all players
+				server.changeView("gameView");
 
 
 			}

@@ -5,6 +5,16 @@ import java.util.HashMap;
 public class ServerInfo {
     public HashMap<Integer, PlayerServerInfo> playerList = new HashMap<Integer, PlayerServerInfo>();
     public int tps = -1;
+
+	public String view;
+
+	public String getView() {
+        return view;
+    }
+
+    public void setView(String view) {
+        this.view = view;
+    }
 }
 
 class PlayerServerInfo {
@@ -15,6 +25,8 @@ class PlayerServerInfo {
     	this.name = name;
     }
 }
+
+
 
 enum LobbyToClientMessage {
 	LobbyStart,

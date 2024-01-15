@@ -77,6 +77,7 @@ public class Client {
 		isHost = false;
 	}
 
+
 	public boolean joinLobby(String hostAddress) throws UnknownHostException, IOException, InterruptedException {
 		lobbySpace = new RemoteSpace("tcp://" + hostAddress + ":9001/lobby?keep");
 		chatSpace = new RemoteSpace("tcp://" + hostAddress + ":9001/chat?keep");
