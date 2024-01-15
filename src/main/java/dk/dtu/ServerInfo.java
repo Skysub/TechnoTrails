@@ -35,6 +35,9 @@ enum LobbyToClientMessage {
 	LobbyShutdown,
 	LobbySaysGoodbye, 
 	Done,
+	
+	// Game Stuff
+	GameUpdate,
 }
 
 enum ClientToLobbyMessage {

@@ -8,6 +8,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 public class GameState {
 	int tick = -1;
 	int tps = -1;
+	float deltaTime = -1;
 	int numberOfPlayers = 0;
 	int levelX = 800, levelY = 600;
 	HashMap<Integer, PlayerInfo> players;
@@ -44,6 +45,7 @@ class PlayerInput {
 //The types of actions a player can take
 //Add more when the player/client should do more in the game
 enum PlayerAction {
+	Shutdown, //Used by the server to shut down the GameInputServer
 	Disconnect,
 	RequestPause,
 	RequestFullGamestate,
