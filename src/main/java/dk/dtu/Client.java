@@ -211,6 +211,27 @@ public class Client {
 		this.serverInfo = serverInfo;
 		viewManager.updateView();
 	}
+	
+	void CreateTestGameState() {
+		gameState = new GameState();
+		gameState.gameTime = 0;
+		gameState.numberOfPlayers = 1;
+		gameState.tps = 60;
+		gameState.tick = 0;
+		gameState.paused = false;
+		
+		gameState.players = new HashMap<Integer, PlayerInfo>();
+		PlayerInfo pi = new PlayerInfo();
+		pi.id = 1;
+		pi.x = 100;
+		pi.y = 100;
+		pi.rotation = 0;
+		pi.alive = true;
+		pi.trail = new ArrayList<ImmutablePair<Float, Float>>();
+		pi.trail.add(new ImmutablePair<Float, Float>(97f,99f));
+		pi.trail.add(new ImmutablePair<Float, Float>(99f,99f));
+		gameState.players.put(1, pi);
+	}
 
 	// ==========================================
 	// Getters and setters
