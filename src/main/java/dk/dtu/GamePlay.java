@@ -57,18 +57,19 @@ public class GamePlay {
 
 	// Checks for collisions and kills players if necessary
 	static void HandleCollisions(GameState gameState, GameUpdate update) {
-		//We start by creating a 2d array of players and their traildata, sorted by the x-value of each trail segment
+		// We start by creating a 2d array of players and their traildata, sorted by the
+		// x-value of each trail segment
 		Coords xy[][] = ComputeTrails(gameState);
 
-		//Then we check for collisions for each player
+		// Then we check for collisions for each player
 		for (PlayerInfo info : gameState.players.values()) {
 			update.playerUpdate.get(info.id).alive = DoesCollide(info, gameState, xy);
 		}
 	}
 
-	//Returns alive (T or F) depending on whether the player collides
+	// Returns alive (T or F) depending on whether the player collides
 	static boolean DoesCollide(PlayerInfo info, GameState gameState, Coords xy[][]) {
-		//Are they already dead or out of bounds?
+		// Are they already dead or out of bounds?
 		if (!info.alive || info.x > gameState.levelX || info.x < 0 || info.y > gameState.levelY || info.y < 0) {
 			return false;
 		}
@@ -78,23 +79,23 @@ public class GamePlay {
 		int minY = Math.round(info.y) - PLAYER_SIZE, maxY = Math.round(info.y) + PLAYER_SIZE;
 		int minIndex = -1, maxIndex = -1;
 
-		//For each players trail
+		// For each players trail
 		for (int i = 0; i < xy.length; i++) {
-			//we get the range of x-values that could cause the player to collide
+			// we get the range of x-values that could cause the player to collide
 			for (int j = 0; j < xy[i].length; j++) {
-				if (minIndex != -1 && xy[i][j].x >= min)
+				if (minIndex != -1 && xy[i][j].x >= min && xy[i][j].x <= max)
 					minIndex = j;
-				if (maxIndex != -1 && xy[i][j].x > max) {
-					minIndex = j;
+				if (maxIndex != -1 && minIndex != -1 && xy[i][j].x > max) {
+					maxIndex = j - 1;
 					break;
 				}
 			}
-			//No such x-value?
+			// No such x-value?
 			if (minIndex == -1 || maxIndex == -1)
 				break;
 
-			//For each x-value, we check if the corresponsing y-value makes us collide
-			for (int j = minIndex; j < maxIndex; j++) {
+			// For each x-value, we check if the corresponsing y-value makes us collide
+			for (int j = minIndex; j <= maxIndex; j++) {
 				if (xy[i][j].y >= minY && xy[i][j].y <= maxY)
 					return false;
 			}
@@ -107,17 +108,17 @@ public class GamePlay {
 	// The sorts the trail array according to the x component only
 	private static Coords[][] ComputeTrails(GameState gameState) {
 		int longestTrail = 0;
-		;
 		for (PlayerInfo info : gameState.players.values()) {
 			if (info.trail.size() > longestTrail)
 				longestTrail = info.trail.size();
 		}
+		longestTrail -= PLAYER_SIZE; //Make sure spawning trails can't cause a death
 
 		Coords xy[][] = new Coords[gameState.numberOfPlayers][longestTrail];
 
 		int i = 0;
 		for (PlayerInfo info : gameState.players.values()) {
-			for (int j = 0; j < info.trail.size(); j++) {
+			for (int j = 0; j < info.trail.size() - PLAYER_SIZE; j++) {
 				xy[i][j] = new Coords(Math.round(info.trail.get(j).left), Math.round(info.trail.get(j).right));
 			}
 
