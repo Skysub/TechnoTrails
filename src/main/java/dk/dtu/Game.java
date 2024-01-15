@@ -2,10 +2,10 @@ package dk.dtu;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.jspace.Space;
 
 public class Game {
 
@@ -13,10 +13,12 @@ public class Game {
 	private GameState gameState;
 	private ArrayList<PlayerInput> playerInput = new ArrayList<PlayerInput>();;
 	private ServerInfo info;
+	private Space gameSpace;
 
-	Game(ServerInfo info) {
+	Game(ServerInfo info, Space gameSpace) {
 		this.tps = info.tps;
 		this.info = info;
+		this.gameSpace = gameSpace;
 		gameState = CreateGameState(info.playerList);
 	}
 
@@ -48,7 +50,10 @@ public class Game {
 
 		update.playerUpdate = new HashMap<Integer, PlayerInfo>();
 		for (int k : gameState.players.keySet()) {
-			update.playerUpdate.put(k, new PlayerInfo());
+			PlayerInfo newPInfo = new PlayerInfo();
+			newPInfo.id = k;
+			newPInfo.trail = new ArrayList< ImmutablePair<Float, Float>>();
+			update.playerUpdate.put(k, newPInfo);
 			update.playerUpdate.get(k).id = k;
 		}
 
@@ -86,6 +91,7 @@ public class Game {
 			if (updatedInfo.rotation != -1) oldInfo.rotation = updatedInfo.rotation;
 			oldInfo.alive = updatedInfo.alive;
 
+			System.out.println(updatedInfo.trail);
 			oldInfo.trail.addAll(updatedInfo.trail);
 		}
 		return oldState;
@@ -96,8 +102,26 @@ public class Game {
 	}
 
 	GameState StartGame() {
-		// Spillet startes, skal implementeres (og designes)
-
+		// Spillet startes
+		gameState = CreateGameState(info.playerList);
+		
+		//Places the players around the level in a circle around the center facing in
+		int placed = 0;
+		int temp = gameState.levelX;
+		if(gameState.levelX > temp) temp = gameState.levelX;
+		float spawnDistance = temp/2 * 0.8f;
+		int middleX = gameState.levelX/2;
+		int middleY = gameState.levelY/2;
+		
+		for (PlayerInfo player : gameState.players.values()) {
+			placed++;
+			double angle = (double) (Math.PI * 2f * ((double)placed/(double)gameState.numberOfPlayers));
+			player.x = middleX + spawnDistance * (float) Math.cos(angle);
+			player.y = middleY + spawnDistance * (float) Math.sin(angle);		
+			player.trail.add(new ImmutablePair<Float, Float>(player.x, player.y));
+			
+			player.rotation = (float) (angle + Math.PI);
+		}
 		return gameState;
 	}
 	
@@ -126,6 +150,9 @@ public class Game {
 			freshState.players.put(pInfo.id, pInfo);
 		}
 		freshState.numberOfPlayers = playerList.size();
+		freshState.tick = 0;
+		freshState.deltaTime = (1f/info.tps);
+		freshState.gameTime = 0;
 		return freshState;
 	}
 

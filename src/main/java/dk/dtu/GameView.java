@@ -51,7 +51,7 @@ public class GameView extends JPanel implements View {
     }
 
     public void initCountdown() {
-    	countdownNumber = 5;
+    	countdownNumber = GamePlay.GAME_COUNTDOWN;
         countdownLabel = new JLabel(String.valueOf(countdownNumber), SwingConstants.CENTER);
         countdownLabel.setFont(new Font("Serif", Font.BOLD, 48)); // Set font size and style
         countdownLabel.setForeground(Color.RED); // Set text color

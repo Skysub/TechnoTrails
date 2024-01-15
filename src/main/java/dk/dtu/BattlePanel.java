@@ -1,12 +1,16 @@
 package dk.dtu;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Rectangle;
+import java.awt.Stroke;
 import java.awt.geom.Path2D;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -43,13 +47,16 @@ public class BattlePanel extends JPanel {
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             Graphics2D g2d = (Graphics2D) g;
-            drawGame(g2d, client.getGameState().players);
+            drawGame(g2d, client.getGameState());
 
         }
 
-        public void drawGame(Graphics2D g2d, HashMap<Integer, PlayerInfo> players) {
+        public void drawGame(Graphics2D g2d, GameState gameState) {
+        	Stroke old = g2d.getStroke();
+        	g2d.setStroke(new BasicStroke(5));
+        	g2d.drawRect(0, 0, gameState.levelX, gameState.levelY);
 
-            for (PlayerInfo p : players.values()) {
+            for (PlayerInfo p : gameState.players.values()) {
             drawingPanel.drawPlayer(g2d, p);
             drawingPanel.drawTrail(g2d, p);
         }
@@ -60,7 +67,7 @@ public class BattlePanel extends JPanel {
             float size = 4;
             float x = p.x;
             float y = p.y;
-            float rotation = (float) Math.toRadians(p.rotation);
+            float rotation = p.rotation;
 
             // Move to the first vertex
             triangle.moveTo(
@@ -83,7 +90,7 @@ public class BattlePanel extends JPanel {
         }
 
         public void drawTrail(Graphics2D g2d, PlayerInfo p) {
-            List<ImmutablePair<Float, Float>> trail = p.trail; // Assuming this is how you get the trail
+            ArrayList<ImmutablePair<Float, Float>> trail = p.trail; // Assuming this is how you get the trail
 
             for (int i = 0; i < trail.size() - 1; i++) {
 

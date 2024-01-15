@@ -1,8 +1,10 @@
 package dk.dtu;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.SequentialSpace;
@@ -14,16 +16,23 @@ public class Server {
 	ServerInfo info;
 	Space lobbySpace;
 	Space chatSpace;
+	Space gameSpace;
 	static final int defaultTickRate = 60;
 	String hostAddress = "localhost";
 	int lastID = 0;
 
 	LobbyServer lobbyServer;
 	Thread lobbyThread;
+	GameServer gameServer;
+	Thread gameThread;
+	GameInputServer gameInputServer;
+	Thread inputThread;
 	ChatServer chatServer;
 	Thread chatThread;
 	SpaceRepository repository;
 	boolean shuttingDown = false;
+
+	Game game;
 
 	Server() {
 		info = new ServerInfo();
@@ -38,6 +47,8 @@ public class Server {
 		repository.add("lobby", lobbySpace);
 		chatSpace = new SequentialSpace();
 		repository.add("chat", chatSpace);
+		gameSpace = new SequentialSpace();
+		repository.add("game", gameSpace);
 
 		lobbyServer = new LobbyServer(lobbySpace, info, this);
 		lobbyThread = new Thread(lobbyServer);
@@ -153,16 +164,43 @@ public class Server {
 	}
 
 	public void StartGame() {
-		// Mostly unimplemented
+		game = new Game(info, gameSpace);
 
-		
-		//Finally we tell players that the game is beginning
+		GameState gs = game.StartGame();
+
+		try {
+			gameSpace.put(gs);
+
+			gameInputServer = new GameInputServer(game, gameSpace);
+			inputThread = new Thread(gameInputServer);
+			inputThread.start();
+
+			gameSpace.get(new ActualField("GameInputServerReady"));
+
+			gameServer = new GameServer(game, gameSpace, lobbySpace, info.tps);
+			gameThread = new Thread(gameServer);
+			gameThread.start();
+
+			gameSpace.get(new ActualField("game server ready"));
+		} catch (InterruptedException e) {
+			System.out.println("Error when starting the game threads");
+			e.printStackTrace();
+		}
+
+		// Finally we tell players that the game is beginning
 		try {
 			for (int id : info.playerList.keySet()) {
 				lobbySpace.put(id, LobbyToClientMessage.LobbyGameStart);
+				gameSpace.get(new ActualField(id), new ActualField("Gaming initialized"));
+
+				// Unpausing the game (gets processed when the countdown is over)
+				PlayerInput unpause = new PlayerInput();
+				unpause.playerActions = new ArrayList<ImmutablePair<PlayerAction, Float>>();
+				unpause.playerActions.add(new ImmutablePair<PlayerAction, Float>(PlayerAction.HostUnPause, 0f));
+				gameSpace.put(unpause);
 			}
 		} catch (InterruptedException e) {
-			System.out.println("Error when informing about game start info");
+			System.out.println("Error when informing about game start info or starting the game");
 			e.printStackTrace();
 		}
 	}

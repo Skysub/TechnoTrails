@@ -39,8 +39,8 @@ public class LobbyClient implements Runnable {
 						break;
 
 					case LobbyGameStart:
+						client.InitializeGaming();
 						client.viewManager.changeView("gameView");
-						// More stuff here to initialize the game updating clientside
 						break;
 						
 					case LobbyBackToLobby:

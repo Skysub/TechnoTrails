@@ -30,8 +30,8 @@ class GameUpdate {
 class PlayerInfo {
 	int id = -1;
 	boolean alive = true;
-	float x = 50;
-	float y = 50;
+	float x = -1;
+	float y = -1;
 	float rotation = -1;
 	ArrayList<ImmutablePair<Float, Float>> trail;
 }

@@ -161,6 +161,26 @@ public class Client {
 		viewManager.changeView("menu");
 		return true;
 	}
+	
+	public void InitializeGaming() {
+		try {
+			gameSpace = new RemoteSpace("tcp://" + hostAddress + ":9001/game?keep");		
+		} catch (IOException e) {
+			System.out.println("Error when trying to connect to the gameSpace");
+			e.printStackTrace();
+		}
+		
+		//Initialize input stuff here maybe add the gameControls class to gameView?
+		
+		try {
+			gameState = (GameState) gameSpace.query(new FormalField(GameState.class))[0];
+			gameSpace.put(myID, "Gaming initialized");
+			
+		} catch (InterruptedException e) {
+			System.out.println("Error getting the gameState when initalizing Gaming");
+			e.printStackTrace();
+		}		
+	}
 
 	public void GameUpdate() {
 		Object[] response;

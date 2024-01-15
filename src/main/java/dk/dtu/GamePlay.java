@@ -13,6 +13,7 @@ public class GamePlay {
 	final static float BASE_SPEED = 20; // In pixels/second
 	final static int MIN_TRAIL_SEGMENT = 2; // In pixels
 	final static int PLAYER_SIZE = 4; // Radius in pixels
+	final static int GAME_COUNTDOWN = 4; // Seconds before the game starts
 
 	static void HandleInput(GameState gameState, GameUpdate update, ArrayList<PlayerInput> playerInput) {
 		for (int i = 0; i < playerInput.size(); i++) {
@@ -50,8 +51,8 @@ public class GamePlay {
 				float newY = (float) (info.y + update.deltaTime * BASE_SPEED * Math.sin(info.rotation));
 
 				int trailLength = info.trail.size();
-				float trailSegmentLength = (float) Math.sqrt(Math.pow(newX - info.trail.get(trailLength).getLeft(), 2)
-						+ Math.pow(newY - info.trail.get(trailLength).getRight(), 2));
+				float trailSegmentLength = (float) Math.sqrt(Math.pow(newX - info.trail.get(trailLength-1).getLeft(), 2)
+						+ Math.pow(newY - info.trail.get(trailLength-1).getRight(), 2));
 				if (trailSegmentLength >= MIN_TRAIL_SEGMENT) {
 					// Add the new position to the trail
 					update.playerUpdate.get(info.id).trail.add(new ImmutablePair<Float, Float>(newX, newY));
@@ -81,6 +82,9 @@ public class GamePlay {
 		if (!info.alive || info.x > gameState.levelX || info.x < 0 || info.y > gameState.levelY || info.y < 0) {
 			return false;
 		}
+		
+		//If the tails are too small, they should not die
+		if(xy[0].length == 0) return true;
 
 		// Linear time algorithm
 		int min = Math.round(info.x) - PLAYER_SIZE, max = Math.round(info.x) + PLAYER_SIZE;
@@ -121,7 +125,8 @@ public class GamePlay {
 				longestTrail = info.trail.size();
 		}
 		longestTrail -= PLAYER_SIZE; //Make sure spawning trails can't cause a death
-
+		if(longestTrail < 0) longestTrail = 0;
+		
 		Coords xy[][] = new Coords[gameState.numberOfPlayers][longestTrail];
 
 		int i = 0;
