@@ -35,6 +35,7 @@ public class ChatClient implements Runnable {
             } catch (InterruptedException e) {
                 // Handle exceptions
                 e.printStackTrace();
+                return; //Class doesn't handle closing the thread. This return statement is a temporary fix
             }
         }
     }
