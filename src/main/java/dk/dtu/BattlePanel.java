@@ -7,8 +7,6 @@ import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.geom.Path2D;
-import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -85,7 +83,6 @@ public class BattlePanel extends JPanel {
         }
 
         public void drawTrail(Graphics2D g2d, PlayerInfo p) {
-
             List<ImmutablePair<Float, Float>> trail = p.trail; // Assuming this is how you get the trail
 
             for (int i = 0; i < trail.size() - 1; i++) {
