@@ -41,6 +41,7 @@ public class ViewManager extends JFrame {
 		lobby = new Lobby(this, client);
 		menu = new Menu(this, client);
 		gameView = new GameView(this, client);
+		
 		viewPanel.add(lobby, "lobby");
 		viewPanel.add(menu, "menu");
 		viewPanel.add(gameView, "gameView");
