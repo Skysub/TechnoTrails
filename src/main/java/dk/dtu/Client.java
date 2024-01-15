@@ -2,11 +2,13 @@ package dk.dtu;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.table.DefaultTableModel;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
@@ -16,18 +18,18 @@ public class Client {
 
 	ViewManager viewManager;
 	GameState gameState;
-	
+
 	Space chatSpace;
 	ChatClient chatClient;
 	Thread chatThread;
-	
+
 	private String myName = "unset";
 	public String hostAddress = "localhost";
 	public Server server;
 	private boolean isHost = false;
 	private boolean disconnecting = false;
 	private int myID = -1;
-	
+
 	Space lobbySpace;
 	LobbyClient lobbyClient;
 	Thread lobbyClientThread;
@@ -40,6 +42,8 @@ public class Client {
 		setName(RandomWords.getRandomWord());
 		serverInfo = new ServerInfo();
 		serverInfo.playerList = new HashMap<Integer, PlayerServerInfo>();
+		//for testing
+		CreateTestGameState();
 	}
 
 	public boolean CreateLobby(String hAddress) {
@@ -77,7 +81,6 @@ public class Client {
 		isHost = false;
 	}
 
-
 	public boolean joinLobby(String hostAddress) throws UnknownHostException, IOException, InterruptedException {
 		lobbySpace = new RemoteSpace("tcp://" + hostAddress + ":9001/lobby?keep");
 		chatSpace = new RemoteSpace("tcp://" + hostAddress + ":9001/chat?keep");
@@ -102,17 +105,16 @@ public class Client {
 		lobbyClient = new LobbyClient(lobbySpace, myID, this);
 		lobbyClientThread = new Thread(lobbyClient);
 		lobbyClientThread.start();
-		
+
 		initializeChatClient();
 		return true;
 	}
 
-
 	public void initializeChatClient() {
-        chatClient = new ChatClient(chatSpace, this, myID, chatModel); 
-        chatThread = new Thread(chatClient);
-        chatThread.start();
-    }
+		chatClient = new ChatClient(chatSpace, this, myID, chatModel);
+		chatThread = new Thread(chatClient);
+		chatThread.start();
+	}
 
 	public void AttemptDisconnect() {
 		if (!disconnecting) {
@@ -156,7 +158,7 @@ public class Client {
 		viewManager.changeView("menu");
 		return true;
 	}
-	
+
 	public void ToggleReady() {
 		try {
 			lobbySpace.put(myID, ClientToLobbyMessage.ClientToggleReady);
@@ -165,10 +167,11 @@ public class Client {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public boolean IsEveryoneReady() {
 		for (PlayerServerInfo player : serverInfo.playerList.values()) {
-			if(!player.ready) return false;
+			if (!player.ready)
+				return false;
 		}
 		return true;
 	}
@@ -199,6 +202,27 @@ public class Client {
 
 	public GameState getGameState() {
 		return gameState;
+	}
+
+	void CreateTestGameState() {
+		gameState = new GameState();
+		gameState.gameTime = 0;
+		gameState.numberOfPlayers = 1;
+		gameState.tps = 60;
+		gameState.tick = 0;
+		gameState.paused = false;
+
+		gameState.players = new HashMap<Integer, PlayerInfo>();
+		PlayerInfo pi = new PlayerInfo();
+		pi.id = 1;
+		pi.x = 100;
+		pi.y = 100;
+		pi.rotation = 0;
+		pi.alive = true;
+		pi.trail = new ArrayList<ImmutablePair<Float, Float>>();
+		pi.trail.add(new ImmutablePair<Float, Float>(97f, 99f));
+		pi.trail.add(new ImmutablePair<Float, Float>(99f, 99f));
+		gameState.players.put(1, pi);
 	}
 
 	public Space getServerChatSpace() {

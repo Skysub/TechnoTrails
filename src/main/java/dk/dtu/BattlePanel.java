@@ -6,9 +6,15 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
@@ -16,7 +22,7 @@ public class BattlePanel extends JPanel {
     private CustomDrawingPanel drawingPanel;
     private Client client;
     static final int SCREEN_HEIGHT = 720;
-	static final int SCREEN_WIDTH = 1280;
+    static final int SCREEN_WIDTH = 1280;
 
     public BattlePanel(Client client) {
         this.client = client;
@@ -28,7 +34,10 @@ public class BattlePanel extends JPanel {
         drawingPanel = new CustomDrawingPanel();
         drawingPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         drawingPanel.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
+        drawingPanel.setBackground(Color.black);
         add(drawingPanel, gbc);
+        Timer timer = new Timer(1000 / 60, e -> repaint());
+        timer.start();
     }
 
     private class CustomDrawingPanel extends JPanel {
@@ -36,33 +45,70 @@ public class BattlePanel extends JPanel {
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             Graphics2D g2d = (Graphics2D) g;
-            g2d.setColor(Color.RED);
-            Rectangle2D.Float rect = new Rectangle2D.Float(100, 100, 50.5f, 50.5f);
-            g2d.fill(rect);
-            /*for (PlayerInfo p : client.getGameState().players.values())
-                drawGame(g2d, p);*/
+            drawGame(g2d, client.getGameState().players);
+
         }
 
-        public void drawGame(Graphics2D g2d, PlayerInfo p) {
+        public void drawGame(Graphics2D g2d, HashMap<Integer, PlayerInfo> players) {
+
+            for (PlayerInfo p : players.values()) {
             drawingPanel.drawPlayer(g2d, p);
             drawingPanel.drawTrail(g2d, p);
         }
+    }
 
         public void drawPlayer(Graphics2D g2d, PlayerInfo p) {
-            g2d.setColor(Color.RED);
-            Rectangle2D.Float rect = new Rectangle2D.Float(p.x, p.y, 50.5f, 50.5f);
-            g2d.fill(rect);
+            Path2D.Float triangle = new Path2D.Float();
+            float size = 4;
+            float x = p.x;
+            float y = p.y;
+            float rotation = (float) Math.toRadians(p.rotation);
+
+            // Move to the first vertex
+            triangle.moveTo(
+                    x + size * Math.cos(rotation),
+                    y + size * Math.sin(rotation));
+
+            // Line to the second vertex
+            triangle.lineTo(
+                    x + size * Math.cos(rotation + 2 * Math.PI / 3),
+                    y + size * Math.sin(rotation + 2 * Math.PI / 3));
+
+            // Line to the third vertex and close the path
+            triangle.lineTo(
+                    x + size * Math.cos(rotation - 2 * Math.PI / 3),
+                    y + size * Math.sin(rotation - 2 * Math.PI / 3));
+            triangle.closePath();
+
+            g2d.setColor(Color.yellow);
+            g2d.fill(triangle);
+            System.out.println("hej");
+            System.out.println(y);
 
         }
 
         public void drawTrail(Graphics2D g2d, PlayerInfo p) {
 
-            g2d.setColor(Color.RED);
-            for (ImmutablePair<Float, Float> t : p.trail) {
-                Rectangle2D.Float rect = new Rectangle2D.Float(t.left, t.right, 25, 25);
-                g2d.fill(rect);
-            }
+            List<ImmutablePair<Float, Float>> trail = p.trail; // Assuming this is how you get the trail
 
+            for (int i = 0; i < trail.size() - 1; i++) {
+
+                ImmutablePair<Float, Float> point1 = trail.get(i);
+                ImmutablePair<Float, Float> point2 = trail.get(i + 1);
+
+                // Extracting the x and y coordinates of the points
+                float x1 = point1.getLeft();
+                float y1 = point1.getRight();
+                float x2 = point2.getLeft();
+                float y2 = point2.getRight();
+
+                // Drawing a line between the points
+                // Convert float coordinates to integers
+                g2d.drawLine((int) x1, (int) y1, (int) x2, (int) y2);
+
+                // Alternatively, if you want to draw with float precision, you can use:
+                // g2d.draw(new Line2D.Float(x1, y1, x2, y2));
+            }
         }
     }
 }

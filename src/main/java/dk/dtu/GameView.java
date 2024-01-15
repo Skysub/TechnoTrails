@@ -13,6 +13,8 @@ public class GameView extends JPanel implements View {
     Menu menu;
 
     public GameView(ViewManager viewManager, Client client) {
+        this.viewManager = viewManager;
+        this.client = client;
         gamePanels();
     }
 
