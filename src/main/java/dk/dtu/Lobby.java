@@ -39,7 +39,6 @@ public class Lobby extends JPanel implements View {
 	JButton startButton = new JButton("Not all players ready");
 	ViewManager viewManager;
 	Client client;
-	Server server;
 
 	public Lobby(ViewManager viewManager, Client client) {
 		this.viewManager = viewManager;
@@ -167,12 +166,17 @@ public class Lobby extends JPanel implements View {
 		startButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				client.HostStartGame();
 				viewManager.changeView("gameView");
-
+				
 				//change game view for all players
-				server.changeView("gameView");
-
-
+				//server.changeView("gameView");
+				
+				//no ^
+				//The clients should change the view themselves after receiving a LobbyToClientMessage
+				//The server shouldn't be telling the clients what exact view to be on
+				//It bloats the serverInfo object unnecessarily
+				
 			}
 		});
 

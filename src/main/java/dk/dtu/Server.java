@@ -152,6 +152,21 @@ public class Server {
 		}
 	}
 
+	public void StartGame() {
+		// Mostly unimplemented
+
+		
+		//Finally we tell players that the game is beginning
+		try {
+			for (int id : info.playerList.keySet()) {
+				lobbySpace.put(id, LobbyToClientMessage.LobbyGameStart);
+			}
+		} catch (InterruptedException e) {
+			System.out.println("Error when informing about game start info");
+			e.printStackTrace();
+		}
+	}
+
 	public void printPlayers() {
 		// print list of names and id's
 		for (Entry<Integer, PlayerServerInfo> i : info.playerList.entrySet()) {
@@ -161,27 +176,6 @@ public class Server {
 
 	ServerInfo getInfo() {
 		return info;
-	}
-
-	// change view for all clients
-	public void changeView(String view) {
-		try {
-			// 1
-			lobbySpace.getp(new FormalField(ServerInfo.class));
-
-			// 2
-			info.setView(view);
-
-			// 3
-			for (int id : info.playerList.keySet()) {
-				// 4
-				lobbySpace.put(id, LobbyToClientMessage.LobbyUpdate);
-			}
-
-		} catch (InterruptedException e) {
-			System.out.println("Error when updating server info");
-			e.printStackTrace();
-		}
 	}
 
 	public String getChatMessage() {
@@ -201,5 +195,4 @@ public class Server {
 	public Space getChatSpace() {
 		return chatSpace;
 	}
-
 }

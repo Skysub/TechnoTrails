@@ -210,6 +210,10 @@ public class Client {
 		}
 		return true;
 	}
+	
+	public void HostStartGame() {
+		server.StartGame();
+	}
 
 	public void setNewServerInfo(ServerInfo serverInfo) {
 		this.serverInfo = serverInfo;

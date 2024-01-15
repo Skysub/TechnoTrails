@@ -39,6 +39,12 @@ public class LobbyClient implements Runnable {
 						break;
 
 					case LobbyGameStart:
+						client.viewManager.changeView("gameView");
+						// More stuff here to initialize the game updating clientside
+						break;
+						
+					case LobbyBackToLobby:
+						client.viewManager.changeView("lobby");
 						break;
 
 					case LobbyShutdown:

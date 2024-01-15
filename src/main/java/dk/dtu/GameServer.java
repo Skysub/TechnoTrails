@@ -22,7 +22,7 @@ public class GameServer implements Runnable {
 		while (true) {
 			long timeAtStart = System.nanoTime();
 
-			GameUpdate update = game.Tick();
+			GameUpdate update = game.Tick(); //The main event!
 			
 			try {
 				gameSpace.get(new FormalField(GameUpdate.class));

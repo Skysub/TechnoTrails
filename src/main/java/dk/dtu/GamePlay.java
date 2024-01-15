@@ -24,6 +24,14 @@ public class GamePlay {
 				case Turn:
 					pInfo.rotation = val;
 					break;
+					
+				case HostPause:
+					update.paused = true;
+					break;
+					
+				case HostUnPause:
+					update.paused = false;
+					break;
 
 				default:
 					System.out.println(

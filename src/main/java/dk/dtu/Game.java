@@ -2,6 +2,7 @@ package dk.dtu;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -25,10 +26,10 @@ public class Game {
 		update.tick = gameState.tick++;
 
 		// If the game is paused, nothing about the game should be updated
-		if (gameState.paused) {
-			return update;
+		if (gameState.paused && !CheckForUnpause()) {
+				UpdateGameState(gameState, update);
+				return update;		
 		}
-		// GameState newState = new GameState();
 
 		// Updates the gametime and calculates the difference to use in game calculation
 		long timeNow = System.nanoTime();
@@ -66,9 +67,14 @@ public class Game {
 	// Updates the old game state with the update obtained from the server
 	public static GameState UpdateGameState(GameState oldState, GameUpdate update) {
 		oldState.tick = update.tick;	
+		oldState.paused = update.paused;
+		if(update.paused) { //If the game is paused we don't update anything
+			oldState.deltaTime = (1f / oldState.tps);
+			return oldState; 
+		}
+		
 		oldState.deltaTime = update.deltaTime;
 		oldState.gameTime = update.gameTime;
-		oldState.paused = update.paused;
 		
 		for (Map.Entry<Integer, PlayerInfo> entry : update.playerUpdate.entrySet()) {
 			PlayerInfo updatedInfo = entry.getValue();
@@ -93,6 +99,17 @@ public class Game {
 		// Spillet startes, skal implementeres (og designes)
 
 		return gameState;
+	}
+	
+	private boolean CheckForUnpause() {
+		for (PlayerInput input : playerInput) {
+			for (ImmutablePair<PlayerAction, Float> action : input.playerActions) {
+				if(action.left == PlayerAction.HostUnPause) {
+					return true;
+				}
+			}
+		}
+		return false;		
 	}
 
 	// Creates a fresh game

@@ -50,6 +50,7 @@ enum PlayerAction {
 	RequestPause,
 	RequestFullGamestate,
 	HostPause,
+	HostUnPause,
 	HostEndGame,
 	
 	Turn, //Float is new direction
