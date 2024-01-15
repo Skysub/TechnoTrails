@@ -50,7 +50,7 @@ public class GamePlay {
 				}
 
 				update.playerUpdate.get(info.id).x = newX;
-				update.playerUpdate.get(info.id).x = newY;
+				update.playerUpdate.get(info.id).y = newY;
 			}
 		}
 	}

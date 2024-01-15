@@ -2,6 +2,7 @@ package dk.dtu;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
@@ -53,10 +54,20 @@ public class Game {
 		return update;
 	}
 	
-	//Updates the old gamestate whith the update obtained from the server
-	GameState UpdateGameState(GameState oldState, GameUpdate update) {
-		return null; //Not yet implemented
-	}
+	// Updates the old game state with the update obtained from the server
+GameState UpdateGameState(GameState oldState, GameUpdate update) {
+    for (Map.Entry<Integer, PlayerInfo> entry : update.playerUpdate.entrySet()) {
+        PlayerInfo updatedInfo = entry.getValue();
+        PlayerInfo oldInfo = oldState.players.get(entry.getKey());
+        
+        // Update player information
+        oldInfo.x = updatedInfo.x;
+        oldInfo.y = updatedInfo.y;
+        oldInfo.trail = updatedInfo.trail; // gir det mening?
+        oldInfo.alive = updatedInfo.alive;
+    }
+    return oldState;
+}
 	
 	GameState StartGame() {
 		//Spillet startes, skal implementeres (og designes)
