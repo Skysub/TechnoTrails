@@ -3,11 +3,13 @@ package dk.dtu;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.table.DefaultTableModel;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
@@ -31,6 +33,7 @@ public class Client {
 	private int myID = -1;
 
 	Space lobbySpace;
+	Space gameSpace;
 	LobbyClient lobbyClient;
 	Thread lobbyClientThread;
 	DefaultTableModel chatModel;
@@ -159,6 +162,38 @@ public class Client {
 		return true;
 	}
 
+	public void GameUpdate() {
+		Object[] response;
+		try {
+			response = gameSpace.query(new FormalField(GameUpdate.class)); //get the gameUpdate
+			
+			float tickDiff = ((GameUpdate) response[0]).tick - (1 + gameState.tick); //Is the tick what we expect?
+			if (tickDiff == 0) {
+				Game.UpdateGameState(gameState, (GameUpdate) response[0]);
+			} else {
+				//We request the full gameState
+				PlayerInput out = new PlayerInput();
+				out.id = myID;
+				out.playerActions = new ArrayList<ImmutablePair<PlayerAction, Float>>();
+				out.playerActions.add(new ImmutablePair<PlayerAction, Float>(PlayerAction.RequestFullGamestate, tickDiff));
+				gameSpace.put(out);
+				gameSpace.get(new ActualField("New_game_state_put"));
+				
+				response = gameSpace.query(new FormalField(GameState.class)); //We query for the actual gamestate
+				setNewGameState((GameState) response[0]);
+			}
+		} catch (InterruptedException e) {
+			System.out.println("Client error while updating gameState");
+			e.printStackTrace();
+			return;
+		}
+	}
+
+	//This method updates all references to the client gameState
+	private void setNewGameState(GameState newState) {
+		this.gameState = newState;		
+	}
+
 	public void ToggleReady() {
 		try {
 			lobbySpace.put(myID, ClientToLobbyMessage.ClientToggleReady);
@@ -179,6 +214,27 @@ public class Client {
 	public void setNewServerInfo(ServerInfo serverInfo) {
 		this.serverInfo = serverInfo;
 		viewManager.updateView();
+	}
+	
+	void CreateTestGameState() {
+		gameState = new GameState();
+		gameState.gameTime = 0;
+		gameState.numberOfPlayers = 1;
+		gameState.tps = 60;
+		gameState.tick = 0;
+		gameState.paused = false;
+		
+		gameState.players = new HashMap<Integer, PlayerInfo>();
+		PlayerInfo pi = new PlayerInfo();
+		pi.id = 1;
+		pi.x = 100;
+		pi.y = 100;
+		pi.rotation = 0;
+		pi.alive = true;
+		pi.trail = new ArrayList<ImmutablePair<Float, Float>>();
+		pi.trail.add(new ImmutablePair<Float, Float>(97f,99f));
+		pi.trail.add(new ImmutablePair<Float, Float>(99f,99f));
+		gameState.players.put(1, pi);
 	}
 
 	// ==========================================

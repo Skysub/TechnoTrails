@@ -14,20 +14,20 @@ public class GamePlay {
 	final static int MIN_TRAIL_SEGMENT = 2; // In pixels
 	final static int PLAYER_SIZE = 4; // Radius in pixels
 
-	static void HandleInput(GameState gameState, GameUpdate update, PlayerInput playerInput[]) {
-		for (int i = 0; i < playerInput.length; i++) {
-			int id = playerInput[i].id;
+	static void HandleInput(GameState gameState, GameUpdate update, ArrayList<PlayerInput> playerInput) {
+		for (int i = 0; i < playerInput.size(); i++) {
+			int id = playerInput.get(i).id;
 			PlayerInfo pInfo = update.playerUpdate.get(id);
-			for (int j = 0; j < playerInput[i].playerActions.size(); j++) {
-				float val = playerInput[i].playerActions.get(j).right;
-				switch (playerInput[i].playerActions.get(j).left) {
+			for (int j = 0; j < playerInput.get(i).playerActions.size(); j++) {
+				float val = playerInput.get(i).playerActions.get(j).right;
+				switch (playerInput.get(i).playerActions.get(j).left) {
 				case Turn:
 					pInfo.rotation = val;
 					break;
 
 				default:
 					System.out.println(
-							"No effect linked to the PlayerAction: " + playerInput[i].playerActions.get(j).left);
+							"No effect linked to the PlayerAction: " + playerInput.get(i).playerActions.get(j).left);
 					break;
 				}
 			}

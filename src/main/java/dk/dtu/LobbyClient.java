@@ -48,6 +48,10 @@ public class LobbyClient implements Runnable {
 					case LobbySaysGoodbye:
 						if(client.FinalizeDisconnect()) return;
 						break;
+						
+					case GameUpdate:
+						client.GameUpdate();
+						break;
 
 					default:
 						System.out.println(

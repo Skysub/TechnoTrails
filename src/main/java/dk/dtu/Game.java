@@ -10,14 +10,17 @@ public class Game {
 
 	private int tps; // ticks per second
 	private GameState gameState;
+	private ArrayList<PlayerInput> playerInput = new ArrayList<PlayerInput>();;
+	private ServerInfo info;
 
 	Game(ServerInfo info) {
 		this.tps = info.tps;
+		this.info = info;
 		gameState = CreateGameState(info.playerList);
 	}
 
 	// The game simulates a tick and handles all the game mechanics
-	GameUpdate Tick(ServerInfo serverInfo, PlayerInput playerInput[]) {
+	GameUpdate Tick() {
 		GameUpdate update = new GameUpdate();
 		update.tick = gameState.tick++;
 
@@ -50,6 +53,10 @@ public class Game {
 
 		// Handle all aspects of the game here
 		GamePlay.HandleInput(gameState, update, playerInput);
+		playerInput = new ArrayList<PlayerInput>();
+		
+		GamePlay.HandleCollisions(gameState, update);
+		GamePlay.HandleMovement(gameState, update);
 
 		UpdateGameState(gameState, update);
 
@@ -58,6 +65,11 @@ public class Game {
 
 	// Updates the old game state with the update obtained from the server
 	public static GameState UpdateGameState(GameState oldState, GameUpdate update) {
+		oldState.tick = update.tick;	
+		oldState.deltaTime = update.deltaTime;
+		oldState.gameTime = update.gameTime;
+		oldState.paused = update.paused;
+		
 		for (Map.Entry<Integer, PlayerInfo> entry : update.playerUpdate.entrySet()) {
 			PlayerInfo updatedInfo = entry.getValue();
 			PlayerInfo oldInfo = oldState.players.get(entry.getKey());
@@ -71,6 +83,10 @@ public class Game {
 			oldInfo.trail.addAll(updatedInfo.trail);
 		}
 		return oldState;
+	}
+	
+	public void addPlayerInput(PlayerInput input) {
+		playerInput.add(input);
 	}
 
 	GameState StartGame() {
@@ -99,5 +115,8 @@ public class Game {
 	GameState getGameState() {
 		return gameState;
 	}
-
+	
+	ServerInfo getServerInfo() {
+		return info;
+	}
 }
