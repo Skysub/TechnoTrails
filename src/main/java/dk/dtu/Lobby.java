@@ -40,10 +40,12 @@ public class Lobby extends JPanel implements View {
 	ViewManager viewManager;
 	Client client;
 	Server server;
+	GameView gameView;
 
-	public Lobby(ViewManager viewManager, Client client) {
+	public Lobby(ViewManager viewManager, Client client, GameView gameView) {
 		this.viewManager = viewManager;
 		this.client = client;
+		this.gameView= gameView;
 		setBounds(viewManager.getBounds());
 		this.repository = new SpaceRepository();
 		this.lobbySpace = new SequentialSpace();
@@ -167,6 +169,7 @@ public class Lobby extends JPanel implements View {
 		startButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				gameView.initCountdown();
 				viewManager.changeView("gameView");
 
 				//change game view for all players

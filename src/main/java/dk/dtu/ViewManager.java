@@ -38,9 +38,10 @@ public class ViewManager extends JFrame {
 		views = new HashMap<String, View>(); // The viewManager needs a reference to the views
 
 		// Creating the views and adding them to the viewPanel
-		lobby = new Lobby(this, client);
-		menu = new Menu(this, client);
 		gameView = new GameView(this, client);
+		lobby = new Lobby(this, client, gameView);
+		menu = new Menu(this, client);
+		
 		viewPanel.add(lobby, "lobby");
 		viewPanel.add(menu, "menu");
 		viewPanel.add(gameView, "gameView");

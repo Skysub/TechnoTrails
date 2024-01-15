@@ -2,6 +2,8 @@ package dk.dtu;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class GameView extends JPanel implements View {
     private BattlePanel battlePanel;
@@ -11,7 +13,11 @@ public class GameView extends JPanel implements View {
 	Client client;
 	Lobby lobby;
     Menu menu;
+    private JLabel countdownLabel;
+    private Timer countdownTimer;
+    private int countdownNumber = 5;
 
+    
     public GameView(ViewManager viewManager, Client client) {
         this.viewManager = viewManager;
         this.client = client;
@@ -42,6 +48,31 @@ public class GameView extends JPanel implements View {
         add(battlePanel, BorderLayout.CENTER);
         add(rightPanel, BorderLayout.EAST);
         setVisible(true);
+    }
+
+    public void initCountdown() {
+        countdownLabel = new JLabel(String.valueOf(countdownNumber), SwingConstants.CENTER);
+        countdownLabel.setFont(new Font("Serif", Font.BOLD, 48)); // Set font size and style
+        countdownLabel.setForeground(Color.RED); // Set text color
+
+        // Position the countdownLabel in the middle of the battlePanel
+        countdownLabel.setBounds(battlePanel.getWidth() / 2 - 50, battlePanel.getHeight() / 2 - 50, 100, 100);
+        battlePanel.add(countdownLabel);
+
+        countdownTimer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                countdownNumber--;
+                if (countdownNumber <= 0) {
+                    countdownTimer.stop();
+                    countdownLabel.setText(""); // Clear the countdown label
+                } else {
+                    countdownLabel.setText(String.valueOf(countdownNumber));
+                }
+            }
+        });
+
+        countdownTimer.start();
     }
     
     public void whenEntering() {
