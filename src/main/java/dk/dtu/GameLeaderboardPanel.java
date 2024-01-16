@@ -33,7 +33,17 @@ public class GameLeaderboardPanel extends JPanel {
         DefaultTableModel model = new DefaultTableModel(data, columnNames);
 
         // Create a JTable with the DefaultTableModel
-        leaderboardTable = new JTable(model);
+       // Create a JTable subclass that overrides isCellEditable
+        leaderboardTable = new JTable(model) {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            // This will make all cells of the table non-editable
+            return false;
+        }
+};
+
+
+
         leaderboardTable.setFocusable(false);
         // Add the JTable to the JPanel
         JScrollPane scrollPane = new JScrollPane(leaderboardTable);

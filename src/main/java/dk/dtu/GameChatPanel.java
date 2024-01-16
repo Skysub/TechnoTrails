@@ -81,6 +81,7 @@ public class GameChatPanel extends JPanel {
                     chatField.setText("");
                     try {
                         client.getClientChatSpace().put(client.getName(), message);
+                        updateChatModel();
                         } catch (InterruptedException e1) {
                         e1.printStackTrace();
                     }
