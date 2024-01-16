@@ -13,13 +13,19 @@ public class GameLeaderboardPanel extends JPanel {
 
     private JTable leaderboardTable;
 
-    public GameLeaderboardPanel() {
+    public GameLeaderboardPanel(ServerInfo info) {
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-        // Data to be displayed in the JTable
-        String[][] data = { { "Marcus", "4" }, { "Seb", "2" }, { "Martin", "1" }, { "Hannah", "0" }, { "Frederik", "0" }
-        };
+        String[][] data = new String[info.playerList.size()][2];
+
+        int i = 0;
+        for (PlayerServerInfo player : info.playerList.values()) {
+            data[i][0] = player.name;
+            data[i][1] = "1";
+            i++;
+        }
+
         // Column Names
         String[] columnNames = { "Name", "Score" };
 
