@@ -10,10 +10,11 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 //All the methods should be static as this class only exists to make the Game class more readable
 public class GamePlay {
 	// Constants that define the gameplay
-	final static float BASE_SPEED = 20; // In pixels/second
+	final static float BASE_SPEED = 50; // In pixels/second
 	final static int MIN_TRAIL_SEGMENT = 2; // In pixels
-	final static int PLAYER_SIZE = 4; // Radius in pixels
+	final static int PLAYER_SIZE = 6; // Radius in pixels
 	final static int GAME_COUNTDOWN = 4; // Seconds before the game starts
+	final static int TRAIL_WIDTH = 2;
 
 	static void HandleInput(GameState gameState, GameUpdate update, ArrayList<PlayerInput> playerInput) {
 		for (int i = 0; i < playerInput.size(); i++) {
@@ -47,6 +48,7 @@ public class GamePlay {
 	static void HandleMovement(GameState gameState, GameUpdate update) {
 		for (PlayerInfo info : gameState.players.values()) {
 			if (info.alive) {
+				
 				float newX = (float) (info.x + update.deltaTime * BASE_SPEED * Math.cos(info.rotation));
 				float newY = (float) (info.y + update.deltaTime * BASE_SPEED * Math.sin(info.rotation));
 
@@ -60,6 +62,7 @@ public class GamePlay {
 
 				update.playerUpdate.get(info.id).x = newX;
 				update.playerUpdate.get(info.id).y = newY;
+				//System.out.println("Handling movement for player: " + info.id + ". Old and new x: " + info.x + " " + newX);
 			}
 		}
 	}

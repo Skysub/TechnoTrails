@@ -23,7 +23,7 @@ class GameUpdate {
 	HashMap<Integer, PlayerInfo> playerUpdate;
 	
 	long gameTime = -1; //In ms
-	boolean paused = true;
+	boolean paused = false;
 }
 
 //a value being -1 indicates that hasn't been set

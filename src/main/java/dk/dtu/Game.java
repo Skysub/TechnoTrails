@@ -25,11 +25,12 @@ public class Game {
 	// The game simulates a tick and handles all the game mechanics
 	GameUpdate Tick() {
 		GameUpdate update = new GameUpdate();
-		update.tick = gameState.tick++;
+		update.tick = gameState.tick + 1;
 		//System.out.println("Now processing tick " + update.tick);
 
 		// If the game is paused, nothing about the game should be updated
 		if (gameState.paused && !CheckForUnpause()) {
+				update.paused = true;
 				UpdateGameState(gameState, update);
 				return update;		
 		}
@@ -44,7 +45,7 @@ public class Game {
 		// update according to the tps not actual elapsed time
 		// This ensures proper gameplay even if the server has a massive lag spike or if
 		// the game has been paused
-		if (deltaTime > 0.25d) {
+		if (deltaTime > (2f / tps) || deltaTime < (1f / tps)) {
 			deltaTime = (1f / tps);
 		}
 		update.deltaTime = deltaTime;
@@ -86,13 +87,12 @@ public class Game {
 			PlayerInfo updatedInfo = entry.getValue();
 			PlayerInfo oldInfo = oldState.players.get(entry.getKey());
 
+			//System.out.println("Tick: " + update.tick + ", players old and new x coord: " + oldInfo.x + " " + updatedInfo.x);
 			// Update player information
 			if (updatedInfo.x != -1) oldInfo.x = updatedInfo.x;
 			if (updatedInfo.y != -1) oldInfo.y = updatedInfo.y;
 			if (updatedInfo.rotation != -1) oldInfo.rotation = updatedInfo.rotation;
 			oldInfo.alive = updatedInfo.alive;
-
-			System.out.println(updatedInfo.trail);
 			oldInfo.trail.addAll(updatedInfo.trail);
 		}
 		return oldState;
@@ -152,6 +152,7 @@ public class Game {
 		}
 		freshState.numberOfPlayers = playerList.size();
 		freshState.tick = 0;
+		freshState.tps = tps;
 		freshState.deltaTime = (1f/info.tps);
 		freshState.gameTime = 0;
 		return freshState;

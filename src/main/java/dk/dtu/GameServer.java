@@ -31,13 +31,14 @@ public class GameServer implements Runnable {
 			long timeAtStart = System.nanoTime();
 
 			GameUpdate update = game.Tick(); // The main event!
-
+			//System.out.println("The game is paused? " + update.paused);
+			
 			try {
-				gameSpace.get(new FormalField(GameUpdate.class));
+				gameSpace.getp(new FormalField(GameUpdate.class));
 				gameSpace.put(update);
 
 				for (int id : game.getServerInfo().playerList.keySet()) {
-					lobbySpace.put(id, LobbyToClientMessage.LobbyUpdate);
+					lobbySpace.put(id, LobbyToClientMessage.GameUpdate);
 				}
 
 			} catch (InterruptedException e) {
@@ -51,6 +52,7 @@ public class GameServer implements Runnable {
 				long millis = remaining / 1000000;
 				int nanos = (int) (remaining - (millis * 1000000));
 				try {
+					//System.out.println("GameServer thread going to sleep for " + millis + "ms and " + nanos + "ns");
 					Thread.sleep(millis, nanos);
 				} catch (InterruptedException e) {
 					System.out.println("Tried sleeping to wait for next tick, got exception");

@@ -58,6 +58,7 @@ public class BattlePanel extends JPanel {
         	g2d.setStroke(new BasicStroke(5));
         	g2d.drawRect(0, 0, gameState.levelX, gameState.levelY);
 
+
             for (PlayerInfo p : gameState.players.values()) {
             drawingPanel.drawPlayer(g2d, p);
             drawingPanel.drawTrail(g2d, p);
@@ -65,8 +66,9 @@ public class BattlePanel extends JPanel {
     }
 
         public void drawPlayer(Graphics2D g2d, PlayerInfo p) {
+        	g2d.setStroke(new BasicStroke(1));
             Path2D.Float triangle = new Path2D.Float();
-            float size = 4;
+            float size = GamePlay.PLAYER_SIZE;
             float x = p.x;
             float y = p.y;
             float rotation = p.rotation;
@@ -92,6 +94,7 @@ public class BattlePanel extends JPanel {
         }
 
         public void drawTrail(Graphics2D g2d, PlayerInfo p) {
+        	g2d.setStroke(new BasicStroke(GamePlay.TRAIL_WIDTH));
             ArrayList<ImmutablePair<Float, Float>> trail = p.trail; // Assuming this is how you get the trail
 
             for (int i = 0; i < trail.size() - 1; i++) {
