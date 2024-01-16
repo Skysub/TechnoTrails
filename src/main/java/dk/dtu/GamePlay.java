@@ -14,7 +14,8 @@ public class GamePlay {
 	final static int MIN_TRAIL_SEGMENT = 2; // In pixels
 	final static int PLAYER_SIZE = 6; // Radius in pixels
 	final static int GAME_COUNTDOWN = 4; // Seconds before the game starts
-	final static int TRAIL_WIDTH = 2;
+	final static int TRAIL_WIDTH = 2; //Width of trail in pixels (when drawn as lines)
+	final static int LEVEL_BORDER = 10; //Amount of pixels from the levels real edge, that we put the edge
 
 	static void HandleInput(GameState gameState, GameUpdate update, ArrayList<PlayerInput> playerInput) {
 		for (int i = 0; i < playerInput.size(); i++) {
@@ -82,7 +83,8 @@ public class GamePlay {
 	// Returns alive (T or F) depending on whether the player collides
 	static boolean DoesCollide(PlayerInfo info, GameState gameState, Coords xy[][]) {
 		// Are they already dead or out of bounds?
-		if (!info.alive || info.x > gameState.levelX || info.x < 0 || info.y > gameState.levelY || info.y < 0) {
+		if (!info.alive || info.x > gameState.levelX-GamePlay.LEVEL_BORDER || info.x < GamePlay.LEVEL_BORDER ||
+				           info.y > gameState.levelY-GamePlay.LEVEL_BORDER || info.y < GamePlay.LEVEL_BORDER) {
 			return false;
 		}
 		
@@ -138,7 +140,9 @@ public class GamePlay {
 				xy[i][j] = new Coords(Math.round(info.trail.get(j).left), Math.round(info.trail.get(j).right));
 			}
 
-			for (int j = info.trail.size(); j < longestTrail; j++) {
+			int temp = info.trail.size() - PLAYER_SIZE;
+			if(temp < 0) temp = 0;
+			for (int j = temp; j < longestTrail; j++) {
 				xy[i][j] = new Coords(-100, -100);
 			}
 			i++;

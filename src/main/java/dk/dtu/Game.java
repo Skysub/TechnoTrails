@@ -110,7 +110,7 @@ public class Game {
 		int placed = 0;
 		int temp = gameState.levelX;
 		if(gameState.levelX > temp) temp = gameState.levelX;
-		float spawnDistance = temp/2 * 0.8f;
+		float spawnDistance = temp/2 * 0.7f;
 		int middleX = gameState.levelX/2;
 		int middleY = gameState.levelY/2;
 		
