@@ -22,7 +22,7 @@ public class ChatClient implements Runnable {
         while (true) {
             try {
                 // Listen for messages from the server
-                Object[] message = chatSpace.get(new FormalField(Integer.class), new FormalField(String.class));
+                Object[] message = chatSpace.query(new FormalField(Integer.class), new FormalField(String.class));
                 int senderId = (int) message[0];
                 String content = (String) message[1];
 
