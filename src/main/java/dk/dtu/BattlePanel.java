@@ -30,6 +30,8 @@ public class BattlePanel extends JPanel {
         this.client = client;
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx =0;
+        gbc.gridy = 0;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
