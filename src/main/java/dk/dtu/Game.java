@@ -26,6 +26,7 @@ public class Game {
 	GameUpdate Tick() {
 		GameUpdate update = new GameUpdate();
 		update.tick = gameState.tick++;
+		//System.out.println("Now processing tick " + update.tick);
 
 		// If the game is paused, nothing about the game should be updated
 		if (gameState.paused && !CheckForUnpause()) {

@@ -29,7 +29,7 @@ public class GameInputServer implements Runnable {
 			try {
 				response = gameSpace.get(new FormalField(PlayerInput.class));
 			} catch (InterruptedException e) {
-				System.out.println("Error in gameServer when reading the gameSpace");
+				System.out.println("Error in GameInputServer when reading the gameSpace");
 				e.printStackTrace();
 				continue;
 			}
@@ -49,12 +49,12 @@ public class GameInputServer implements Runnable {
 						break;
 
 					default:
-						System.out.println("GameServer hasn't implemented a specific response for the PlayerAction: "
-								+ action.left + "Which is probably fine.");
+						System.out.println("GameInputServer hasn't implemented a specific response for the PlayerAction: "
+								+ action.left + ", which is probably fine.");
 						break;
 					}
 				} catch (Exception e) {
-					System.out.println("Error in GameServer when handling a PlayerAction: "
+					System.out.println("Error in GameInputServer when handling a PlayerAction: "
 							+ action.left);
 				}
 			}

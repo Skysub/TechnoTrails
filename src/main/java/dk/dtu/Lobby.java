@@ -52,7 +52,6 @@ public class Lobby extends JPanel implements View {
 
 	}
 
-	
 	public void initPlayerTable(ServerInfo info) {
 		// The table showing the players
 		String[] TABLE_COLUMNS = { "Players" };
@@ -123,22 +122,25 @@ public class Lobby extends JPanel implements View {
 		Border border = BorderFactory.createLineBorder(Color.WHITE, 2);
 		chatField.setBorder(border);
 		chatField.setFocusable(true);
-		chatField.addKeyListener(new MyKeyAdapter());
+		if (chatField.getKeyListeners().length == 0)
+			chatField.addKeyListener(new MyKeyAdapter());
 
 		backButton.setPreferredSize(new Dimension(150, 50));
 		backButton.setForeground(Color.blue);
-		backButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (client.getIsHost()) {
-					System.out.println("Host pressed closed lobby");
-					client.KillLobby();
-				} else {
-					System.out.println("Non host pressed leave lobby");
-					client.AttemptDisconnect();
+		if (backButton.getActionListeners().length == 0) {
+			backButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (client.getIsHost()) {
+						System.out.println("Host pressed closed lobby");
+						client.KillLobby();
+					} else {
+						System.out.println("Non host pressed leave lobby");
+						client.AttemptDisconnect();
+					}
 				}
-			}
-		});
+			});
+		}
 
 		GridBagConstraints backgbc = new GridBagConstraints();
 		backgbc.gridwidth = GridBagConstraints.REMAINDER;
@@ -151,35 +153,42 @@ public class Lobby extends JPanel implements View {
 		readyButton = new JButton("Not ready");
 		readyButton.setPreferredSize(new Dimension(50, 50));
 		readyButton.setForeground(Color.blue);
-		readyButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				System.out.println("Readybutton pressed");
-				updateChatModel();
-				client.ToggleReady();
-			}
-		});
+		if (readyButton.getActionListeners().length == 0) {
+			readyButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					System.out.println("Readybutton pressed");
+					updateChatModel();
+					client.ToggleReady();
+				}
+			});
+		}
 
 		startButton.setPreferredSize(new Dimension(50, 50));
 		startButton.setForeground(Color.blue);
 		startButton.setToolTipText("Only host can start game when all players are ready");
-		startButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
+		if (startButton.getActionListeners().length == 0) {
+			startButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					System.out.println("Startbutton pressed, time: " + System.nanoTime());
+					System.out.println("Thread id: " + Thread.currentThread().getId());
 
-				client.HostStartGame();
-				viewManager.changeView("gameView");
-				
-				//change game view for all players
-				//server.changeView("gameView");
-				
-				//no ^
-				//The clients should change the view themselves after receiving a LobbyToClientMessage
-				//The server shouldn't be telling the clients what exact view to be on
-				//It bloats the serverInfo object unnecessarily
-				
-			}
-		});
+					client.HostStartGame();
+					viewManager.changeView("gameView");
+
+					// change game view for all players
+					// server.changeView("gameView");
+
+					// no ^
+					// The clients should change the view themselves after receiving a
+					// LobbyToClientMessage
+					// The server shouldn't be telling the clients what exact view to be on
+					// It bloats the serverInfo object unnecessarily
+
+				}
+			});
+		}
 
 		GridBagConstraints readyGbc = new GridBagConstraints();
 		readyGbc.gridx = 0; // Adjust the grid position as needed
@@ -267,8 +276,6 @@ public class Lobby extends JPanel implements View {
 		g.fillRect(0, 0, viewManager.getWidth(), viewManager.getHeight());
 	}
 
-
-
 	String message;
 
 	public class MyKeyAdapter extends KeyAdapter {
@@ -278,7 +285,6 @@ public class Lobby extends JPanel implements View {
 				chatField.setText("");
 				try {
 					client.getClientChatSpace().put(client.getName(), message);
-					
 
 				} catch (InterruptedException e1) {
 					e1.printStackTrace();
@@ -287,46 +293,40 @@ public class Lobby extends JPanel implements View {
 		}
 	}
 
-
-
-	public DefaultTableModel getClientChatModel(){
+	public DefaultTableModel getClientChatModel() {
 		return client.chatModel;
 	}
+
 // Create a method to periodically check for new chat messages and update the chat model
-public void updateChatModel() {
-    Timer timer = new Timer(10, new ActionListener() { // Adjust the interval as needed
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            try {
-                // Query for new chat messages
-                List<Object[]> chatMessages = client.getClientChatSpace().queryAll(
-                        new FormalField(String.class),
-                        new FormalField(String.class));
+	public void updateChatModel() {
+		Timer timer = new Timer(10, new ActionListener() { // Adjust the interval as needed
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					// Query for new chat messages
+					List<Object[]> chatMessages = client.getClientChatSpace().queryAll(new FormalField(String.class),
+							new FormalField(String.class));
 
-                // Update the chat model with new messages
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        // Update the model only with new messages
-                        if (chatMessages.size() != chatModel.getRowCount()) {
-                            for (int i = chatModel.getRowCount(); i < chatMessages.size(); i++) {
-                                Object[] chatm = chatMessages.get(i);
-                                chatModel.addRow(new Object[] { chatm[0] + ": " + chatm[1] });
-                            }
-                        }
-                    }
-                });
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
-        }
-    });
-    timer.setRepeats(true);
-    timer.start();
-}
-
-
-
-
+					// Update the chat model with new messages
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							// Update the model only with new messages
+							if (chatMessages.size() != chatModel.getRowCount()) {
+								for (int i = chatModel.getRowCount(); i < chatMessages.size(); i++) {
+									Object[] chatm = chatMessages.get(i);
+									chatModel.addRow(new Object[] { chatm[0] + ": " + chatm[1] });
+								}
+							}
+						}
+					});
+				} catch (InterruptedException ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
+		timer.setRepeats(true);
+		timer.start();
+	}
 
 }

@@ -57,15 +57,16 @@ public class Menu extends JPanel implements View {
 		hostButton.setBackground(new Color(0, 76, 153));
 		hostButton.setOpaque(true);
 		hostButton.setBorderPainted(false);
-
-		hostButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (client.CreateLobby("localhost")) {
-					viewManager.changeView("lobby");
+		if (hostButton.getActionListeners().length == 0) {
+			hostButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (client.CreateLobby("localhost")) {
+						viewManager.changeView("lobby");
+					}
 				}
-			}
-		});
+			});
+		}
 
 		// joinButton.setBounds(viewManager.getWidth() / 2 - 60, 330, 120, 50);
 		joinButton.setPreferredSize(new Dimension(150, 50));
@@ -74,49 +75,53 @@ public class Menu extends JPanel implements View {
 		joinButton.setOpaque(true);
 		joinButton.setBorderPainted(false);
 
-		joinButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String inputHostAddress = JOptionPane.showInputDialog(Menu.this, "Enter Host's IP Address:",
-						"Connect to Host", JOptionPane.QUESTION_MESSAGE);
+		if (joinButton.getActionListeners().length == 0) {
+			joinButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					String inputHostAddress = JOptionPane.showInputDialog(Menu.this, "Enter Host's IP Address:",
+							"Connect to Host", JOptionPane.QUESTION_MESSAGE);
 
-				if (inputHostAddress != null && !inputHostAddress.isEmpty()) {
-					try {
-						client.joinLobby(inputHostAddress);
-						viewManager.changeView("lobby");
-					} catch (Exception ex) {
-						JOptionPane.showMessageDialog(Menu.this,
-								"Failed to connect. Check the IP address and try again.", "Connection Error",
+					if (inputHostAddress != null && !inputHostAddress.isEmpty()) {
+						try {
+							client.joinLobby(inputHostAddress);
+							viewManager.changeView("lobby");
+						} catch (Exception ex) {
+							JOptionPane.showMessageDialog(Menu.this,
+									"Failed to connect. Check the IP address and try again.", "Connection Error",
+									JOptionPane.ERROR_MESSAGE);
+						}
+					} else {
+						JOptionPane.showMessageDialog(Menu.this, "Please input an IP address", "Error",
 								JOptionPane.ERROR_MESSAGE);
 					}
-				} else {
-					JOptionPane.showMessageDialog(Menu.this, "Please input an IP address", "Error",
-							JOptionPane.ERROR_MESSAGE);
-				}
 
-			}
-		});
+				}
+			});
+		}
 
 		// Add a "Save" JButton
 		JButton saveButton = new JButton("Save");
 		saveButton.setPreferredSize(new Dimension(60, 30));
 
-		// Add an ActionListener to the "Save" button
-		saveButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// Get the text from the JTextField
-				String name = textField.getText();
+		if (saveButton.getActionListeners().length == 0) {
+			// Add an ActionListener to the "Save" button
+			saveButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// Get the text from the JTextField
+					String name = textField.getText();
 
-				client.setName(name);
-				instructionLabel.setText("Name: " + client.getName());
+					client.setName(name);
+					instructionLabel.setText("Name: " + client.getName());
 
-				// Clear the JTextField, ready for the next one
-				textField.setText("");
+					// Clear the JTextField, ready for the next one
+					textField.setText("");
 
-				repaint();
-			}
-		});
+					repaint();
+				}
+			});
+		}
 
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		gbc.ipady = 0;

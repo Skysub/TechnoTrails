@@ -179,6 +179,7 @@ public class Server {
 
 			gameServer = new GameServer(game, gameSpace, lobbySpace, info.tps);
 			gameThread = new Thread(gameServer);
+			System.out.println("Starting the gameServerThread");
 			gameThread.start();
 
 			gameSpace.get(new ActualField("game server ready"));
@@ -192,13 +193,13 @@ public class Server {
 			for (int id : info.playerList.keySet()) {
 				lobbySpace.put(id, LobbyToClientMessage.LobbyGameStart);
 				gameSpace.get(new ActualField(id), new ActualField("Gaming initialized"));
-
-				// Unpausing the game (gets processed when the countdown is over)
-				PlayerInput unpause = new PlayerInput();
-				unpause.playerActions = new ArrayList<ImmutablePair<PlayerAction, Float>>();
-				unpause.playerActions.add(new ImmutablePair<PlayerAction, Float>(PlayerAction.HostUnPause, 0f));
-				gameSpace.put(unpause);
 			}
+			
+			// Unpausing the game (gets processed when the countdown is over)
+			PlayerInput unpause = new PlayerInput();
+			unpause.playerActions = new ArrayList<ImmutablePair<PlayerAction, Float>>();
+			unpause.playerActions.add(new ImmutablePair<PlayerAction, Float>(PlayerAction.HostUnPause, 0f));
+			gameSpace.put(unpause);
 		} catch (InterruptedException e) {
 			System.out.println("Error when informing about game start info or starting the game");
 			e.printStackTrace();
