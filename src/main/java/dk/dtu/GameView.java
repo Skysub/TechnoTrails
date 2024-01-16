@@ -11,7 +11,6 @@ public class GameView extends JPanel implements View {
     private GameChatPanel chatPanel;
     ViewManager viewManager;
     Client client;
-    Lobby lobby;
     Menu menu;
     private JLabel countdownLabel;
     private Timer countdownTimer;
@@ -50,7 +49,7 @@ public class GameView extends JPanel implements View {
         // Position the countdownLabel in the middle of the battlePanel
 
         // Setbounds doesn't work. Use prefferedSize instead
-        countdownLabel.setBounds(battlePanel.getWidth() / 2 - 40, battlePanel.getHeight() / 2 - 50, 100, 100);
+        //countdownLabel.setBounds(battlePanel.getWidth() / 2 - 40, battlePanel.getHeight() / 2 - 50, 100, 100);
 
         battlePanel.add(countdownLabel);
 
