@@ -10,7 +10,7 @@ public class GameState {
 	int tps = -1;
 	float deltaTime = -1;
 	int numberOfPlayers = 0;
-	int levelX = 800, levelY = 600;
+	int levelX = 1040, levelY = 675;
 	HashMap<Integer, PlayerInfo> players;
 	
 	long gameTime = -1; //In ns

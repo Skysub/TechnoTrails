@@ -67,6 +67,21 @@ public class GamePlay {
 			}
 		}
 	}
+	
+	public static int CheckForWinner(GameState gameState, GameUpdate update) {
+		int aliveID = -1;
+		for (PlayerInfo info : gameState.players.values()) {
+			if(info.alive) {
+				if(aliveID == -1) {
+					aliveID = info.id;
+				} else {
+					return -1;
+				}
+			}
+		}
+		update.paused = true;
+		return aliveID;
+	}
 
 	// Checks for collisions and kills players if necessary
 	static void HandleCollisions(GameState gameState, GameUpdate update) {

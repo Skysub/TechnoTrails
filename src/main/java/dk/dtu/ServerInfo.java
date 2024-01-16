@@ -38,7 +38,8 @@ enum LobbyToClientMessage {
 	Done,
 	
 	// Game Stuff
-	GameUpdate,
+	GameUpdate, 
+	AnnounceWinner,
 }
 
 enum ClientToLobbyMessage {

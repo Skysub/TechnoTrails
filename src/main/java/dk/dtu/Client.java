@@ -208,6 +208,11 @@ public class Client {
 			return;
 		}
 	}
+	
+	public void GameIsOver() {
+		int winner = GamePlay.CheckForWinner(gameState, new GameUpdate());
+		
+	}
 
 	//This method updates all references to the client gameState
 	private void setNewGameState(GameState newState) {

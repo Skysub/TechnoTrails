@@ -58,6 +58,10 @@ public class LobbyClient implements Runnable {
 					case GameUpdate:
 						client.GameUpdate();
 						break;
+						
+					case AnnounceWinner:
+						client.GameIsOver();
+						break;
 
 					default:
 						System.out.println(

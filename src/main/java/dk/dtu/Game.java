@@ -14,6 +14,7 @@ public class Game {
 	private ArrayList<PlayerInput> playerInput = new ArrayList<PlayerInput>();;
 	private ServerInfo info;
 	private Space gameSpace;
+	private int winner = -1;
 
 	Game(ServerInfo info, Space gameSpace) {
 		this.tps = info.tps;
@@ -65,6 +66,7 @@ public class Game {
 		
 		GamePlay.HandleCollisions(gameState, update);
 		GamePlay.HandleMovement(gameState, update);
+		winner = GamePlay.CheckForWinner(gameState, update);
 
 		UpdateGameState(gameState, update);
 
@@ -164,5 +166,9 @@ public class Game {
 	
 	ServerInfo getServerInfo() {
 		return info;
+	}
+
+	public int getWinner() {
+		return winner;
 	}
 }
