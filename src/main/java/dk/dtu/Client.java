@@ -29,7 +29,7 @@ public class Client {
 	Thread chatThread;
 
 	private String myName = "unset";
-	public String hostAddress = "192.168.0.4";
+	public String hostAddress = "10.212.135.113";
 	public Server server;
 	private boolean isHost = false;
 	private boolean disconnecting = false;
