@@ -2,6 +2,7 @@ package dk.dtu;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -10,14 +11,16 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 //All the methods should be static as this class only exists to make the Game class more readable
 public class GamePlay {
 	// Constants that define the gameplay
-	final static float BASE_SPEED = 70; // In pixels/second
-	final static float TURNING_SPEED = 2.5f; // In radians/second
-	final static int MIN_TRAIL_SEGMENT = 2; // In pixels
+	final static float BASE_SPEED = 85; // In pixels/second
+	final static float TURNING_SPEED = 2.6f; // In radians/second
+	final static int MIN_TRAIL_SEGMENT = 2; // In pixels, maximum 6 pixels
 	final static int PLAYER_SIZE = 6; // Radius in pixels
 	final static int GAME_COUNTDOWN = 4; // Seconds before the game starts
 	final static int TRAIL_WIDTH = 2; // Width of trail in pixels (when drawn as lines)
 	final static int LEVEL_BORDER = 10; // Amount of pixels from the levels real edge, that we put the edge
 	final static int WINNER_DELAY = 6; // Seconds the winners name i shown on screen before clients return to lobby
+	final static int TRAIL_LENGTH_BEFORE_GAP = 200; //in pixels (approximately)
+	final static int TRAIL_GAP_LENGTH = 30; //in pixels (approximately), minimum 8 pixels
 
 	static void HandleInput(GameState gameState, GameUpdate update, ArrayList<PlayerInput> playerInput) {
 		for (int i = 0; i < playerInput.size(); i++) {
@@ -48,26 +51,38 @@ public class GamePlay {
 	}
 
 	// moves the players and adds to their trails
-	static void HandleMovement(GameState gameState, GameUpdate update) {
+	static void HandleMovement(GameState gameState, GameUpdate update, HashMap<Integer, TrailInfo> trailInfo) {
 		for (PlayerInfo info : gameState.players.values()) {
 			if (info.alive) {
 
 				float newX = (float) (info.x + update.deltaTime * BASE_SPEED * Math.cos(info.rotation));
 				float newY = (float) (info.y + update.deltaTime * BASE_SPEED * Math.sin(info.rotation));
 
+				//Handle trails
 				int trailLength = info.trail.size();
 				float trailSegmentLength = (float) Math
 						.sqrt(Math.pow(newX - info.trail.get(trailLength - 1).getLeft(), 2)
 								+ Math.pow(newY - info.trail.get(trailLength - 1).getRight(), 2));
 				if (trailSegmentLength >= MIN_TRAIL_SEGMENT) {
-					// Add the new position to the trail
-					update.playerUpdate.get(info.id).trail.add(new ImmutablePair<Float, Float>(newX, newY));
+					//Handle gaps
+					TrailInfo ti = trailInfo.get(info.id);
+					int sinceGap = ti.segmentsSinceLastGap;
+					
+
+					if(sinceGap > TRAIL_LENGTH_BEFORE_GAP/MIN_TRAIL_SEGMENT) {
+						ti.segmentsSinceLastGap = -(TRAIL_GAP_LENGTH/MIN_TRAIL_SEGMENT);
+					}
+					
+					if(sinceGap > 0) {
+						// Add the new position to the trail
+						update.playerUpdate.get(info.id).trail.add(new ImmutablePair<Float, Float>(newX, newY));
+					}
+					
+					ti.segmentsSinceLastGap++;
 				}
 
 				update.playerUpdate.get(info.id).x = newX;
 				update.playerUpdate.get(info.id).y = newY;
-				// System.out.println("Handling movement for player: " + info.id + ". Old and
-				// new x: " + info.x + " " + newX);
 			}
 		}
 	}
@@ -191,4 +206,8 @@ class Coords implements Comparable {
 	public int compareTo(Object o) {
 		return x - ((Coords) o).x;
 	}
+}
+
+class TrailInfo{
+	int segmentsSinceLastGap = 0;
 }

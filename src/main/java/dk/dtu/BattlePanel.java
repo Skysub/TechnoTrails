@@ -92,10 +92,10 @@ public class BattlePanel extends JPanel {
 				if (c == playerColors.length)
 					c = 0;
 			}
-			
+
 			// Checks if we have a winner. If true, it shows the winners name and changes
-						// view to lobby view after a small delay
-						CheckForWinner(g2d, gameState);
+			// view to lobby view after a small delay
+			CheckForWinner(g2d, gameState);
 		}
 
 		public void drawPlayer(Graphics2D g2d, PlayerInfo p) {
@@ -136,32 +136,38 @@ public class BattlePanel extends JPanel {
 				float x2 = point2.getLeft();
 				float y2 = point2.getRight();
 
-				// Drawing a line between the points
-				// Convert float coordinates to integers
-				g2d.drawLine((int) x1, (int) y1, (int) x2, (int) y2);
+				// Dont draw the segment if its a gap.
+				// Checks if the line segment would be long
+				if (Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2)) < GamePlay.TRAIL_GAP_LENGTH / 2) {
 
-				// Alternatively, if you want to draw with float precision, you can use:
-				// g2d.draw(new Line2D.Float(x1, y1, x2, y2));
+					// Drawing a line between the points
+					// Convert float coordinates to integers
+					g2d.drawLine((int) x1, (int) y1, (int) x2, (int) y2);
+
+					// Alternatively, if you want to draw with float precision, you can use:
+					// g2d.draw(new Line2D.Float(x1, y1, x2, y2));
+				}
 			}
 		}
 
 		private void CheckForWinner(Graphics2D g2d, GameState gameState) {
 			if (gameState.winner != -1) {
-				//Draw the winners name
+				// Draw the winners name
 				g2d.setColor(new Color(50, 100, 180));
 				g2d.setFont(new Font("Serif", Font.BOLD, 40));
 				FontMetrics metric = getFontMetrics(g2d.getFont());
 				g2d.drawString(winnerString, (gameState.levelX - metric.stringWidth(winnerString)) / 2,
-						 (gameState.levelY - metric.getHeight()) / 2);
+						(gameState.levelY - metric.getHeight()) / 2);
 				// countdownLabel.setFont(new Font("Serif", Font.BOLD, 48)); // Set font size
 				// and style
 				// countdownLabel.setForeground(Color.RED); // Set text color
-				
+
 				if (getWinnerTimeLeft() == -10) {
 					setWinnerTimeLeft(GamePlay.WINNER_DELAY);
-					if(gameState.winner == 0) winnerString = "Draw";
-					else winnerString = "Winner: " + client.serverInfo.playerList.get(gameState.winner).name;
-
+					if (gameState.winner == 0)
+						winnerString = "Draw";
+					else
+						winnerString = "Winner: " + client.serverInfo.playerList.get(gameState.winner).name;
 
 					winnerTimer = new Timer(1000, new ActionListener() {
 						@Override

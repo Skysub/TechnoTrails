@@ -14,6 +14,7 @@ public class Game {
 	private ArrayList<PlayerInput> playerInput = new ArrayList<PlayerInput>();;
 	private ServerInfo info;
 	private Space gameSpace;
+	private HashMap<Integer, TrailInfo> trailInfo;
 	static final boolean DEBUG_measureTime = false;
 	private int timeCalc = 0;
 	private long totalHandleMovementTime = 0;
@@ -21,6 +22,7 @@ public class Game {
 	private long totalHandleCollisionsTime = 0;
 	private long totalCheckForWinnersTime = 0;
 	private long totalUpdateGameStateTime = 0;
+	
 
 	Game(ServerInfo info, Space gameSpace) {
 		this.tps = info.tps;
@@ -80,7 +82,7 @@ public class Game {
 			totalHandleCollisionsTime += (System.nanoTime()-time)/1000;
 			
 			time = System.nanoTime();
-			GamePlay.HandleMovement(gameState, update);	
+			GamePlay.HandleMovement(gameState, update, trailInfo);	
 			totalHandleMovementTime += (System.nanoTime()-time)/1000;
 			
 			time = System.nanoTime();
@@ -106,7 +108,7 @@ public class Game {
 			playerInput = new ArrayList<PlayerInput>();
 
 			GamePlay.HandleCollisions(gameState, update);
-			GamePlay.HandleMovement(gameState, update);	
+			GamePlay.HandleMovement(gameState, update, trailInfo);	
 			gameState.winner = GamePlay.CheckForWinner(gameState, update);
 
 			UpdateGameState(gameState, update);
@@ -154,6 +156,7 @@ public class Game {
 	GameState StartGame() {
 		// Spillet startes
 		gameState = CreateGameState(info.playerList);
+		trailInfo = new HashMap<Integer, TrailInfo>();
 
 		// Places the players around the level in a circle around the center facing in
 		int placed = 0;
@@ -164,6 +167,7 @@ public class Game {
 		int middleX = gameState.levelX / 2;
 		int middleY = gameState.levelY / 2;
 
+		
 		for (PlayerInfo player : gameState.players.values()) {
 			placed++;
 			double angle = (double) (Math.PI * 2f * ((double) placed / (double) gameState.numberOfPlayers));
@@ -172,6 +176,8 @@ public class Game {
 			player.trail.add(new ImmutablePair<Float, Float>(player.x, player.y));
 
 			player.rotation = (float) (angle + Math.PI);
+			
+			trailInfo.put(player.id, new TrailInfo());
 		}
 		return gameState;
 	}
