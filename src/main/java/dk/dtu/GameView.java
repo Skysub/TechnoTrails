@@ -28,6 +28,7 @@ public class GameView extends JPanel implements View {
     public void gamePanels() {
         gameControls = new GameControls();
         battlePanel = new BattlePanel(client);
+        battlePanel.add(gameControls);
 
         setLayout(new BorderLayout());
 
@@ -51,7 +52,8 @@ public class GameView extends JPanel implements View {
         // Position the countdownLabel in the middle of the battlePanel
 
         // Setbounds doesn't work. Use prefferedSize instead
-        //countdownLabel.setBounds(battlePanel.getWidth() / 2 - 40, battlePanel.getHeight() / 2 - 50, 100, 100);
+        // countdownLabel.setBounds(battlePanel.getWidth() / 2 - 40,
+        // battlePanel.getHeight() / 2 - 50, 100, 100);
 
         battlePanel.add(countdownLabel);
 
@@ -75,11 +77,11 @@ public class GameView extends JPanel implements View {
     }
 
     public void whenEntering() {
-    	battlePanel.drawGameTimer.start();
-    	
+        battlePanel.drawGameTimer.start();
+
         if (countdownNumber == -1)
             initCountdown();
-            
+
         gameLeaderboardPanel = new GameLeaderboardPanel(client.getServerInfo());
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -96,11 +98,16 @@ public class GameView extends JPanel implements View {
     }
 
     public void whenExiting() {
-    	battlePanel.drawGameTimer.stop();
+        battlePanel.drawGameTimer.stop();
     }
 
     public void clientRequestedUpdate() {
 
+    }
+
+    public GameControls getGameControls() {
+
+        return gameControls;
     }
 
 }

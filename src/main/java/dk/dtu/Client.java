@@ -271,6 +271,17 @@ public class Client {
 		viewManager.updateView();
 	}
 
+	public void sendPlayerActions() {
+		GameControls gameControls = ((GameView)viewManager.getView("gameView")).getGameControls();
+		boolean left = gameControls.getLeft();
+		boolean right = gameControls.getRight();
+		
+		
+
+	}
+
+
+
 	// ==========================================
 	// Getters and setters
 
