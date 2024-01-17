@@ -57,7 +57,11 @@ public class LobbyServer implements Runnable {
 					break;
 					
 				case HostEndGame:
-					server.EndGame();;
+					server.EndGame();
+					break;
+					
+				case IncrementScore:
+					server.IncrementScore(ID);
 					break;
 
 				default:
