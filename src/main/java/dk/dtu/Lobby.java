@@ -159,7 +159,6 @@ public class Lobby extends JPanel implements View {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					System.out.println("Readybutton pressed");
-					updateChatModel();
 					client.ToggleReady();
 				}
 			});
@@ -231,7 +230,6 @@ public class Lobby extends JPanel implements View {
 		readyGbc.gridy = 3;
 		add(readyButton, readyGbc);
 		add(Box.createVerticalStrut(30), paddgbc);
-		updateChatModel();
 		revalidate();
 	}
 
@@ -251,6 +249,7 @@ public class Lobby extends JPanel implements View {
 
 	public void clientRequestedUpdate() {
 		initLobby();
+		updateChatModel();
 		if (client.getServerInfo().playerList.get(client.getMyID()).ready) {
 			readyButton.setText("Ready");
 		} else {
@@ -302,37 +301,47 @@ public class Lobby extends JPanel implements View {
 
 // Create a method to periodically check for new chat messages and update the chat model
 public void updateChatModel() {
-    if (chatUpdateTimer == null) {
-        chatUpdateTimer = new Timer(5000, new ActionListener() { // Adjust the interval as needed
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    // Query for new chat messages
-                    List<Object[]> chatMessages = client.getClientChatSpace().queryAll(new FormalField(String.class),
-                            new FormalField(String.class));
+    // Check if the current view is the lobby before updating the chat model
+    if (viewManager.getCurrentView().equals("lobby")) {
+        if (chatUpdateTimer == null) {
+            chatUpdateTimer = new Timer(5000, new ActionListener() { // Adjust the interval as needed
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        // Query for new chat messages
+                        List<Object[]> chatMessages = client.getClientChatSpace().queryAll(new FormalField(String.class),
+                                new FormalField(String.class));
 
-                    // Update the chat model with new messages
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            // Update the model only with new messages
-                            if (chatMessages.size() != chatModel.getRowCount()) {
-                                for (int i = chatModel.getRowCount(); i < chatMessages.size(); i++) {
-                                    Object[] chatm = chatMessages.get(i);
-                                    chatModel.addRow(new Object[] { chatm[0] + ": " + chatm[1] });
+                        // Update the chat model with new messages
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                // Update the model only with new messages
+                                if (chatMessages.size() != chatModel.getRowCount()) {
+                                    for (int i = chatModel.getRowCount(); i < chatMessages.size(); i++) {
+                                        Object[] chatm = chatMessages.get(i);
+                                        chatModel.addRow(new Object[] { chatm[0] + ": " + chatm[1] });
+                                    }
                                 }
                             }
-                        }
-                    });
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
+                        });
+                    } catch (InterruptedException ex) {
+                        ex.printStackTrace();
+                    }
                 }
-            }
-        });
-        chatUpdateTimer.setRepeats(true);
-        chatUpdateTimer.start();
+            });
+            chatUpdateTimer.setRepeats(true);
+            chatUpdateTimer.start();
+        }
+    } else {
+        // If not in the lobby, stop the chat update timer
+        if (chatUpdateTimer != null) {
+            chatUpdateTimer.stop();
+            chatUpdateTimer = null;
+        }
     }
 }
+
 
 
 }

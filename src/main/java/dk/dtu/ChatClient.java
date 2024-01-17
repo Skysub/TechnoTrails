@@ -30,16 +30,19 @@ public class ChatClient implements Runnable {
         while (running) { // Check the flag to decide whether to continue running
             try {
                 // Listen for messages from the server
-                Object[] message = chatSpace.query(new FormalField(Integer.class), new FormalField(String.class));
-                int senderId = (int) message[0];
-                String content = (String) message[1];
-
-                // Update chat model with the received message
-                SwingUtilities.invokeLater(() -> {
-                    //chatModel.setRowCount(0);
-                    chatModel.addRow(new Object[] { "Player " + senderId, content });
-                });
-
+                Object[] message = chatSpace.getp(new FormalField(Integer.class), new FormalField(String.class));
+    
+                // Check if the message is not null before accessing its elements
+                if (message != null && message.length == 2) {
+                    int senderId = (int) message[0];
+                    String content = (String) message[1];
+    
+                    // Update chat model with the received message
+                    SwingUtilities.invokeLater(() -> {
+                        //chatModel.setRowCount(0);
+                        chatModel.addRow(new Object[] { "Player " + senderId, content });
+                    });
+                }
             } catch (InterruptedException ex) {
                 System.err.println("InterruptedException occurred while querying chat space: " + ex.getMessage());
                 return; // Exit the thread when an exception occurs
