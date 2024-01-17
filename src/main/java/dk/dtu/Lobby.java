@@ -239,17 +239,13 @@ public class Lobby extends JPanel implements View {
 	public void whenEntering() {
 		if (client.getIsHost()) {
 			backButton.setText("Close Lobby");
-			chatUpdateTimer.stop();
 		} else {
 			backButton.setText("Leave Lobby");
 		}
 	}
 
 	public void whenExiting() {
-		if (chatUpdateTimer != null) {
-			chatUpdateTimer.stop();
-			chatUpdateTimer = null;
-		}
+	
 
 	}
 
@@ -305,35 +301,38 @@ public class Lobby extends JPanel implements View {
 	}
 
 // Create a method to periodically check for new chat messages and update the chat model
-	public void updateChatModel() {
-		chatUpdateTimer= new Timer(5000, new ActionListener() { // Adjust the interval as needed
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					// Query for new chat messages
-					List<Object[]> chatMessages = client.getClientChatSpace().queryAll(new FormalField(String.class),
-							new FormalField(String.class));
+public void updateChatModel() {
+    if (chatUpdateTimer == null) {
+        chatUpdateTimer = new Timer(5000, new ActionListener() { // Adjust the interval as needed
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    // Query for new chat messages
+                    List<Object[]> chatMessages = client.getClientChatSpace().queryAll(new FormalField(String.class),
+                            new FormalField(String.class));
 
-					// Update the chat model with new messages
-					SwingUtilities.invokeLater(new Runnable() {
-						@Override
-						public void run() {
-							// Update the model only with new messages
-							if (chatMessages.size() != chatModel.getRowCount()) {
-								for (int i = chatModel.getRowCount(); i < chatMessages.size(); i++) {
-									Object[] chatm = chatMessages.get(i);
-									chatModel.addRow(new Object[] { chatm[0] + ": " + chatm[1] });
-								}
-							}
-						}
-					});
-				} catch (InterruptedException ex) {
-					ex.printStackTrace();
-				}
-			}
-		});
-		chatUpdateTimer.setRepeats(true);
-		chatUpdateTimer.start();
-	}
+                    // Update the chat model with new messages
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Update the model only with new messages
+                            if (chatMessages.size() != chatModel.getRowCount()) {
+                                for (int i = chatModel.getRowCount(); i < chatMessages.size(); i++) {
+                                    Object[] chatm = chatMessages.get(i);
+                                    chatModel.addRow(new Object[] { chatm[0] + ": " + chatm[1] });
+                                }
+                            }
+                        }
+                    });
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        chatUpdateTimer.setRepeats(true);
+        chatUpdateTimer.start();
+    }
+}
+
 
 }

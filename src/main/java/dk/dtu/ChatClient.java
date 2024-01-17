@@ -16,10 +16,18 @@ public class ChatClient implements Runnable {
         this.client = client;
         this.myID = myID;
         this.chatModel = chatModel;
+        try {
+            chatSpace.put("Server:","The chat server has started");
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     public void stop() {
         running = false; // Set the flag to stop the thread
+        Thread.currentThread().interrupt(); // Interrupt the thread to exit blocking operations
+
     }
 
     @Override
@@ -39,6 +47,7 @@ public class ChatClient implements Runnable {
 
             } catch (InterruptedException ex) {
                 System.err.println("InterruptedException occurred while querying chat space: " + ex.getMessage());
+                Thread.currentThread().interrupt(); // Interrupt the thread to exit blocking operations
                 return; // Exit the thread when an exception occurs
             }
         }

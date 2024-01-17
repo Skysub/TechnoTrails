@@ -46,6 +46,7 @@ public class Client {
 		this.viewManager = viewManager;
 		setName(RandomWords.getRandomWord());
 		serverInfo = new ServerInfo();
+		this.gameSpace = gameSpace;
 		serverInfo.playerList = new HashMap<Integer, PlayerServerInfo>();
 	}
 

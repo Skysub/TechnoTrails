@@ -57,9 +57,9 @@ public class Server {
 		lobbyThread = new Thread(lobbyServer);
 		lobbyThread.start();
 
-		chatServer = new ChatServer(chatSpace, info, this);
+		/*chatServer = new ChatServer(chatSpace, info, this);
 		chatThread = new Thread(chatServer);
-		chatThread.start();
+		chatThread.start();*/
 
 		try {
 			lobbySpace.get(new ActualField(LobbyToClientMessage.LobbyStart));
