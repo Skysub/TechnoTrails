@@ -154,12 +154,17 @@ public class BattlePanel extends JPanel {
 				float x2 = point2.getLeft();
 				float y2 = point2.getRight();
 
-				// Drawing a line between the points
-				// Convert float coordinates to integers
-				g2d.drawLine((int) x1, (int) y1, (int) x2, (int) y2);
+				// Dont draw the segment if its a gap.
+				// Checks if the line segment would be long
+				if (Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2)) < GamePlay.TRAIL_GAP_LENGTH / 2) {
 
-				// Alternatively, if you want to draw with float precision, you can use:
-				// g2d.draw(new Line2D.Float(x1, y1, x2, y2));
+					// Drawing a line between the points
+					// Convert float coordinates to integers
+					g2d.drawLine((int) x1, (int) y1, (int) x2, (int) y2);
+
+					// Alternatively, if you want to draw with float precision, you can use:
+					// g2d.draw(new Line2D.Float(x1, y1, x2, y2));
+				}
 			}
 		}
 

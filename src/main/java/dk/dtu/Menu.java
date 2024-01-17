@@ -61,7 +61,8 @@ public class Menu extends JPanel implements View {
 			hostButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					if (client.CreateLobby("localhost")) {
+	
+					if (client.CreateLobby(client.getHostAddress())) {
 						viewManager.changeView("lobby");
 					}
 				}
