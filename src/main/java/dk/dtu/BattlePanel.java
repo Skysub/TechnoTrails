@@ -187,26 +187,25 @@ public class BattlePanel extends JPanel {
 					});
 					winnerTimer.start();
 				}
-
 			}
 		}
 	}
 
 	public void startCountdown() {
 		countdown = GamePlay.GAME_COUNTDOWN; // Starting from 5
-			countdownTimer = new Timer(1000, new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					if (countdown > 0) {
-						countdown--;
-					}
-				
-					if (countdown <= 0) {
-						countdownTimer.stop();
-					}
-					drawingPanel.repaint();
+		countdownTimer = new Timer(1000, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (countdown > 0) {
+					countdown--;
 				}
-			});
-			countdownTimer.start();
+
+				if (countdown <= 0) {
+					countdownTimer.stop();
+				}
+				drawingPanel.repaint();
+			}
+		});
+		countdownTimer.start();
 	}
 }

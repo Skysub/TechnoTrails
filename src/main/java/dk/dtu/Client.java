@@ -154,7 +154,7 @@ public class Client {
 			System.out.println("Error when finalizing a disconnect");
 			e.printStackTrace();
 		}
-		DisconnectFromGame();
+		if(server.game != null)DisconnectFromGame();
 		gameSpace = null;
 		chatSpace = null;
 		lobbySpace = null;

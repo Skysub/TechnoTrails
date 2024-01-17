@@ -25,7 +25,7 @@ enum LobbyToClientMessage {
 	LobbyGameStart,
 	LobbyBackToLobby,
 	LobbyShutdown,
-	LobbySaysGoodbye, 
+	LobbySaysGoodbye,
 	Done,
 	
 	// Game Stuff
