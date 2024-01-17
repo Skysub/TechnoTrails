@@ -11,7 +11,7 @@ public class GameServer implements Runnable {
 	Space lobbySpace;
 	long tickRate;
 	boolean shuttingDown = false;
-	static final boolean DEBUG_gameServerMeasureTime = true;
+	static final boolean DEBUG_gameServerMeasureTime = false;
 	private long maxTime = 0;
 	private long totalTime = 0;
 	private long runningTimes = 0;
