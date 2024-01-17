@@ -55,9 +55,7 @@ public class GameView extends JPanel implements View {
         gbc.weightx = 1;
         gbc.weighty = 0.5;
         gbc.fill = GridBagConstraints.BOTH;
-
         rightPanel.add(gameLeaderboardPanel, gbc);
-
         chatPanel = new GameChatPanel(client);
         gbc.gridy = 1;
         gbc.weighty = 0.5;
