@@ -10,7 +10,8 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 //All the methods should be static as this class only exists to make the Game class more readable
 public class GamePlay {
 	// Constants that define the gameplay
-	final static float BASE_SPEED = 50; // In pixels/second
+	final static float BASE_SPEED = 70; // In pixels/second
+	final static float TURNING_SPEED = 2.5f; //In radians/second
 	final static int MIN_TRAIL_SEGMENT = 2; // In pixels
 	final static int PLAYER_SIZE = 6; // Radius in pixels
 	final static int GAME_COUNTDOWN = 4; // Seconds before the game starts

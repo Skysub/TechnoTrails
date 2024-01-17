@@ -57,6 +57,14 @@ public class BattlePanel extends JPanel {
 		drawGameTimer = new Timer(1000 / fps, e -> repaint());
 	}
 
+	public int getWinnerTimeLeft() {
+		return winnerTimeLeft;
+	}
+
+	public void setWinnerTimeLeft(int winnerTimeLeft) {
+		this.winnerTimeLeft = winnerTimeLeft;
+	}
+
 	private class CustomDrawingPanel extends JPanel {
 		@Override
 		protected void paintComponent(Graphics g) {
@@ -149,16 +157,15 @@ public class BattlePanel extends JPanel {
 				// and style
 				// countdownLabel.setForeground(Color.RED); // Set text color
 				
-				if (winnerTimeLeft == -10) {
+				if (getWinnerTimeLeft() == -10) {
 					winnerString = "Winner: " + client.serverInfo.playerList.get(gameState.winner).name;
-					winnerTimeLeft = GamePlay.WINNER_DELAY;
+					setWinnerTimeLeft(GamePlay.WINNER_DELAY);
 
 					winnerTimer = new Timer(1000, new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							winnerTimeLeft--;
-							if (winnerTimeLeft <= 0) {
-								winnerTimeLeft = -10;
+							setWinnerTimeLeft(getWinnerTimeLeft() - 1);
+							if (getWinnerTimeLeft() <= 0) {
 								winnerTimer.stop();
 								client.BackToLobby();
 							}

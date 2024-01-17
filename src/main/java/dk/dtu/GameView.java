@@ -28,7 +28,7 @@ public class GameView extends JPanel implements View {
     public void gamePanels() {
         gameControls = new GameControls();
         battlePanel = new BattlePanel(client);
-        battlePanel.add(gameControls);
+        addKeyListener(gameControls);
 
         setLayout(new BorderLayout());
 
@@ -40,6 +40,7 @@ public class GameView extends JPanel implements View {
         gbc.fill = GridBagConstraints.BOTH;
         add(battlePanel, BorderLayout.CENTER);
         add(rightPanel, BorderLayout.EAST);
+        setFocusable(true);
         setVisible(true);
     }
 
@@ -94,11 +95,12 @@ public class GameView extends JPanel implements View {
         gbc.gridy = 1;
         gbc.weighty = 0.5;
         rightPanel.add(chatPanel, gbc);
-
+        requestFocus();
     }
 
     public void whenExiting() {
         battlePanel.drawGameTimer.stop();
+        battlePanel.setWinnerTimeLeft(-10);
     }
 
     public void clientRequestedUpdate() {

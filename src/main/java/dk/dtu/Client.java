@@ -207,6 +207,7 @@ public class Client {
 			e.printStackTrace();
 			return;
 		}
+		sendPlayerActions();
 	}
 	
 	public void GameIsOver() {
@@ -276,8 +277,26 @@ public class Client {
 		boolean left = gameControls.getLeft();
 		boolean right = gameControls.getRight();
 		
+		PlayerInput out = new PlayerInput();
+		out.id = myID;
+		out.playerActions = new ArrayList<ImmutablePair<PlayerAction, Float>>();
 		
-
+		if(left) {
+			float newAngle = gameState.players.get(myID).rotation - (gameState.deltaTime * GamePlay.TURNING_SPEED);
+			out.playerActions.add(new ImmutablePair<PlayerAction, Float>(PlayerAction.Turn, newAngle));
+		}
+		
+		if(right) {
+			float newAngle = gameState.players.get(myID).rotation + (gameState.deltaTime * GamePlay.TURNING_SPEED);
+			out.playerActions.add(new ImmutablePair<PlayerAction, Float>(PlayerAction.Turn, newAngle));
+		}
+		
+		try {
+			gameSpace.put(out);
+		} catch (InterruptedException e) {
+			System.out.println("Error when sending game inputs");
+			e.printStackTrace();
+		}
 	}
 
 

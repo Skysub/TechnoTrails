@@ -1,18 +1,20 @@
 package dk.dtu;
 
 import javax.swing.*;
+
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-class GameControls extends JFrame implements KeyListener {
+class GameControls extends KeyAdapter {
 
     public boolean rightClick;
     public boolean leftClick;
 
     public GameControls() {
         
-        setFocusable(true);
-        addKeyListener(this);
+        //setFocusable(true);
+        //addKeyListener(this);
     }
 
     @Override
@@ -33,7 +35,6 @@ class GameControls extends JFrame implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-
         int keyCode = e.getKeyCode();
 
         switch (keyCode) {
@@ -50,7 +51,6 @@ class GameControls extends JFrame implements KeyListener {
     }
 
     public boolean getLeft() {
-
         return leftClick;
 
     }

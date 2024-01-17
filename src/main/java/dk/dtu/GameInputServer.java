@@ -66,7 +66,6 @@ public class GameInputServer implements Runnable {
 				}
 			}
 			game.addPlayerInput(input);
-
 		}
 
 	}
