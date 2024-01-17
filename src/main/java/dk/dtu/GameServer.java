@@ -44,6 +44,7 @@ public class GameServer implements Runnable {
 
 				if (game.getGameState().winner != -1) {
 					System.out.println("Winner is id: " + game.getGameState().winner);
+					
 					gameSpace.getp(new FormalField(GameState.class));
 					gameSpace.put(game.getGameState());
 					Thread.sleep(5); // Wait a moment before announcing the winner

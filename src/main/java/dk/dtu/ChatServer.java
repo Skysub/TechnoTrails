@@ -28,7 +28,7 @@ public class ChatServer implements Runnable {
                 String content = (String) message[1];
 
                 // Broadcast message to all connected clients
-                broadcastMessage(senderId, content);
+               // broadcastMessage(senderId, content);
 
             } catch (InterruptedException e) {
                 // Handle exceptions
@@ -42,10 +42,10 @@ public class ChatServer implements Runnable {
         clientChatSpaces.add(clientChatSpace);
     }
 
-    private void broadcastMessage(int senderId, String message) throws InterruptedException {
+   /*  private void broadcastMessage(int senderId, String message) throws InterruptedException {
         // Iterate through all connected clients' chat spaces and send the message
         for (Space clientChatSpace : clientChatSpaces) {
             clientChatSpace.put(senderId, message);
         }
-    }
+    }*/
 }

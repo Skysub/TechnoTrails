@@ -45,9 +45,9 @@ public class Server {
 	}
 
 	public boolean createLobby() {
-		hostAddress = getLocalIP();
+		//hostAddress = getLocalIP(); //Doesnt work yet
 		repository = new SpaceRepository();
-		repository.addGate("tcp://" + "localhost" + ":9001/?keep");
+		repository.addGate("tcp://" + hostAddress + ":9001/?keep");
 		lobbySpace = new SequentialSpace();
 		repository.add("lobby", lobbySpace);
 		chatSpace = new SequentialSpace();

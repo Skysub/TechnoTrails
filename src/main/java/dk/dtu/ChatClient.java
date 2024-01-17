@@ -40,11 +40,5 @@ public class ChatClient implements Runnable {
         }
     }
 
-    public void sendMessage(String message) {
-        try {
-            chatSpace.put(myID, message);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+
 }

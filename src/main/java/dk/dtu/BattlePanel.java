@@ -32,7 +32,7 @@ public class BattlePanel extends JPanel {
 	private Timer winnerTimer;
 	private int winnerTimeLeft = -10;
 	Timer drawGameTimer;
-	String winnerString = "unset";
+	String winnerString = "Unknown";
 	// static final int SCREEN_HEIGHT = 720; //There shouldn't be standard values
 	// like this
 	// static final int SCREEN_WIDTH = 1280;
@@ -80,10 +80,6 @@ public class BattlePanel extends JPanel {
 			g2d.drawRect(GamePlay.LEVEL_BORDER / 2, GamePlay.LEVEL_BORDER / 2,
 					gameState.levelX - (GamePlay.LEVEL_BORDER), gameState.levelY - (GamePlay.LEVEL_BORDER));
 
-			// Checks if we have a winner. If true, it shows the winners name and changes
-			// view to lobby view after a small delay
-			CheckForWinner(g2d, gameState);
-
 			// For each player choose a color and then draw the player and their trail in
 			// that color, cycles through the playerColors array and loops
 			int c = 0;
@@ -96,6 +92,10 @@ public class BattlePanel extends JPanel {
 				if (c == playerColors.length)
 					c = 0;
 			}
+			
+			// Checks if we have a winner. If true, it shows the winners name and changes
+						// view to lobby view after a small delay
+						CheckForWinner(g2d, gameState);
 		}
 
 		public void drawPlayer(Graphics2D g2d, PlayerInfo p) {
@@ -158,8 +158,9 @@ public class BattlePanel extends JPanel {
 				// countdownLabel.setForeground(Color.RED); // Set text color
 				
 				if (getWinnerTimeLeft() == -10) {
-					winnerString = "Winner: " + client.serverInfo.playerList.get(gameState.winner).name;
 					setWinnerTimeLeft(GamePlay.WINNER_DELAY);
+					winnerString = "Winner: " + client.serverInfo.playerList.get(gameState.winner).name;
+
 
 					winnerTimer = new Timer(1000, new ActionListener() {
 						@Override
