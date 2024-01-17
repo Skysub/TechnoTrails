@@ -1,5 +1,7 @@
 package dk.dtu;
 
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -18,7 +20,7 @@ public class Server {
 	Space chatSpace;
 	Space gameSpace;
 	static final int defaultTickRate = 60;
-	String hostAddress = "localhost";
+	String hostAddress = "127.0.0.1";
 	int lastID = 0;
 
 	LobbyServer lobbyServer;
@@ -41,6 +43,7 @@ public class Server {
 	}
 
 	public boolean createLobby() {
+		hostAddress = getLocalIP();
 		repository = new SpaceRepository();
 		repository.addGate("tcp://" + hostAddress + ":9001/?keep");
 		lobbySpace = new SequentialSpace();
@@ -65,6 +68,19 @@ public class Server {
 			return false;
 		}
 		return true;
+	}
+
+	public String getLocalIP() {
+		String ip = "localhost";
+		try {
+			final DatagramSocket socket = new DatagramSocket();
+			socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
+			ip = socket.getLocalAddress().getHostAddress();
+		} catch (Exception e) {
+
+		}
+		System.out.println("Host ip: " + ip);
+		return ip;
 	}
 
 	// create list of names and id's
@@ -117,8 +133,9 @@ public class Server {
 			System.out.println("Error when shutting down the lobby");
 			e.printStackTrace();
 		}
-		
-		if(game != null) EndGame();
+
+		if (game != null)
+			EndGame();
 
 		// Waiting for 100 ms and then shutting down the repository of spaces
 		System.out.print("Shutting down the spaceRepo ... ");
@@ -166,7 +183,7 @@ public class Server {
 	public void StartGame() {
 		gameSpace = new SequentialSpace();
 		repository.add("game", gameSpace);
-		
+
 		game = new Game(info, gameSpace);
 
 		GameState gs = game.StartGame();
@@ -197,7 +214,7 @@ public class Server {
 				lobbySpace.put(id, LobbyToClientMessage.LobbyGameStart);
 				gameSpace.get(new ActualField(id), new ActualField("Gaming initialized"));
 			}
-			
+
 			// Unpausing the game (gets processed when the countdown is over)
 			PlayerInput unpause = new PlayerInput();
 			unpause.playerActions = new ArrayList<ImmutablePair<PlayerAction, Float>>();
@@ -208,7 +225,7 @@ public class Server {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void EndGame() {
 		PlayerInput out = new PlayerInput();
 		out.playerActions = new ArrayList<ImmutablePair<PlayerAction, Float>>();
@@ -219,7 +236,7 @@ public class Server {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
+
 		game = null;
 		repository.remove("game");
 	}
