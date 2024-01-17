@@ -14,11 +14,6 @@ import org.jspace.Space;
 import org.jspace.SpaceRepository;
 
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URL;
 
 public class Server {
 
@@ -47,48 +42,7 @@ public class Server {
 		info = new ServerInfo();
 		info.tps = defaultTickRate;
 		info.playerList = new HashMap<Integer, PlayerServerInfo>();
-		System.out.println(getPublicIP());
 	}
-
-	public static String getPublicIP() {
-        try {
-            URI uri = new URI("https://api64.ipify.org?format=json");
-            URL url = uri.toURL();
-
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-            connection.setRequestMethod("GET");
-
-            int responseCode = connection.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                StringBuilder response = new StringBuilder();
-                String line;
-
-                while ((line = reader.readLine()) != null) {
-                    response.append(line);
-                }
-                reader.close();
-
-                // Parse JSON response to extract the public IP address
-                String jsonResponse = response.toString();
-                int startIndex = jsonResponse.indexOf("\"ip\":") + 6;
-                int endIndex = jsonResponse.indexOf("\"", startIndex);
-                if (startIndex >= 0 && endIndex >= 0) {
-                    return jsonResponse.substring(startIndex, endIndex);
-                } else {
-                    return "Error: Unable to parse IP address";
-                }
-            } else {
-                return "Error: Unable to fetch IP address (HTTP status code " + responseCode + ")";
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Error: " + e.getMessage();
-        }
-    }
-
-
 
 	public boolean createLobby() {
 		hostAddress = getLocalIP();
@@ -121,9 +75,10 @@ public class Server {
 	public String getLocalIP() {
 		String ip = "localhost";
 		try {
-			final DatagramSocket socket = new DatagramSocket();
-			socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
-			ip = socket.getLocalAddress().getHostAddress();
+			try (DatagramSocket socket = new DatagramSocket()) {
+				socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
+				ip = socket.getLocalAddress().getHostAddress();
+			}
 		} catch (Exception e) {
 
 		}
