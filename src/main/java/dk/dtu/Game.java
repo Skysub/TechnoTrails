@@ -208,7 +208,7 @@ public class Game {
 		}
 		freshState.numberOfPlayers = playerList.size();
 		freshState.tick = 0;
-		freshState.tps = tps;
+		freshState.tps = info.tps;
 		freshState.deltaTime = (1f / info.tps);
 		freshState.gameTime = 0;
 		return freshState;

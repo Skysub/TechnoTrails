@@ -13,14 +13,14 @@ public class GamePlay {
 	// Constants that define the gameplay
 	final static float BASE_SPEED = 100; // In pixels/second
 	final static float TURNING_SPEED = 3f; // In radians/second
-	final static int MIN_TRAIL_SEGMENT = 2; // In pixels, maximum 6 pixels
+	final static int MIN_TRAIL_SEGMENT = 3; // In pixels, cant be too close to trail gap length
 	final static int PLAYER_SIZE = 6; // Radius in pixels
 	final static int GAME_COUNTDOWN = 4; // Seconds before the game starts
 	final static int TRAIL_WIDTH = 2; // Width of trail in pixels (when drawn as lines)
 	final static int LEVEL_BORDER = 10; // Amount of pixels from the levels real edge, that we put the edge
 	final static int WINNER_DELAY = 6; // Seconds the winners name i shown on screen before clients return to lobby
-	final static int TRAIL_LENGTH_BEFORE_GAP = 180; //in pixels (approximately)
-	final static int TRAIL_GAP_LENGTH = 25; //in pixels (approximately), minimum 8 pixels
+	final static int TRAIL_LENGTH_BEFORE_GAP = 200; //in pixels (approximately)
+	final static int TRAIL_GAP_LENGTH = 60; //in pixels (approximately), cant be too close to min trail segment
 
 	static void HandleInput(GameState gameState, GameUpdate update, ArrayList<PlayerInput> playerInput) {
 		for (int i = 0; i < playerInput.size(); i++) {
@@ -60,24 +60,26 @@ public class GamePlay {
 
 				//Handle trails
 				int trailLength = info.trail.size();
+				//System.out.println(update.tick +" " + trailLength );
 				float trailSegmentLength = (float) Math
 						.sqrt(Math.pow(newX - info.trail.get(trailLength - 1).getLeft(), 2)
 								+ Math.pow(newY - info.trail.get(trailLength - 1).getRight(), 2));
-				if (trailSegmentLength >= MIN_TRAIL_SEGMENT) {
-					//Handle gaps
+
+				if (trailSegmentLength >= MIN_TRAIL_SEGMENT || trailInfo.get(info.id).segmentsSinceLastGap < 0) {
+					// Handle gaps
 					TrailInfo ti = trailInfo.get(info.id);
 					int sinceGap = ti.segmentsSinceLastGap;
-					
-
-					if(sinceGap > TRAIL_LENGTH_BEFORE_GAP/MIN_TRAIL_SEGMENT) {
-						ti.segmentsSinceLastGap = -(TRAIL_GAP_LENGTH/MIN_TRAIL_SEGMENT);
+					//System.out.println(sinceGap);
+					if (sinceGap > TRAIL_LENGTH_BEFORE_GAP/MIN_TRAIL_SEGMENT ) {
+						ti.segmentsSinceLastGap = (int) -Math.round(((gameState.tps/60f))*TRAIL_GAP_LENGTH/MIN_TRAIL_SEGMENT );
+						System.out.println(ti.segmentsSinceLastGap);
 					}
-					
-					if(sinceGap > 0) {
+
+					if (sinceGap > 0) {
 						// Add the new position to the trail
 						update.playerUpdate.get(info.id).trail.add(new ImmutablePair<Float, Float>(newX, newY));
 					}
-					
+
 					ti.segmentsSinceLastGap++;
 				}
 
@@ -131,7 +133,6 @@ public class GamePlay {
 		// Linear time algorithm
 		int min = Math.round(info.x) - PLAYER_SIZE, max = Math.round(info.x) + PLAYER_SIZE;
 		int minY = Math.round(info.y) - PLAYER_SIZE, maxY = Math.round(info.y) + PLAYER_SIZE;
-		
 
 		// For each players trail
 		for (int i = 0; i < xy.length; i++) {
@@ -209,6 +210,6 @@ class Coords implements Comparable {
 	}
 }
 
-class TrailInfo{
+class TrailInfo {
 	int segmentsSinceLastGap = 0;
 }
