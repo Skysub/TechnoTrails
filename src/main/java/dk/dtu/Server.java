@@ -2,7 +2,11 @@ package dk.dtu;
 
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -22,7 +26,7 @@ public class Server {
 	Space chatSpace;
 	Space gameSpace;
 	static final int defaultTickRate = 30;
-	String hostAddress = "127.0.0.1";
+	String hostAddress = "";
 	int lastID = 0;
 
 	LobbyServer lobbyServer;
@@ -45,7 +49,9 @@ public class Server {
 	}
 
 	public boolean createLobby() {
-		//hostAddress = getLocalIP(); //Doesnt work yet
+
+		 this.hostAddress = getLocalIP();
+		
 		repository = new SpaceRepository();
 		repository.addGate("tcp://" + hostAddress + ":9001/?keep");
 		lobbySpace = new SequentialSpace();
@@ -73,17 +79,32 @@ public class Server {
 	}
 
 	public String getLocalIP() {
-		String ip = "localhost";
+		String ip = "";
 		try {
-			try (DatagramSocket socket = new DatagramSocket()) {
-				socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
-				ip = socket.getLocalAddress().getHostAddress();
-			}
-		} catch (Exception e) {
+            // Get all network interfaces
+            Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
 
-		}
-		System.out.println("Host ip: " + ip);
-		return ip;
+            while (networkInterfaces.hasMoreElements()) {
+                NetworkInterface networkInterface = networkInterfaces.nextElement();
+
+                // Get all IP addresses associated with the network interface
+                Enumeration<InetAddress> inetAddresses = networkInterface.getInetAddresses();
+
+                while (inetAddresses.hasMoreElements()) {
+                    InetAddress inetAddress = inetAddresses.nextElement();
+
+                    // Check if it's an IPv4 address and not loopback address
+                    if (!inetAddress.isLoopbackAddress() && inetAddress.getHostAddress().contains(".")) {
+						ip = inetAddress.getHostAddress();
+                        //System.out.println("IPv4 Address: " + inetAddress.getHostAddress());
+                    }
+                }
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+
+	return ip;
 	}
 
 	// create list of names and id's
