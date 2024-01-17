@@ -217,7 +217,6 @@ public class Client {
 			System.out.println("Error when querying for the gameState after game is won");
 			e.printStackTrace();
 		}
-		viewManager.getView("gameView");
 	}
 	
 	public void BackToLobby() {
