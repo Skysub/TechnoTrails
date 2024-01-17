@@ -29,7 +29,7 @@ public class Client {
 	Thread chatThread;
 
 	private String myName = "unset";
-	public String hostAddress = "localhost";
+	public String hostAddress = "192.168.0.4";
 	public Server server;
 	private boolean isHost = false;
 	private boolean disconnecting = false;
@@ -51,6 +51,7 @@ public class Client {
 
 	public boolean CreateLobby(String hAddress) {
 		this.hostAddress = hAddress;
+
 
 		// check if a lobby already exists here
 		try {
@@ -155,7 +156,7 @@ public class Client {
 		myID = -1;
 		serverInfo = new ServerInfo();
 		serverInfo.playerList = new HashMap<Integer, PlayerServerInfo>();
-		hostAddress = "localhost";
+		hostAddress = getHostAddress();
 		lobbyClientThread = null;
 		lobbyClient = null;
 		disconnecting = false;
