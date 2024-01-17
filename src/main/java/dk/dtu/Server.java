@@ -245,6 +245,7 @@ public class Server {
 	}
 	
 	public void IncrementScore(int ID) {
+		if(ID == 0) return; //Nobody won
 		info.playerList.get(ID).score++;
 		ServerClientLobbyUpdate();
 	}
