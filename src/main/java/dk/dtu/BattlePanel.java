@@ -1,6 +1,7 @@
 package dk.dtu;
 
 import java.awt.BasicStroke;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -33,6 +34,8 @@ public class BattlePanel extends JPanel {
 	private int winnerTimeLeft = -10;
 	Timer drawGameTimer;
 	String winnerString = "Unknown";
+	private Timer countdownTimer;
+	private int countdown = 5;
 	// static final int SCREEN_HEIGHT = 720; //There shouldn't be standard values
 	// like this
 	// static final int SCREEN_WIDTH = 1280;
@@ -71,6 +74,21 @@ public class BattlePanel extends JPanel {
 			super.paintComponent(g);
 			Graphics2D g2d = (Graphics2D) g;
 			drawGame(g2d, client.getGameState());
+
+			// Draw the countdown if it's active
+			if (countdown > 0) {
+				drawCountdown(g2d);
+			}
+		}
+
+		private void drawCountdown(Graphics2D g2d) {
+			String countdownString = String.valueOf(countdown);
+			g2d.setFont(new Font("Serif", Font.BOLD, 60));
+			g2d.setColor(Color.RED);
+			FontMetrics metrics = g2d.getFontMetrics();
+			int x = (getWidth() - metrics.stringWidth(countdownString)) / 2;
+			int y = ((getHeight() - metrics.getHeight()) / 2) + metrics.getAscent();
+			g2d.drawString(countdownString, x, y);
 		}
 
 		public void drawGame(Graphics2D g2d, GameState gameState) {
@@ -184,5 +202,20 @@ public class BattlePanel extends JPanel {
 
 			}
 		}
+	}
+
+	public void startCountdown() {
+		countdown = GamePlay.GAME_COUNTDOWN; // Starting from 5
+			countdownTimer = new Timer(800, new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					countdown--;
+					if (countdown <= 0) {
+						countdownTimer.stop();
+					}
+					drawingPanel.repaint();
+				}
+			});
+			countdownTimer.start();
 	}
 }
