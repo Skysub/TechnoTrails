@@ -22,7 +22,7 @@ public class GameLeaderboardPanel extends JPanel {
         int i = 0;
         for (PlayerServerInfo player : info.playerList.values()) {
             data[i][0] = player.name;
-            data[i][1] = "1";
+            data[i][1] = "" + player.score;
             i++;
         }
 
