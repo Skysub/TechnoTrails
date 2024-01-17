@@ -11,16 +11,16 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 //All the methods should be static as this class only exists to make the Game class more readable
 public class GamePlay {
 	// Constants that define the gameplay
-	final static float BASE_SPEED = 85; // In pixels/second
-	final static float TURNING_SPEED = 2.6f; // In radians/second
+	final static float BASE_SPEED = 100; // In pixels/second
+	final static float TURNING_SPEED = 3f; // In radians/second
 	final static int MIN_TRAIL_SEGMENT = 2; // In pixels, maximum 6 pixels
 	final static int PLAYER_SIZE = 6; // Radius in pixels
 	final static int GAME_COUNTDOWN = 4; // Seconds before the game starts
 	final static int TRAIL_WIDTH = 2; // Width of trail in pixels (when drawn as lines)
 	final static int LEVEL_BORDER = 10; // Amount of pixels from the levels real edge, that we put the edge
 	final static int WINNER_DELAY = 6; // Seconds the winners name i shown on screen before clients return to lobby
-	final static int TRAIL_LENGTH_BEFORE_GAP = 200; //in pixels (approximately)
-	final static int TRAIL_GAP_LENGTH = 30; //in pixels (approximately), minimum 8 pixels
+	final static int TRAIL_LENGTH_BEFORE_GAP = 180; //in pixels (approximately)
+	final static int TRAIL_GAP_LENGTH = 25; //in pixels (approximately), minimum 8 pixels
 
 	static void HandleInput(GameState gameState, GameUpdate update, ArrayList<PlayerInput> playerInput) {
 		for (int i = 0; i < playerInput.size(); i++) {
@@ -131,10 +131,11 @@ public class GamePlay {
 		// Linear time algorithm
 		int min = Math.round(info.x) - PLAYER_SIZE, max = Math.round(info.x) + PLAYER_SIZE;
 		int minY = Math.round(info.y) - PLAYER_SIZE, maxY = Math.round(info.y) + PLAYER_SIZE;
-		int minIndex = -1, maxIndex = -1;
+		
 
 		// For each players trail
 		for (int i = 0; i < xy.length; i++) {
+			int minIndex = -1, maxIndex = -1;
 			// we get the range of x-values that could cause the player to collide
 			for (int j = 0; j < xy[i].length; j++) {
 				if (minIndex == -1 && xy[i][j].x >= min && xy[i][j].x <= max)

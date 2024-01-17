@@ -35,7 +35,6 @@ public class Server {
 	Thread gameThread;
 	GameInputServer gameInputServer;
 	Thread inputThread;
-	ChatServer chatServer;
 	Thread chatThread;
 	SpaceRepository repository;
 	boolean shuttingDown = false;
@@ -63,9 +62,6 @@ public class Server {
 		lobbyThread = new Thread(lobbyServer);
 		lobbyThread.start();
 
-		/*chatServer = new ChatServer(chatSpace, info, this);
-		chatThread = new Thread(chatServer);
-		chatThread.start();*/
 
 		try {
 			lobbySpace.get(new ActualField(LobbyToClientMessage.LobbyStart));

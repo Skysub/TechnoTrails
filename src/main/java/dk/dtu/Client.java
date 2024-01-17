@@ -1,8 +1,12 @@
 package dk.dtu;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
@@ -29,7 +33,7 @@ public class Client {
 	Thread chatThread;
 
 	private String myName = "unset";
-	public String hostAddress = "192.168.38.194";
+	public String hostAddress = "";
 	public Server server;
 	private boolean isHost = false;
 	private boolean disconnecting = false;
@@ -47,6 +51,7 @@ public class Client {
 		setName(RandomWords.getRandomWord());
 		serverInfo = new ServerInfo();
 		serverInfo.playerList = new HashMap<Integer, PlayerServerInfo>();
+		setLocalIP();
 	}
 
 	public boolean CreateLobby(String hAddress) {
@@ -309,9 +314,33 @@ public class Client {
 	public String getHostAddress() {
 		return hostAddress;
 	}
+	public void setLocalIP() {
+		String ip = "";
+		try {
+            // Get all network interfaces
+            Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
 
-	public void setHostAddress(String hostAddress) {
-		this.hostAddress = hostAddress;
+            while (networkInterfaces.hasMoreElements()) {
+                NetworkInterface networkInterface = networkInterfaces.nextElement();
+
+                // Get all IP addresses associated with the network interface
+                Enumeration<InetAddress> inetAddresses = networkInterface.getInetAddresses();
+
+                while (inetAddresses.hasMoreElements()) {
+                    InetAddress inetAddress = inetAddresses.nextElement();
+
+                    // Check if it's an IPv4 address and not loopback address
+                    if (!inetAddress.isLoopbackAddress() && inetAddress.getHostAddress().contains(".")) {
+						ip = inetAddress.getHostAddress();
+                        //System.out.println("IPv4 Address: " + inetAddress.getHostAddress());
+                    }
+                }
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+
+	this.hostAddress = ip;
 	}
 
 	public String getName() {
