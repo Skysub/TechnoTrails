@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 
 public class GameView extends JPanel implements View {
     private BattlePanel battlePanel;
+    private GameControls gameControls;
     private GameLeaderboardPanel gameLeaderboardPanel;
     private GameChatPanel chatPanel;
     ViewManager viewManager;
@@ -25,6 +26,7 @@ public class GameView extends JPanel implements View {
     }
 
     public void gamePanels() {
+        gameControls = new GameControls();
         battlePanel = new BattlePanel(client);
 
         setLayout(new BorderLayout());

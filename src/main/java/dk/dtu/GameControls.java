@@ -6,20 +6,13 @@ import java.awt.event.KeyListener;
 
 class GameControls extends JFrame implements KeyListener {
 
-    private int directionx = 0;
-    private int directiony = 0;
+    public boolean rightClick;
+    public boolean leftClick;
 
     public GameControls() {
+        
         setFocusable(true);
         addKeyListener(this);
-    }
-
-    public int getDirectionX() {
-        return directionx;
-    }
-
-    public int getDirectionY() {
-        return directiony;
     }
 
     @Override
@@ -27,34 +20,51 @@ class GameControls extends JFrame implements KeyListener {
         int keyCode = e.getKeyCode();
 
         switch (keyCode) {
-            case KeyEvent.VK_UP:
-                directionx = 0;
-                directiony = -1;
-                break;
-            case KeyEvent.VK_DOWN:
-                directionx = 0;
-                directiony = 1;
-                break;
             case KeyEvent.VK_LEFT:
-                directionx = -1;
-                directiony = 0;
+                leftClick = true;
+
                 break;
             case KeyEvent.VK_RIGHT:
-                directionx = 1;
-                directiony = 0;
+                rightClick = true;
+
                 break;
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        
-        
+
+        int keyCode = e.getKeyCode();
+
+        switch (keyCode) {
+            case KeyEvent.VK_LEFT:
+                leftClick = false;
+
+                break;
+            case KeyEvent.VK_RIGHT:
+                rightClick = false;
+
+                break;
+        }
+
+    }
+
+    public boolean getLeft() {
+
+        return leftClick;
+
+    }
+
+    public boolean getRight() {
+
+        return rightClick;
+
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
-        // Not used in this example
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'keyTyped'");
     }
 
 }
