@@ -1,7 +1,6 @@
 package dk.dtu;
 
 import java.awt.BasicStroke;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -10,19 +9,13 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Rectangle;
-import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -36,9 +29,6 @@ public class BattlePanel extends JPanel {
 	String winnerString = "Unknown";
 	private Timer countdownTimer;
 	private int countdown;
-	// static final int SCREEN_HEIGHT = 720; //There shouldn't be standard values
-	// like this
-	// static final int SCREEN_WIDTH = 1280;
 	static final int fps = 60;
 	static final Color playerColors[] = new Color[] { Color.CYAN, Color.RED, Color.GREEN, Color.MAGENTA, Color.ORANGE,
 			Color.BLUE, Color.GRAY, Color.PINK, Color.WHITE };
@@ -204,10 +194,6 @@ public class BattlePanel extends JPanel {
 
 	public void startCountdown() {
 		countdown = GamePlay.GAME_COUNTDOWN; // Starting from 5
-
-			if (countdownTimer!=null){
-				countdownTimer.stop();
-			}
 			countdownTimer = new Timer(1000, new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {

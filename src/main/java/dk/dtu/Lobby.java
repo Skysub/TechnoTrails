@@ -171,12 +171,9 @@ public class Lobby extends JPanel implements View {
 			startButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					System.out.println("Startbutton pressed, time: " + System.nanoTime());
-					System.out.println("Thread id: " + Thread.currentThread().getId());
+					System.out.println("Startbutton pressed");
 
 					client.HostStartGame();
-					viewManager.changeView("gameView");
-
 					// change game view for all players
 					// server.changeView("gameView");
 

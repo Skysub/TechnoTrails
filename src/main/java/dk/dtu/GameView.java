@@ -60,7 +60,7 @@ public class GameView extends JPanel implements View {
         gbc.gridy = 1;
         gbc.weighty = 0.5;
         rightPanel.add(chatPanel, gbc);
-        repaint();
+        revalidate();
         requestFocus();
     }
 
