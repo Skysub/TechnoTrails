@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Path2D;
@@ -29,6 +30,7 @@ public class BattlePanel extends JPanel {
 	String winnerString = "Unknown";
 	private Timer countdownTimer;
 	private int countdown;
+	private float ratio = 1;
 	static final int fps = 60;
 	static final Color playerColors[] = new Color[] { Color.CYAN, Color.RED, Color.GREEN, Color.MAGENTA, Color.ORANGE,
 			Color.BLUE, Color.GRAY, Color.PINK, Color.WHITE };
@@ -81,10 +83,14 @@ public class BattlePanel extends JPanel {
 		}
 
 		public void drawGame(Graphics2D g2d, GameState gameState) {
-			g2d.setStroke(new BasicStroke(GamePlay.LEVEL_BORDER/2));
+			ratio = (float) getWidth() / gameState.levelX;
+			float ratio2 = (float) getHeight() / gameState.levelY;
+			if(ratio2 < ratio) ratio = ratio2;
+			
+			g2d.setStroke(new BasicStroke(ratio*GamePlay.LEVEL_BORDER/2f));
 			g2d.setColor(Color.DARK_GRAY);
-			g2d.drawRect(GamePlay.LEVEL_BORDER/4, GamePlay.LEVEL_BORDER / 4,
-					gameState.levelX - (GamePlay.LEVEL_BORDER), gameState.levelY - (GamePlay.LEVEL_BORDER));
+			g2d.drawRect((int)(ratio*GamePlay.LEVEL_BORDER/4f),(int) (ratio*GamePlay.LEVEL_BORDER / 4f),
+					(int)(ratio*gameState.levelX-GamePlay.LEVEL_BORDER/2), (int)(ratio*(gameState.levelY-GamePlay.LEVEL_BORDER/2)));
 
 			// For each player choose a color and then draw the player and their trail in
 			// that color, cycles through the playerColors array and loops
@@ -107,9 +113,9 @@ public class BattlePanel extends JPanel {
 		public void drawPlayer(Graphics2D g2d, PlayerInfo p) {
 			g2d.setStroke(new BasicStroke(1));
 			Path2D.Float triangle = new Path2D.Float();
-			float size = GamePlay.PLAYER_SIZE;
-			float x = p.x;
-			float y = p.y;
+			float size = ratio*GamePlay.PLAYER_SIZE;
+			float x = ratio*p.x;
+			float y = ratio*p.y;
 			float rotation = p.rotation;
 
 			// Move to the first vertex
@@ -148,7 +154,7 @@ public class BattlePanel extends JPanel {
 
 					// Drawing a line between the points
 					// Convert float coordinates to integers
-					g2d.drawLine((int) x1, (int) y1, (int) x2, (int) y2);
+					g2d.drawLine((int) (ratio*x1), (int) (ratio*y1), (int) (ratio*x2), (int) (ratio*y2));
 
 					// Alternatively, if you want to draw with float precision, you can use:
 					// g2d.draw(new Line2D.Float(x1, y1, x2, y2));
@@ -160,10 +166,18 @@ public class BattlePanel extends JPanel {
 			if (gameState.winner != -1) {
 				// Draw the winners name
 				g2d.setColor(new Color(50, 100, 180));
+				
+				RenderingHints hints =new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+						hints.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+						//hints.put(RenderingHints.KEY_ANTIALIASING,
+						//RenderingHints.VALUE_ANTIALIAS_OFF);
+
+						g2d.setRenderingHints(hints);
+						
 				g2d.setFont(new Font("Serif", Font.BOLD, 40));
 				FontMetrics metric = getFontMetrics(g2d.getFont());
-				g2d.drawString(winnerString, (gameState.levelX - metric.stringWidth(winnerString)) / 2,
-						(gameState.levelY - metric.getHeight()) / 2);
+				g2d.drawString(winnerString, ratio*(gameState.levelX - metric.stringWidth(winnerString)) / 2,
+						ratio*(gameState.levelY - metric.getHeight()) / 2);
 				// countdownLabel.setFont(new Font("Serif", Font.BOLD, 48)); // Set font size
 				// and style
 				// countdownLabel.setForeground(Color.RED); // Set text color
