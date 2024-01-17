@@ -10,6 +10,7 @@ public class ServerInfo {
 class PlayerServerInfo {
     String name = "no_name";
     Boolean ready = false;
+    int score = 0;
     
     PlayerServerInfo(String name){
     	this.name = name;
@@ -37,7 +38,8 @@ enum ClientToLobbyMessage {
 	ClientDisconnect,
 	ClientToggleReady,
 	ClientDone, 
-	HostEndGame,
+	HostEndGame, 
+	IncrementScore,
 }
 
 enum ChatMessageServer{

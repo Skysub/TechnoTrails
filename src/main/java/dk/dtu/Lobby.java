@@ -287,7 +287,6 @@ public class Lobby extends JPanel implements View {
 				chatField.setText("");
 				try {
 					client.getClientChatSpace().put(client.getName(), message);
-
 				} catch (InterruptedException e1) {
 					e1.printStackTrace();
 				}

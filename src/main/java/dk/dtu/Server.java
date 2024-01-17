@@ -21,7 +21,7 @@ public class Server {
 	Space lobbySpace;
 	Space chatSpace;
 	Space gameSpace;
-	static final int defaultTickRate = 60;
+	static final int defaultTickRate = 30;
 	String hostAddress = "127.0.0.1";
 	int lastID = 0;
 
@@ -47,7 +47,7 @@ public class Server {
 	public boolean createLobby() {
 		hostAddress = getLocalIP();
 		repository = new SpaceRepository();
-		repository.addGate("tcp://" + hostAddress + ":9001/?keep");
+		repository.addGate("tcp://" + "localhost" + ":9001/?keep");
 		lobbySpace = new SequentialSpace();
 		repository.add("lobby", lobbySpace);
 		chatSpace = new SequentialSpace();
@@ -242,6 +242,11 @@ public class Server {
 
 		game = null;
 		repository.remove("game");
+	}
+	
+	public void IncrementScore(int ID) {
+		info.playerList.get(ID).score++;
+		ServerClientLobbyUpdate();
 	}
 
 	public void printPlayers() {

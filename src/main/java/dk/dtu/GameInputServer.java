@@ -6,7 +6,7 @@ import org.jspace.Space;
 
 public class GameInputServer implements Runnable {
 	Game game;
-    Space gameSpace;
+	Space gameSpace;
 
 	public GameInputServer(Game game, Space gameSpace) {
 		this.game = game;
@@ -50,15 +50,15 @@ public class GameInputServer implements Runnable {
 						}
 
 					case RequestFullGamestate:
+						System.out.println("Full gamestate requested by ID: " + input.id);
 						gameSpace.getp(new FormalField(GameState.class));
 						gameSpace.put(game.getGameState());
 						gameSpace.put("New_game_state_put");
 						break;
 
 					default:
-						System.out
-								.println("GameInputServer hasn't implemented a specific response for the PlayerAction: "
-										+ action.left + ", which is probably fine.");
+						// System.out.println("GameInputServer hasn't implemented a specific response
+						// for the PlayerAction: "+ action.left + ", which is probably fine.");
 						break;
 					}
 				} catch (Exception e) {
