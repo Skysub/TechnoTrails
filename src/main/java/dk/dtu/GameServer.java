@@ -3,7 +3,7 @@ package dk.dtu;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.Space;
-import java.util.HashMap;
+
 
 public class GameServer implements Runnable {
 	Game game;
