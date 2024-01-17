@@ -47,8 +47,6 @@ public class Server {
 		repository.add("lobby", lobbySpace);
 		chatSpace = new SequentialSpace();
 		repository.add("chat", chatSpace);
-		gameSpace = new SequentialSpace();
-		repository.add("game", gameSpace);
 
 		lobbyServer = new LobbyServer(lobbySpace, info, this);
 		lobbyThread = new Thread(lobbyServer);
@@ -119,6 +117,8 @@ public class Server {
 			System.out.println("Error when shutting down the lobby");
 			e.printStackTrace();
 		}
+		
+		if(game != null) EndGame();
 
 		// Waiting for 100 ms and then shutting down the repository of spaces
 		System.out.print("Shutting down the spaceRepo ... ");
@@ -164,6 +164,9 @@ public class Server {
 	}
 
 	public void StartGame() {
+		gameSpace = new SequentialSpace();
+		repository.add("game", gameSpace);
+		
 		game = new Game(info, gameSpace);
 
 		GameState gs = game.StartGame();
@@ -205,6 +208,21 @@ public class Server {
 			e.printStackTrace();
 		}
 	}
+	
+	public void EndGame() {
+		PlayerInput out = new PlayerInput();
+		out.playerActions = new ArrayList<ImmutablePair<PlayerAction, Float>>();
+		out.playerActions.add(new ImmutablePair<PlayerAction, Float>(PlayerAction.Shutdown, 0f));
+		try {
+			gameSpace.put(out);
+			gameSpace.get(new ActualField("InputServer Done"));
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		game = null;
+		repository.remove("game");
+	}
 
 	public void printPlayers() {
 		// print list of names and id's
@@ -224,7 +242,6 @@ public class Server {
 			return t[0] + ": " + t[1];
 
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return "";

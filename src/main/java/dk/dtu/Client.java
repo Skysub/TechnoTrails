@@ -20,6 +20,7 @@ public class Client {
 
 	ViewManager viewManager;
 	GameState gameState;
+	
 
 	Space chatSpace;
 	ChatClient chatClient;
@@ -45,8 +46,6 @@ public class Client {
 		setName(RandomWords.getRandomWord());
 		serverInfo = new ServerInfo();
 		serverInfo.playerList = new HashMap<Integer, PlayerServerInfo>();
-		//for testing
-	
 	}
 
 	public boolean CreateLobby(String hAddress) {
@@ -147,9 +146,10 @@ public class Client {
 			System.out.println("Error when finalizing a disconnect");
 			e.printStackTrace();
 		}
+		DisconnectFromGame();
+		gameSpace = null;
 		chatSpace = null;
 		lobbySpace = null;
-		// gameSpace = null;
 		myID = -1;
 		serverInfo = new ServerInfo();
 		serverInfo.playerList = new HashMap<Integer, PlayerServerInfo>();
@@ -210,8 +210,34 @@ public class Client {
 	}
 	
 	public void GameIsOver() {
-		int winner = GamePlay.CheckForWinner(gameState, new GameUpdate());
+		try {
+			setNewGameState((GameState) gameSpace.query(new FormalField(GameState.class))[0]);
+		} catch (InterruptedException e) {
+			System.out.println("Error when querying for the gameState after game is won");
+			e.printStackTrace();
+		}
+		viewManager.getView("gameView");
+	}
+	
+	public void BackToLobby() {
+		DisconnectFromGame();
 		
+		System.out.println("changing back to lobby");
+		viewManager.changeView("lobby");
+		ToggleReady();
+	}
+
+	private void DisconnectFromGame() {
+		PlayerInput out = new PlayerInput();
+		out.id = myID;
+		out.playerActions = new ArrayList<ImmutablePair<PlayerAction, Float>>();
+		out.playerActions.add(new ImmutablePair<PlayerAction, Float>(PlayerAction.Disconnect, 0f));
+		try {
+			gameSpace.put(out);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		gameState = null;
 	}
 
 	//This method updates all references to the client gameState

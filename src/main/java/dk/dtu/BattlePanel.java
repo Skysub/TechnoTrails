@@ -3,19 +3,25 @@ package dk.dtu;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Rectangle;
 import java.awt.Stroke;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -23,10 +29,16 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 public class BattlePanel extends JPanel {
 	private CustomDrawingPanel drawingPanel;
 	private Client client;
-	static final int SCREEN_HEIGHT = 720;
-	static final int SCREEN_WIDTH = 1280;
-	static final Color playerColors[] = new Color[] {Color.CYAN, Color.RED, Color.GREEN, Color.MAGENTA, Color.ORANGE, 
-													 Color.BLUE, Color.GRAY, Color.PINK, Color.WHITE};
+	private Timer winnerTimer;
+	private int winnerTimeLeft = -10;
+	Timer drawGameTimer;
+	String winnerString = "unset";
+	// static final int SCREEN_HEIGHT = 720; //There shouldn't be standard values
+	// like this
+	// static final int SCREEN_WIDTH = 1280;
+	static final int fps = 60;
+	static final Color playerColors[] = new Color[] { Color.CYAN, Color.RED, Color.GREEN, Color.MAGENTA, Color.ORANGE,
+			Color.BLUE, Color.GRAY, Color.PINK, Color.WHITE };
 
 	public BattlePanel(Client client) {
 		this.client = client;
@@ -39,11 +51,10 @@ public class BattlePanel extends JPanel {
 		gbc.fill = GridBagConstraints.BOTH;
 		drawingPanel = new CustomDrawingPanel();
 		drawingPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		drawingPanel.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
+		drawingPanel.setPreferredSize(new Dimension(1280, 720)); // ideally the preffered size should be the level size
 		drawingPanel.setBackground(Color.black);
 		add(drawingPanel, gbc);
-		Timer timer = new Timer(1000 / 60, e -> repaint());
-		timer.start();
+		drawGameTimer = new Timer(1000 / fps, e -> repaint());
 	}
 
 	private class CustomDrawingPanel extends JPanel {
@@ -52,21 +63,27 @@ public class BattlePanel extends JPanel {
 			super.paintComponent(g);
 			Graphics2D g2d = (Graphics2D) g;
 			drawGame(g2d, client.getGameState());
-
 		}
 
 		public void drawGame(Graphics2D g2d, GameState gameState) {
 			Stroke old = g2d.getStroke();
 			g2d.setStroke(new BasicStroke(5));
-			g2d.drawRect(GamePlay.LEVEL_BORDER/2, GamePlay.LEVEL_BORDER/2, 
-						 gameState.levelX-(GamePlay.LEVEL_BORDER), gameState.levelY-(GamePlay.LEVEL_BORDER));
+			g2d.setColor(Color.DARK_GRAY);
+			g2d.drawRect(GamePlay.LEVEL_BORDER / 2, GamePlay.LEVEL_BORDER / 2,
+					gameState.levelX - (GamePlay.LEVEL_BORDER), gameState.levelY - (GamePlay.LEVEL_BORDER));
 
+			// Checks if we have a winner. If true, it shows the winners name and changes
+			// view to lobby view after a small delay
+			CheckForWinner(g2d, gameState);
+
+			// For each player choose a color and then draw the player and their trail in
+			// that color, cycles through the playerColors array and loops
 			int c = 0;
 			for (PlayerInfo p : gameState.players.values()) {
 				g2d.setColor(playerColors[c]);
+				drawingPanel.drawTrail(g2d, p); // Draw the trail
 				if (p.alive)
-					drawingPanel.drawPlayer(g2d, p);
-				drawingPanel.drawTrail(g2d, p);
+					drawingPanel.drawPlayer(g2d, p); // Draw the player
 				c++;
 				if (c == playerColors.length)
 					c = 0;
@@ -117,6 +134,39 @@ public class BattlePanel extends JPanel {
 
 				// Alternatively, if you want to draw with float precision, you can use:
 				// g2d.draw(new Line2D.Float(x1, y1, x2, y2));
+			}
+		}
+
+		private void CheckForWinner(Graphics2D g2d, GameState gameState) {
+			if (gameState.winner != -1) {
+				//Draw the winners name
+				g2d.setColor(new Color(50, 100, 180));
+				g2d.setFont(new Font("Serif", Font.BOLD, 40));
+				FontMetrics metric = getFontMetrics(g2d.getFont());
+				g2d.drawString(winnerString, (gameState.levelX - metric.stringWidth(winnerString)) / 2,
+						 (gameState.levelY - metric.getHeight()) / 2);
+				// countdownLabel.setFont(new Font("Serif", Font.BOLD, 48)); // Set font size
+				// and style
+				// countdownLabel.setForeground(Color.RED); // Set text color
+				
+				if (winnerTimeLeft == -10) {
+					winnerString = "Winner: " + client.serverInfo.playerList.get(gameState.winner).name;
+					winnerTimeLeft = GamePlay.WINNER_DELAY;
+
+					winnerTimer = new Timer(1000, new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							winnerTimeLeft--;
+							if (winnerTimeLeft <= 0) {
+								winnerTimeLeft = -10;
+								winnerTimer.stop();
+								client.BackToLobby();
+							}
+						}
+					});
+					winnerTimer.start();
+				}
+
 			}
 		}
 	}

@@ -11,6 +11,7 @@ public class GameState {
 	float deltaTime = -1;
 	int numberOfPlayers = 0;
 	int levelX = 1040, levelY = 675;
+	int winner = -1;
 	HashMap<Integer, PlayerInfo> players;
 	
 	long gameTime = -1; //In ns

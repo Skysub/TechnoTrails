@@ -73,6 +73,8 @@ public class GameView extends JPanel implements View {
     }
 
     public void whenEntering() {
+    	battlePanel.drawGameTimer.start();
+    	
         if (countdownNumber == -1)
             initCountdown();
             
@@ -92,7 +94,7 @@ public class GameView extends JPanel implements View {
     }
 
     public void whenExiting() {
-
+    	battlePanel.drawGameTimer.stop();
     }
 
     public void clientRequestedUpdate() {

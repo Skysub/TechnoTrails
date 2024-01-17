@@ -55,6 +55,10 @@ public class LobbyServer implements Runnable {
 					System.out.println("toggleReady for ID:" + ID);
 					server.TogglePlayerReady(ID);
 					break;
+					
+				case HostEndGame:
+					server.EndGame();;
+					break;
 
 				default:
 					System.out.println("LobbyServer hasn't implemented a response for the ClientToLobbyMessage: "

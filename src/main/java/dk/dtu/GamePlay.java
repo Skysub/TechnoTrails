@@ -16,6 +16,7 @@ public class GamePlay {
 	final static int GAME_COUNTDOWN = 4; // Seconds before the game starts
 	final static int TRAIL_WIDTH = 2; //Width of trail in pixels (when drawn as lines)
 	final static int LEVEL_BORDER = 10; //Amount of pixels from the levels real edge, that we put the edge
+	final static int WINNER_DELAY = 6; // Seconds the winners name i shown on screen before clients return to lobby
 
 	static void HandleInput(GameState gameState, GameUpdate update, ArrayList<PlayerInput> playerInput) {
 		for (int i = 0; i < playerInput.size(); i++) {
@@ -79,6 +80,7 @@ public class GamePlay {
 				}
 			}
 		}
+		if(aliveID == -1) aliveID = 0;
 		update.paused = true;
 		return aliveID;
 	}

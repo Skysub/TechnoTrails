@@ -1,5 +1,6 @@
 package dk.dtu;
 
+import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.Space;
 import java.util.HashMap;
@@ -9,6 +10,7 @@ public class GameServer implements Runnable {
 	Space gameSpace;
 	Space lobbySpace;
 	long tickRate;
+	boolean shuttingDown = false;
 
 	public GameServer(Game game, Space gameSpace, Space lobbySpace, int tickRate) {
 		this.game = game;
@@ -40,11 +42,22 @@ public class GameServer implements Runnable {
 					lobbySpace.put(id, LobbyToClientMessage.GameUpdate);
 				}
 
-				if (game.getWinner() != -1) {
+				if (game.getGameState().winner != -1) {
+					System.out.println("Winner is id: " + game.getGameState().winner);
+					gameSpace.getp(new FormalField(GameState.class));
+					gameSpace.put(game.getGameState());
 					Thread.sleep(5); // Wait a moment before announcing the winner
 					for (int id : game.getServerInfo().playerList.keySet()) {
 						lobbySpace.put(id, LobbyToClientMessage.AnnounceWinner);
 					}
+					shuttingDown = true;
+				}
+				
+				if(shuttingDown) {
+					gameSpace.get(new ActualField("game empty"));
+					System.out.println("Game empty, shutting down gameserver");
+					lobbySpace.put(-1, ClientToLobbyMessage.HostEndGame);
+					return;
 				}
 
 			} catch (InterruptedException e) {
