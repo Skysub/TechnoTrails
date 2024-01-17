@@ -282,6 +282,10 @@ public class Lobby extends JPanel implements View {
 		public void keyPressed(KeyEvent e) {
 			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 				message = chatField.getText();
+				if(message.isEmpty()){
+return;
+
+				}
 				chatField.setText("");
 				try {
 					client.getClientChatSpace().put(client.getName(), message);
