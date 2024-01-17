@@ -9,6 +9,7 @@ public class ChatClient implements Runnable {
      DefaultTableModel chatModel;
      Client client;
      int myID;
+     private volatile boolean running = true; // Flag to control the thread
 
     public ChatClient(Space chatSpace, Client client, int myID, DefaultTableModel chatModel) {
         this.chatSpace = chatSpace;
@@ -17,9 +18,13 @@ public class ChatClient implements Runnable {
         this.chatModel = chatModel;
     }
 
+    public void stop() {
+        running = false; // Set the flag to stop the thread
+    }
+
     @Override
     public void run() {
-        while (true) {
+        while (running) { // Check the flag to decide whether to continue running
             try {
                 // Listen for messages from the server
                 Object[] message = chatSpace.query(new FormalField(Integer.class), new FormalField(String.class));
@@ -32,13 +37,10 @@ public class ChatClient implements Runnable {
                     chatModel.addRow(new Object[] { "Player " + senderId, content });
                 });
 
-            } catch (InterruptedException e) {
-                // Handle exceptions
-                e.printStackTrace();
-                return; //Class doesn't handle closing the thread. This return statement is a temporary fix
+            } catch (InterruptedException ex) {
+                System.err.println("InterruptedException occurred while querying chat space: " + ex.getMessage());
+                return; // Exit the thread when an exception occurs
             }
         }
     }
-
-
 }

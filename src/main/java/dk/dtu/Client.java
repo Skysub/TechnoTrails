@@ -19,6 +19,8 @@ import org.jspace.Space;
 public class Client {
 
 	ViewManager viewManager;
+	Space gameSpace;
+
 	GameState gameState;
 	
 
@@ -34,7 +36,6 @@ public class Client {
 	private int myID = -1;
 
 	Space lobbySpace;
-	Space gameSpace;
 	LobbyClient lobbyClient;
 	Thread lobbyClientThread;
 	DefaultTableModel chatModel;
