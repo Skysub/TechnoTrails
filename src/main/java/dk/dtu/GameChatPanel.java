@@ -2,9 +2,7 @@ package dk.dtu;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -54,14 +52,14 @@ public class GameChatPanel extends JPanel {
         chatTable = new JTable(chatModel);
         chatTable.setRowHeight(20);
         chatPanel = new JScrollPane(chatTable);
-        chatPanel.setPreferredSize(new Dimension(200, 300));
+        chatPanel.setPreferredSize(new Dimension(getWidth(), getHeight()));
 		chatPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 		chatPanel.getViewport().setBackground(new Color(0, 76, 153));
         gbc.gridy = 0;
         add(chatPanel, gbc);
 
         chatField = new JTextField();
-		chatField.setPreferredSize(new Dimension(200, 25));
+		chatField.setPreferredSize(new Dimension(getWidth(),getHeight()));
 		Border border = BorderFactory.createLineBorder(Color.BLACK, 2);
 		chatField.setBorder(border);
 		chatField.setFocusable(true);
