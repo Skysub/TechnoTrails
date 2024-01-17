@@ -238,7 +238,7 @@ public class Client {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		gameState = null;
+		//gameState = null;
 	}
 
 	//This method updates all references to the client gameState

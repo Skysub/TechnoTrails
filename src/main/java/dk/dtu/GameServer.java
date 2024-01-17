@@ -11,6 +11,12 @@ public class GameServer implements Runnable {
 	Space lobbySpace;
 	long tickRate;
 	boolean shuttingDown = false;
+	static final boolean DEBUG_gameServerMeasureTime = true;
+	private long maxTime = 0;
+	private long totalTime = 0;
+	private long runningTimes = 0;
+	private long runningTotalTime = 0;
+	private int times = 0;
 
 	public GameServer(Game game, Space gameSpace, Space lobbySpace, int tickRate) {
 		this.game = game;
@@ -67,6 +73,26 @@ public class GameServer implements Runnable {
 				e.printStackTrace();
 			}
 
+			if(DEBUG_gameServerMeasureTime) {
+				long timeDiff = (System.nanoTime() - timeAtStart) / 1000;
+				if(timeDiff > maxTime) maxTime = timeDiff;
+				totalTime += timeDiff;
+				times++;
+				
+				runningTimes++;
+				if(runningTimes > tickRate*5) {
+					runningTimes = 1;
+					runningTotalTime = 0;
+				}
+				runningTotalTime += timeDiff;
+				
+				System.out.println("Pseudo tick: " + times);
+				System.out.println("Average time for a whole gameServer cycle:" + totalTime/times);
+				System.out.println("Running average for a whole gameServer cycle:" + runningTotalTime/runningTimes);
+				System.out.println("Max time a gameServer cycle has taken so far:" + maxTime);
+				System.out.println("");
+			}
+			
 			// Now we sleep until the next tick should start
 			long remaining = (timeAtStart + 1000000000 / tickRate) - System.nanoTime();
 			if (remaining > 10000) {

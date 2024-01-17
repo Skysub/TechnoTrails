@@ -159,7 +159,8 @@ public class BattlePanel extends JPanel {
 				
 				if (getWinnerTimeLeft() == -10) {
 					setWinnerTimeLeft(GamePlay.WINNER_DELAY);
-					winnerString = "Winner: " + client.serverInfo.playerList.get(gameState.winner).name;
+					if(gameState.winner == 0) winnerString = "Draw";
+					else winnerString = "Winner: " + client.serverInfo.playerList.get(gameState.winner).name;
 
 
 					winnerTimer = new Timer(1000, new ActionListener() {
