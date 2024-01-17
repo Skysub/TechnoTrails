@@ -109,9 +109,9 @@ public class Game {
 		
 		//Places the players around the level in a circle around the center facing in
 		int placed = 0;
-		int temp = gameState.levelX;
-		if(gameState.levelX > temp) temp = gameState.levelX;
-		float spawnDistance = temp/2 * 0.7f;
+		int temp = gameState.levelY;
+		if(gameState.levelY > temp) temp = gameState.levelY;
+		float spawnDistance = temp/2 * 0.8f;
 		int middleX = gameState.levelX/2;
 		int middleY = gameState.levelY/2;
 		
