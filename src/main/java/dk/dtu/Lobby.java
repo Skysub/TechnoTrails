@@ -303,7 +303,7 @@ public class Lobby extends JPanel implements View {
 // Create a method to periodically check for new chat messages and update the chat model
 public void updateChatModel() {
     if (chatUpdateTimer == null) {
-        chatUpdateTimer = new Timer(5000, new ActionListener() { // Adjust the interval as needed
+        chatUpdateTimer = new Timer(10, new ActionListener() { // Adjust the interval as needed
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
