@@ -26,6 +26,7 @@ enum LobbyToClientMessage {
 	LobbyBackToLobby,
 	LobbyShutdown,
 	LobbySaysGoodbye,
+	LobbyChatUpdate,
 	Done,
 	
 	// Game Stuff
@@ -37,7 +38,8 @@ enum ClientToLobbyMessage {
 	ClientJoin,
 	ClientDisconnect,
 	ClientToggleReady,
-	ClientDone, 
+	ClientDone,
+	ClientChatSent,
 	HostEndGame, 
 	IncrementScore,
 }

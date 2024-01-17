@@ -81,9 +81,9 @@ public class BattlePanel extends JPanel {
 		}
 
 		public void drawGame(Graphics2D g2d, GameState gameState) {
-			g2d.setStroke(new BasicStroke(5));
+			g2d.setStroke(new BasicStroke(GamePlay.LEVEL_BORDER/2));
 			g2d.setColor(Color.DARK_GRAY);
-			g2d.drawRect(GamePlay.LEVEL_BORDER / 2, GamePlay.LEVEL_BORDER / 2,
+			g2d.drawRect(GamePlay.LEVEL_BORDER/4, GamePlay.LEVEL_BORDER / 4,
 					gameState.levelX - (GamePlay.LEVEL_BORDER), gameState.levelY - (GamePlay.LEVEL_BORDER));
 
 			// For each player choose a color and then draw the player and their trail in
