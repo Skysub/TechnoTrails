@@ -56,6 +56,7 @@ public class Client {
 		// check if a lobby already exists here
 		try {
 			new RemoteSpace("tcp://" + hostAddress + ":9001/lobby?keep").close();
+			new RemoteSpace("tcp://" + hostAddress + ":9001/chat?keep").close();
 
 			System.out.println("A lobby already exists at the adress: " + hostAddress);
 			return false; // A lobbyspace is already open here
@@ -239,7 +240,7 @@ public class Client {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		gameState = null;
+		//gameState = null;
 	}
 
 	//This method updates all references to the client gameState

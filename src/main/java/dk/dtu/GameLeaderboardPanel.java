@@ -27,7 +27,6 @@ public class GameLeaderboardPanel extends JPanel {
 		for (PlayerServerInfo player : info.playerList.values()) {
 			data[i][0] = player.name;
 			data[i][1] = "" + player.score;
-			System.out.println(player.name + ": " + player.score);
 			i++;
 		}
 

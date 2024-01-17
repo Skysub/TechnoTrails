@@ -63,9 +63,9 @@ public class Server {
 		lobbyThread = new Thread(lobbyServer);
 		lobbyThread.start();
 
-		chatServer = new ChatServer(chatSpace, info, this);
+		/*chatServer = new ChatServer(chatSpace, info, this);
 		chatThread = new Thread(chatServer);
-		chatThread.start();
+		chatThread.start();*/
 
 		try {
 			lobbySpace.get(new ActualField(LobbyToClientMessage.LobbyStart));
@@ -266,6 +266,7 @@ public class Server {
 	}
 	
 	public void IncrementScore(int ID) {
+		if(ID == 0) return; //Nobody won
 		info.playerList.get(ID).score++;
 		ServerClientLobbyUpdate();
 	}
