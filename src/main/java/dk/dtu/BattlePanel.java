@@ -1,6 +1,7 @@
 package dk.dtu;
 
 import java.awt.BasicStroke;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -33,6 +34,8 @@ public class BattlePanel extends JPanel {
 	private int winnerTimeLeft = -10;
 	Timer drawGameTimer;
 	String winnerString = "Unknown";
+	private Timer countdownTimer;
+	private int countdown = 5;
 	// static final int SCREEN_HEIGHT = 720; //There shouldn't be standard values
 	// like this
 	// static final int SCREEN_WIDTH = 1280;
@@ -71,6 +74,21 @@ public class BattlePanel extends JPanel {
 			super.paintComponent(g);
 			Graphics2D g2d = (Graphics2D) g;
 			drawGame(g2d, client.getGameState());
+
+			// Draw the countdown if it's active
+			if (countdown > 0) {
+				drawCountdown(g2d);
+			}
+		}
+
+		private void drawCountdown(Graphics2D g2d) {
+			String countdownString = String.valueOf(countdown);
+			g2d.setFont(new Font("Serif", Font.BOLD, 60));
+			g2d.setColor(Color.RED);
+			FontMetrics metrics = g2d.getFontMetrics();
+			int x = (getWidth() - metrics.stringWidth(countdownString)) / 2;
+			int y = ((getHeight() - metrics.getHeight()) / 2) + metrics.getAscent();
+			g2d.drawString(countdownString, x, y);
 		}
 
 		public void drawGame(Graphics2D g2d, GameState gameState) {
@@ -92,10 +110,10 @@ public class BattlePanel extends JPanel {
 				if (c == playerColors.length)
 					c = 0;
 			}
-			
+
 			// Checks if we have a winner. If true, it shows the winners name and changes
-						// view to lobby view after a small delay
-						CheckForWinner(g2d, gameState);
+			// view to lobby view after a small delay
+			CheckForWinner(g2d, gameState);
 		}
 
 		public void drawPlayer(Graphics2D g2d, PlayerInfo p) {
@@ -147,21 +165,22 @@ public class BattlePanel extends JPanel {
 
 		private void CheckForWinner(Graphics2D g2d, GameState gameState) {
 			if (gameState.winner != -1) {
-				//Draw the winners name
+				// Draw the winners name
 				g2d.setColor(new Color(50, 100, 180));
 				g2d.setFont(new Font("Serif", Font.BOLD, 40));
 				FontMetrics metric = getFontMetrics(g2d.getFont());
 				g2d.drawString(winnerString, (gameState.levelX - metric.stringWidth(winnerString)) / 2,
-						 (gameState.levelY - metric.getHeight()) / 2);
+						(gameState.levelY - metric.getHeight()) / 2);
 				// countdownLabel.setFont(new Font("Serif", Font.BOLD, 48)); // Set font size
 				// and style
 				// countdownLabel.setForeground(Color.RED); // Set text color
-				
+
 				if (getWinnerTimeLeft() == -10) {
 					setWinnerTimeLeft(GamePlay.WINNER_DELAY);
-					if(gameState.winner == 0) winnerString = "Draw";
-					else winnerString = "Winner: " + client.serverInfo.playerList.get(gameState.winner).name;
-
+					if (gameState.winner == 0)
+						winnerString = "Draw";
+					else
+						winnerString = "Winner: " + client.serverInfo.playerList.get(gameState.winner).name;
 
 					winnerTimer = new Timer(1000, new ActionListener() {
 						@Override
@@ -178,5 +197,20 @@ public class BattlePanel extends JPanel {
 
 			}
 		}
+	}
+
+	public void startCountdown() {
+		countdown = GamePlay.GAME_COUNTDOWN; // Starting from 5
+			countdownTimer = new Timer(800, new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					countdown--;
+					if (countdown <= 0) {
+						countdownTimer.stop();
+					}
+					drawingPanel.repaint();
+				}
+			});
+			countdownTimer.start();
 	}
 }

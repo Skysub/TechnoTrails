@@ -62,7 +62,7 @@ public class GameChatPanel extends JPanel {
 
         chatField = new JTextField();
 		chatField.setPreferredSize(new Dimension(200, 25));
-		Border border = BorderFactory.createLineBorder(Color.WHITE, 2);
+		Border border = BorderFactory.createLineBorder(Color.BLACK, 2);
 		chatField.setBorder(border);
 		chatField.setFocusable(true);
 		chatField.addKeyListener(new MyKeyAdapter());
