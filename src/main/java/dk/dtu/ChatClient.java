@@ -47,7 +47,6 @@ public class ChatClient implements Runnable {
 
             } catch (InterruptedException ex) {
                 System.err.println("InterruptedException occurred while querying chat space: " + ex.getMessage());
-                Thread.currentThread().interrupt(); // Interrupt the thread to exit blocking operations
                 return; // Exit the thread when an exception occurs
             }
         }
