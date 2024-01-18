@@ -170,23 +170,30 @@ public class Client {
 	
 	public void InitializeGaming() {
 		try {
-			gameSpace = new RemoteSpace("tcp://" + hostAddress + ":9001/game?keep");		
+			// Initialize gameSpace if it's null
+			if (gameSpace == null) {
+				gameSpace = new RemoteSpace("tcp://" + hostAddress + ":9001/game?keep");
+			}
+	
+			// Query for the initial GameState
+			Object[] queryResult = gameSpace.query(new FormalField(GameState.class));
+	
+			// Check if the query result is not null and has at least one element
+			if (queryResult != null && queryResult.length > 0) {
+				gameState = (GameState) queryResult[0];
+				gameSpace.put(myID, "Gaming initialized");
+			} else {
+				System.out.println("No initial GameState found.");
+			}
 		} catch (IOException e) {
 			System.out.println("Error when trying to connect to the gameSpace");
 			e.printStackTrace();
-		}
-		
-		//Initialize input stuff here maybe add the gameControls class to gameView?
-		
-		try {
-			gameState = (GameState) gameSpace.query(new FormalField(GameState.class))[0];
-			gameSpace.put(myID, "Gaming initialized");
-			
 		} catch (InterruptedException e) {
-			System.out.println("Error getting the gameState when initalizing Gaming");
+			System.out.println("Error getting the gameState when initializing Gaming");
 			e.printStackTrace();
-		}		
+		}
 	}
+	
 
 	public void GameUpdate() {
 		Object[] response;

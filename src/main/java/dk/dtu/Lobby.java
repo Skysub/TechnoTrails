@@ -301,7 +301,7 @@ public void updateChatModel() {
     // Check if the current view is the lobby before updating the chat model
     if (viewManager.getCurrentView().equals("lobby")) {
         if (chatUpdateTimer == null) {
-            chatUpdateTimer = new Timer(1000, new ActionListener() { // Adjust the interval as needed
+            chatUpdateTimer = new Timer(10, new ActionListener() { // Adjust the interval as needed
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     try {
