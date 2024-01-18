@@ -52,14 +52,14 @@ public class GameChatPanel extends JPanel {
         chatTable = new JTable(chatModel);
         chatTable.setRowHeight(20);
         chatPanel = new JScrollPane(chatTable);
-        chatPanel.setPreferredSize(new Dimension(getWidth(), getHeight()));
+        chatPanel.setPreferredSize(new Dimension(200, 300));
 		chatPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 		chatPanel.getViewport().setBackground(new Color(0, 76, 153));
         gbc.gridy = 0;
         add(chatPanel, gbc);
 
         chatField = new JTextField();
-		chatField.setPreferredSize(new Dimension(getWidth(),getHeight()));
+        chatField.setPreferredSize(new Dimension(200, 25));
 		Border border = BorderFactory.createLineBorder(Color.BLACK, 2);
 		chatField.setBorder(border);
 		chatField.setFocusable(true);
@@ -77,6 +77,9 @@ public class GameChatPanel extends JPanel {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     message = chatField.getText();
                     chatField.setText("");
+                    if (message.isEmpty()){
+                        return;
+                    }
                     try {
                         client.getClientChatSpace().put(client.getName(), message);
                         updateChatModel();
