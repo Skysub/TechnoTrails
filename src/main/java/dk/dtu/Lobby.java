@@ -114,6 +114,7 @@ public class Lobby extends JPanel implements View {
 		chatPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
 		chatPanel.getViewport().setBackground(new Color(0, 76, 153));
 		chatField = new JTextField();
+		chatField.grabFocus();
 		chatField.setPreferredSize(new Dimension(150, 1));
 		Border border = BorderFactory.createLineBorder(Color.WHITE, 2);
 		chatField.setBorder(border);
