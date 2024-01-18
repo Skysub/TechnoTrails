@@ -203,7 +203,7 @@ public class Client {
 	public void GameUpdate() {
 		Object[] response;
 		try {
-			response = gameSpace.query(new FormalField(GameUpdate.class)); //get the gameUpdate
+			response = gameSpace.query(new FormalField(GameUpdate.class)); 
 			
 			float tickDiff = ((GameUpdate) response[0]).tick - (1 + gameState.tick); //Is the tick what we expect?
 			if (tickDiff == 0) {
