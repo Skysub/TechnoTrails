@@ -90,6 +90,7 @@ public class Client {
 	}
 
 	public boolean joinLobby(String hostAddress) throws UnknownHostException, IOException, InterruptedException {
+		this.hostAddress = hostAddress;
 		lobbySpace = new RemoteSpace("tcp://" + hostAddress + ":9001/lobby?keep");
 		chatSpace = new RemoteSpace("tcp://" + hostAddress + ":9001/chat?keep");
 
@@ -169,10 +170,13 @@ public class Client {
 	}
 	
 	public void InitializeGaming() {
+		System.out.println("Initializing gaming...");
 		try {
 			// Initialize gameSpace if it's null
 			if (gameSpace == null) {
+				System.out.print("Connecting to gamespace...");
 				gameSpace = new RemoteSpace("tcp://" + hostAddress + ":9001/game?keep");
+				System.out.println("Done");
 			}
 	
 			// Query for the initial GameState
@@ -182,6 +186,7 @@ public class Client {
 			if (queryResult != null && queryResult.length > 0) {
 				gameState = (GameState) queryResult[0];
 				gameSpace.put(myID, "Gaming initialized");
+				System.out.println("Gaming initialized");
 			} else {
 				System.out.println("No initial GameState found.");
 			}
