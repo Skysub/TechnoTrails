@@ -136,10 +136,14 @@ public class Lobby extends JPanel implements View {
 					if (client.getIsHost()) {
 						System.out.println("Host pressed closed lobby");
 						client.setLocalIP();
+						chatUpdateTimer.stop();
+						chatUpdateTimer = null;
 						client.KillLobby();
 					} else {
 						System.out.println("Non host pressed leave lobby");
 						client.setLocalIP();
+						chatUpdateTimer.stop();
+						chatUpdateTimer = null;
 						client.AttemptDisconnect();
 					}
 				}
@@ -235,6 +239,7 @@ public class Lobby extends JPanel implements View {
 
 	// Called when the view is changed to lobby
 	public void whenEntering() {
+		updateChatModel();
 		if (client.getIsHost()) {
 			backButton.setText("Close Lobby");
 		} else {
@@ -333,15 +338,6 @@ public void updateChatModel() {
             chatUpdateTimer.setRepeats(true);
             chatUpdateTimer.start();
         }
-    } else {
-        // If not in the lobby, stop the chat update timer
-        if (chatUpdateTimer != null) {
-            chatUpdateTimer.stop();
-            chatUpdateTimer = null;
-        }
+    } 
     }
-}
-
-
-
 }

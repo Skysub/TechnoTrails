@@ -64,6 +64,7 @@ public class Menu extends JPanel implements View {
 	
 					if (client.CreateLobby(client.getHostAddress())) {
 						viewManager.changeView("lobby");
+						
 					}
 				}
 			});
