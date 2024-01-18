@@ -23,7 +23,7 @@ public class Lobby extends JPanel implements View {
 	public int greenRowIndex;
 
 	private Timer chatUpdateTimer;
-
+	boolean isCalled = true;
 	public JScrollPane playerPanel;
 	public JScrollPane chatPanel;
 	public JFrame playerLabel;
@@ -94,6 +94,7 @@ public class Lobby extends JPanel implements View {
 		title.setForeground(new Color(0, 76, 153));
 		title.setHorizontalAlignment(0);
 
+		if(isCalled == true){
 		String[] CHAT_COLUMNS = { "Chat" };
 		chatModel = new DefaultTableModel(CHAT_COLUMNS, 0) {
 			private static final long serialVersionUID = -1892645556686553938L;
@@ -107,18 +108,10 @@ public class Lobby extends JPanel implements View {
 
 		chatTable = new JTable(chatModel);
 		chatTable.setRowHeight(20);
-
-		playerPanel = new JScrollPane(playerTable);
-		playerPanel.setPreferredSize(new Dimension(400, 200));
-		playerPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
-		playerPanel.getViewport().setBackground(new Color(0, 76, 153));
-		// playerPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
 		chatPanel = new JScrollPane(chatTable);
 		chatPanel.setPreferredSize(new Dimension(400, 200));
 		chatPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
 		chatPanel.getViewport().setBackground(new Color(0, 76, 153));
-
 		chatField = new JTextField();
 		chatField.setPreferredSize(new Dimension(150, 1));
 		Border border = BorderFactory.createLineBorder(Color.WHITE, 2);
@@ -126,6 +119,18 @@ public class Lobby extends JPanel implements View {
 		chatField.setFocusable(true);
 		if (chatField.getKeyListeners().length == 0)
 			chatField.addKeyListener(new MyKeyAdapter());
+		isCalled=false;
+		
+	}
+		playerPanel = new JScrollPane(playerTable);
+		playerPanel.setPreferredSize(new Dimension(400, 200));
+		playerPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
+		playerPanel.getViewport().setBackground(new Color(0, 76, 153));
+		// playerPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+		
+
+		
 
 		backButton.setPreferredSize(new Dimension(150, 50));
 		backButton.setForeground(Color.blue);
