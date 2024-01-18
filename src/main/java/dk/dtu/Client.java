@@ -91,9 +91,9 @@ public class Client {
 	}
 
 	public boolean joinLobby(String hostAddress) throws UnknownHostException, IOException, InterruptedException {
-		this.hostAddress = hostAddress;
 		lobbySpace = new RemoteSpace("tcp://" + hostAddress + ":9001/lobby?keep");
 		chatSpace = new RemoteSpace("tcp://" + hostAddress + ":9001/chat?keep");
+		this.hostAddress = hostAddress;
 
 		// 1
 		int randomInt = ThreadLocalRandom.current().nextInt(1000001, 1000000001); // 1 million to 1 billion
@@ -216,7 +216,7 @@ public class Client {
 				out.playerActions = new ArrayList<ImmutablePair<PlayerAction, Float>>();
 				out.playerActions.add(new ImmutablePair<PlayerAction, Float>(PlayerAction.RequestFullGamestate, tickDiff));
 				gameSpace.put(out);
-				gameSpace.get(new ActualField("New_game_state_put"));
+				gameSpace.get(new ActualField(myID), new ActualField("New_game_state_put"));
 				
 				response = gameSpace.query(new FormalField(GameState.class)); //We query for the actual gamestate
 				setNewGameState((GameState) response[0]);
@@ -325,6 +325,7 @@ public class Client {
 	public String getHostAddress() {
 		return hostAddress;
 	}
+	
 	public void setLocalIP() {
 		String ip = "";
 		try {
