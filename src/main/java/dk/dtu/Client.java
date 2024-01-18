@@ -222,8 +222,12 @@ public class Client {
 				gameSpace.get(new ActualField(myID), new ActualField("New_game_state_put"));
 				System.out.println("got response");
 				
-				System.out.print("Querying for gamestate");
-				response = gameSpace.query(new FormalField(GameState.class)); //We query for the actual gamestate
+				response = null;
+				while(response == null) {
+					System.out.println("trying to queryp gamestate...");
+					response = gameSpace.queryp(new FormalField(GameState.class)); //We query for the actual gamestate
+					
+				}
 				System.out.println("new gamestate got");
 				setNewGameState((GameState) response[0]);
 			}
