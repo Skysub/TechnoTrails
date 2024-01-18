@@ -40,6 +40,9 @@ public class GamePlay {
 				case HostUnPause:
 					update.paused = false;
 					break;
+					
+				case RequestFullGamestate:
+					break;
 
 				default:
 					System.out.println(
@@ -72,7 +75,7 @@ public class GamePlay {
 					//System.out.println(sinceGap);
 					if (sinceGap > TRAIL_LENGTH_BEFORE_GAP/MIN_TRAIL_SEGMENT ) {
 						ti.segmentsSinceLastGap = (int) -Math.round(((gameState.tps/60f))*TRAIL_GAP_LENGTH/MIN_TRAIL_SEGMENT );
-						System.out.println(ti.segmentsSinceLastGap);
+						//System.out.println(ti.segmentsSinceLastGap);
 					}
 
 					if (sinceGap > 0) {

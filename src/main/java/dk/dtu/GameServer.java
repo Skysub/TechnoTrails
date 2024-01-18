@@ -53,6 +53,7 @@ public class GameServer implements Runnable {
 					
 					gameSpace.getp(new FormalField(GameState.class));
 					gameSpace.put(game.getGameState());
+					game.setLastFullGameStateTick(game.getGameState().tick);
 					Thread.sleep(5); // Wait a moment before announcing the winner
 					lobbySpace.put(game.getGameState().winner, ClientToLobbyMessage.IncrementScore);
 					for (int id : game.getServerInfo().playerList.keySet()) {

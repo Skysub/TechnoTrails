@@ -214,6 +214,7 @@ public class Server {
 
 		try {
 			gameSpace.put(gs);
+			game.setLastFullGameStateTick(gs.tick);
 
 			gameInputServer = new GameInputServer(game, gameSpace);
 			inputThread = new Thread(gameInputServer);
