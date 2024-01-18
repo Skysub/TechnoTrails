@@ -96,7 +96,7 @@ public class GameChatPanel extends JPanel {
 
 // Create a method to periodically check for new chat messages and update the chat model
 public void updateChatModel() {
-    Timer timer = new Timer(10, new ActionListener() { // Adjust the interval as needed
+    Timer timer = new Timer(1000, new ActionListener() { // Adjust the interval as needed
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
