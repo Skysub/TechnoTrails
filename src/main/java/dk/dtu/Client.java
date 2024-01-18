@@ -53,6 +53,7 @@ public class Client {
 	}
 
 	public boolean CreateLobby(String hAddress) {
+		setLocalIP();
 		this.hostAddress = hAddress;
 
 
