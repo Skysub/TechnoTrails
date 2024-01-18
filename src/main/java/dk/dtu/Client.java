@@ -216,7 +216,7 @@ public class Client {
 				out.playerActions = new ArrayList<ImmutablePair<PlayerAction, Float>>();
 				out.playerActions.add(new ImmutablePair<PlayerAction, Float>(PlayerAction.RequestFullGamestate, tickDiff));
 				gameSpace.put(out);
-				gameSpace.get(new ActualField("New_game_state_put"));
+				gameSpace.get(new ActualField(myID), new ActualField("New_game_state_put"));
 				
 				response = gameSpace.query(new FormalField(GameState.class)); //We query for the actual gamestate
 				setNewGameState((GameState) response[0]);
