@@ -54,9 +54,13 @@ public class Game {
 		// update according to the tps not actual elapsed time
 		// This ensures proper gameplay even if the server has a massive lag spike or if
 		// the game has been paused
-		if (deltaTime > (2f / tps) || deltaTime < (1f / tps)) {
+		if (deltaTime > (10f / tps)) {
+			deltaTime = (10f / tps);
+		}
+		if (deltaTime < (1f / tps)) {
 			deltaTime = (1f / tps);
 		}
+		
 		update.deltaTime = deltaTime;
 
 		update.playerUpdate = new HashMap<Integer, PlayerInfo>();
