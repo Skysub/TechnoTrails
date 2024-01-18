@@ -112,6 +112,9 @@ public class Menu extends JPanel implements View {
 				public void actionPerformed(ActionEvent e) {
 					// Get the text from the JTextField
 					String name = textField.getText();
+					if (name.isEmpty()){
+						return;
+					}
 
 					client.setName(name);
 					instructionLabel.setText("Name: " + client.getName());
