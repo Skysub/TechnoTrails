@@ -204,10 +204,12 @@ public class Client {
 	public void GameUpdate() {
 		Object[] response;
 		try {
-			response = gameSpace.query(new FormalField(GameUpdate.class)); 
+			System.out.print("Client getting GameUpdate...");
+			response = gameSpace.query(new FormalField(GameUpdate.class));
+			System.out.println("got gameupdate");
 			
 			float tickDiff = ((GameUpdate) response[0]).tick - (1 + gameState.tick); //Is the tick what we expect?
-			if (tickDiff == 0) {
+			if (tickDiff  < 1) {
 				Game.UpdateGameState(gameState, (GameUpdate) response[0]);
 			} else {
 				//We request the full gameState
@@ -216,9 +218,13 @@ public class Client {
 				out.playerActions = new ArrayList<ImmutablePair<PlayerAction, Float>>();
 				out.playerActions.add(new ImmutablePair<PlayerAction, Float>(PlayerAction.RequestFullGamestate, tickDiff));
 				gameSpace.put(out);
+				System.out.print("Requested gameState. Waiting for response...");
 				gameSpace.get(new ActualField(myID), new ActualField("New_game_state_put"));
+				System.out.println("got response");
 				
+				System.out.print("Querying for gamestate");
 				response = gameSpace.query(new FormalField(GameState.class)); //We query for the actual gamestate
+				System.out.println("new gamestate got");
 				setNewGameState((GameState) response[0]);
 			}
 		} catch (InterruptedException e) {
