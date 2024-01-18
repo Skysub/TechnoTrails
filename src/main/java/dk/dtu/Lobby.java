@@ -9,6 +9,7 @@ import org.jspace.FormalField;
 import org.jspace.SequentialSpace;
 import org.jspace.Space;
 import org.jspace.SpaceRepository;
+import org.jspace.TemplateField;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -143,6 +144,7 @@ public class Lobby extends JPanel implements View {
 						client.setLocalIP();
 						chatUpdateTimer.stop();
 						chatUpdateTimer = null;
+						chatModel.setRowCount(0);
 						client.KillLobby();
 					} else {
 						System.out.println("Non host pressed leave lobby");
