@@ -209,7 +209,7 @@ public class Client {
 			System.out.println("got gameupdate");
 			
 			float tickDiff = ((GameUpdate) response[0]).tick - (1 + gameState.tick); //Is the tick what we expect?
-			if (tickDiff  < 1) {
+			if (tickDiff  < 3) {
 				Game.UpdateGameState(gameState, (GameUpdate) response[0]);
 			} else {
 				//We request the full gameState
@@ -225,9 +225,8 @@ public class Client {
 				response = null;
 				while(response == null) {
 					System.out.println("trying to queryp gamestate...");
-					response = gameSpace.queryp(new FormalField(GameState.class)); //We query for the actual gamestate
-					
-				}
+						response = gameSpace.queryp(new FormalField(GameState.class)); //We query for the actual gamestate
+					}
 				System.out.println("new gamestate got");
 				setNewGameState((GameState) response[0]);
 			}
