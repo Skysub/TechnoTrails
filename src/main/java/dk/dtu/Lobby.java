@@ -135,9 +135,11 @@ public class Lobby extends JPanel implements View {
 				public void actionPerformed(ActionEvent e) {
 					if (client.getIsHost()) {
 						System.out.println("Host pressed closed lobby");
+						client.setLocalIP();
 						client.KillLobby();
 					} else {
 						System.out.println("Non host pressed leave lobby");
+						client.setLocalIP();
 						client.AttemptDisconnect();
 					}
 				}
