@@ -70,7 +70,8 @@ public class Lobby extends JPanel implements View {
 			if (!player.ready) {
 				readyString = "Not ready - ";
 			}
-			tableModel.addRow(new String[] { readyString + player.name });
+			String colorString = (" (" + player.color + ")");
+			tableModel.addRow(new String[] { readyString + player.name + colorString });
 		}
 		playerTable = new JTable(tableModel);
 		playerTable.setRowHeight(20);

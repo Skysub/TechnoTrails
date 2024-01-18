@@ -1,5 +1,6 @@
 package dk.dtu;
 
+import java.awt.Color;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -36,6 +37,9 @@ public class Server {
 	Thread chatThread;
 	SpaceRepository repository;
 	boolean shuttingDown = false;
+	static final Color playerColors[] = new Color[] { Color.CYAN, Color.RED, Color.GREEN, Color.MAGENTA, Color.ORANGE,
+			Color.BLUE, Color.GRAY, Color.PINK, Color.WHITE };
+	static final String[] playerStringColors = new String[] {"cyan", "red", "green", "magenta", "orange", "blue", "gray", "pink", "white"};
 
 	Game game;
 
@@ -115,7 +119,9 @@ public class Server {
 			e.printStackTrace();
 			return;
 		}
-		info.playerList.put(lastID, new PlayerServerInfo(newName));
+		PlayerServerInfo psi = new PlayerServerInfo(newName);
+		psi.color = playerStringColors[(info.playerList.size()) % playerStringColors.length];
+		info.playerList.put(lastID, psi);
 		// 7
 		ServerClientLobbyUpdate();
 	}
@@ -271,7 +277,41 @@ public class Server {
 			System.out.println("ID " + i.getKey() + " : " + i.getValue().name);
 		}
 	}
+	
+	public static Color colorFromString(String s){
+		switch (s) {
+		case "red": 
+			return Color.RED;
 
+		case "cyan": 
+			return Color.CYAN;
+
+		case "green": 
+			return Color.GREEN;
+
+		case "magenta": 
+			return Color.MAGENTA;
+
+		case "orange": 
+			return Color.ORANGE;
+
+		case "blue": 
+			return Color.BLUE;
+
+		case "gray": 
+			return Color.GRAY;
+
+		case "pink": 
+			return Color.PINK;
+
+		case "white": 
+			return Color.WHITE;
+		
+		default:
+			return Color.WHITE;
+		}
+	}
+	
 	ServerInfo getInfo() {
 		return info;
 	}

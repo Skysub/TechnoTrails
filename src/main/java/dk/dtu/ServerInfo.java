@@ -10,6 +10,7 @@ public class ServerInfo {
 class PlayerServerInfo {
     String name = "no_name";
     Boolean ready = false;
+    String color = "white";
     int score = 0;
     
     PlayerServerInfo(String name){

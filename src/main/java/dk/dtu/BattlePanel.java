@@ -104,7 +104,7 @@ public class BattlePanel extends JPanel {
 			// that color, cycles through the playerColors array and loops
 			int c = 0;
 			for (PlayerInfo p : gameState.players.values()) {
-				g2d.setColor(playerColors[c]);
+				g2d.setColor(Server.colorFromString(client.getServerInfo().playerList.get(p.id).color));
 				drawingPanel.drawTrail(g2d, p); // Draw the trail
 				if (p.alive)
 					drawingPanel.drawPlayer(g2d, p); // Draw the player
