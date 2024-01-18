@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -54,11 +56,24 @@ public class ViewManager extends JFrame {
 
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
+				Timer timer = new Timer();
+				System.out.println("Starting to close down");
+        // Schedule a task to run after 5 seconds
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                
+                // Force exit the application after the task is executed
+                System.exit(0);
+            }
+        }, 5000);
 				if (client.getIsHost()) {
 					client.KillLobby();
 				} else {
+
 					client.AttemptDisconnect();
 				}
+
 			}
 		});
 
@@ -66,6 +81,7 @@ public class ViewManager extends JFrame {
 		setLocationRelativeTo(null);
 		setVisible(true);
 	}
+	
 
 	// Changes the current view to the one specified
 	void changeView(String s) {
