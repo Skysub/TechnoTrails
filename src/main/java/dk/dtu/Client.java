@@ -209,7 +209,7 @@ public class Client {
 			System.out.println("got gameupdate");
 			
 			float tickDiff = ((GameUpdate) response[0]).tick - (1 + gameState.tick); //Is the tick what we expect?
-			if (tickDiff  < 6) {
+			if (tickDiff  < 1) {
 				Game.UpdateGameState(gameState, (GameUpdate) response[0]);
 			} else {
 				//We request the full gameState
