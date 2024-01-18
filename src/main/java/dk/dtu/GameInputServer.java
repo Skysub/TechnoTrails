@@ -51,9 +51,12 @@ public class GameInputServer implements Runnable {
 
 					case RequestFullGamestate:
 						System.out.println("Full gamestate requested by ID: " + input.id);
-						gameSpace.getp(new FormalField(GameState.class));
-						gameSpace.put(game.getGameState());
-						gameSpace.put("New_game_state_put");
+						if(game.getLastFullGameStateTick() != game.getGameState().tick) {
+							gameSpace.getp(new FormalField(GameState.class));
+							gameSpace.put(game.getGameState());
+							game.setLastFullGameStateTick(game.getGameState().tick);
+						}
+						gameSpace.put(input.id, "New_game_state_put");
 						break;
 
 					default:
@@ -62,7 +65,7 @@ public class GameInputServer implements Runnable {
 						break;
 					}
 				} catch (Exception e) {
-					System.out.println("Error in GameInputServer when handling a PlayerAction: " + action.left);
+					//System.out.println("Error in GameInputServer when handling a PlayerAction: " + action.left);
 				}
 			}
 			game.addPlayerInput(input);

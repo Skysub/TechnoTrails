@@ -22,6 +22,7 @@ public class Game {
 	private long totalHandleCollisionsTime = 0;
 	private long totalCheckForWinnersTime = 0;
 	private long totalUpdateGameStateTime = 0;
+	private int lastFullGameStateTick = 0;
 	
 
 	Game(ServerInfo info, Space gameSpace) {
@@ -222,5 +223,14 @@ public class Game {
 
 	ServerInfo getServerInfo() {
 		return info;
+	}
+
+	public int getLastFullGameStateTick() {
+		return lastFullGameStateTick;
+	}
+
+	public void setLastFullGameStateTick(int tick) {
+		lastFullGameStateTick = tick;
+		
 	}
 }
