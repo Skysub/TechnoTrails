@@ -25,6 +25,7 @@ public class Server {
 	Space chatSpace;
 	Space gameSpace;
 	static final int defaultTickRate = 30;
+	private int playerColorCounter = 0;
 	String hostAddress = "";
 	int lastID = 0;
 
@@ -120,7 +121,8 @@ public class Server {
 			return;
 		}
 		PlayerServerInfo psi = new PlayerServerInfo(newName);
-		psi.color = playerStringColors[(info.playerList.size()) % playerStringColors.length];
+		psi.color = playerStringColors[(playerColorCounter) % playerStringColors.length];
+		playerColorCounter++;
 		info.playerList.put(lastID, psi);
 		// 7
 		ServerClientLobbyUpdate();

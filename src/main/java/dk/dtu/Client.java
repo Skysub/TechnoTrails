@@ -204,9 +204,9 @@ public class Client {
 	public void GameUpdate() {
 		Object[] response;
 		try {
-			System.out.print("Client getting GameUpdate...");
+			//System.out.print("Client getting GameUpdate...");
 			response = gameSpace.query(new FormalField(GameUpdate.class));
-			System.out.println("got gameupdate");
+			//System.out.println("got gameupdate");
 			
 			float tickDiff = ((GameUpdate) response[0]).tick - (1 + gameState.tick); //Is the tick what we expect?
 			if (tickDiff  < 5) {
